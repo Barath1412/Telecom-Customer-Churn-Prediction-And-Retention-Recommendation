@@ -6,3 +6,7 @@
     "react/only-export-components": ["warn", { "allowConstantExport": true }]
   }
 }
+
+{
+  "ignorePatterns": ["src/components/ui/**"]
+}
