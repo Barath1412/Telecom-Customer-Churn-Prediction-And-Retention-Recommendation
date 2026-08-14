@@ -1,0 +1,13 @@
+{
+  "error": {
+    "code": "LEAKAGE_REJECTED",
+    "message": "Payload contained a quarantined field. The upstream system must not expose it.",
+    "fields": [
+      {
+        "field": "Churn Score",
+        "message": "quarantined: model-output leak"
+      }
+    ],
+    "request_id": "req_01J8XYZ"
+  }
+}

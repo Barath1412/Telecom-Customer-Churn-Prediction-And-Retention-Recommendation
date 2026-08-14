@@ -1,0 +1,122 @@
+{
+  "request_example": {
+    "Gender": "Male",
+    "Senior Citizen": "No",
+    "Partner": "No",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "Yes",
+    "Internet Service": "Fiber optic",
+    "Online Security": "No",
+    "Online Backup": "No",
+    "Device Protection": "No",
+    "Tech Support": "No",
+    "Streaming TV": "Yes",
+    "Streaming Movies": "Yes",
+    "Paperless Billing": "Yes",
+    "Payment Method": "Electronic check",
+    "Contract": "Month-to-month",
+    "Tenure Months": 1,
+    "Monthly Charges": 95.45,
+    "Total Charges": 95.45,
+    "cltv": 5962.0
+  },
+  "response_example": {
+    "p_churn": 0.99,
+    "risk_band": "critical",
+    "levers": [
+      {
+        "code": "NO_TECH_SUPPORT",
+        "label": "No tech support add-on"
+      },
+      {
+        "code": "NO_ONLINE_SECURITY",
+        "label": "No online security add-on"
+      },
+      {
+        "code": "NO_DEVICE_PROTECTION",
+        "label": "No device protection"
+      },
+      {
+        "code": "MONTH_TO_MONTH",
+        "label": "Rolling month-to-month contract"
+      },
+      {
+        "code": "MANUAL_PAYMENT",
+        "label": "Manual payment method"
+      },
+      {
+        "code": "HIGH_CHARGE_LOW_BUNDLE",
+        "label": "High bill, few add-ons"
+      },
+      {
+        "code": "NEW_CUSTOMER",
+        "label": "Under 12 months tenure"
+      },
+      {
+        "code": "FIBER_PREMIUM",
+        "label": "Premium fiber plan"
+      }
+    ],
+    "recommendation": {
+      "offer_id": "OFF-BUNDLE-ALL",
+      "offer_name": "Tech Support + Online Security bundle, 12 months",
+      "cost": 120.51,
+      "delta_prior": 0.14,
+      "delta_ci": [
+        0.05,
+        0.24
+      ],
+      "delta_source": "business_judgment_v1",
+      "expected_value": 705.82,
+      "requires_approval": false
+    },
+    "policy_trace": [
+      {
+        "rule_id": "R1_ELIGIBILITY",
+        "state": "pass",
+        "detail": "levers matched"
+      },
+      {
+        "rule_id": "R2_MARGIN_FLOOR",
+        "state": "pass",
+        "detail": "cost 120.51 <= 18% of annual revenue"
+      },
+      {
+        "rule_id": "R3_POSITIVE_EV",
+        "state": "pass",
+        "detail": "EV 705.82 > 0"
+      },
+      {
+        "rule_id": "R4_COOLDOWN",
+        "state": "not_evaluable",
+        "detail": "no offer-history feed connected",
+        "unmet_requirement": "recommendation history per customer, last 90d"
+      },
+      {
+        "rule_id": "R5_ONE_PER_WINDOW",
+        "state": "not_evaluable",
+        "detail": "no offer-history feed connected",
+        "unmet_requirement": "recommendation history for the current quarter"
+      },
+      {
+        "rule_id": "R6_INVOLUNTARY",
+        "state": "pass",
+        "detail": "voluntary churn risk"
+      },
+      {
+        "rule_id": "R7_DISCOUNT_CAP",
+        "state": "pass",
+        "detail": "within 20% cap"
+      }
+    ],
+    "provenance": {
+      "model_name": "xgboost",
+      "model_version": "v1",
+      "model_roc_auc": 0.849678,
+      "catalog_version": 3,
+      "kb_version": 4,
+      "scored_at": "2026-08-13T02:00:00Z"
+    }
+  }
+}

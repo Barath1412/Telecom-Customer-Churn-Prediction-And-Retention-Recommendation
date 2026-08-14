@@ -1,0 +1,137 @@
+{
+  "catalog_version": 3,
+  "currency": "USD",
+  "policy": {
+    "margin_floor_pct": 0.18,
+    "max_discount_pct": 0.2,
+    "cooldown_days": 90,
+    "max_offers_per_quarter": 1,
+    "approval_required_above_cost": 150.0
+  },
+  "offers": [
+    {
+      "offer_id": "OFF-CONTRACT-1Y",
+      "name": "1-year contract at 10% off",
+      "category": "contract_incentive",
+      "requires_levers": [
+        "MONTH_TO_MONTH"
+      ],
+      "excludes_levers": [],
+      "min_tenure_months": 1,
+      "cost_type": "pct_of_annual",
+      "discount_pct": 0.1,
+      "unit_cost": null,
+      "delta_prior": 0.12,
+      "delta_ci": [
+        0.04,
+        0.2
+      ],
+      "delta_source": "business_judgment_v1",
+      "note": "Highest prior AND highest confounding risk -- long-contract customers self-select for loyalty. Do not read the 15x churn gap as causal."
+    },
+    {
+      "offer_id": "OFF-CONTRACT-2Y",
+      "name": "2-year contract at 15% off",
+      "category": "contract_incentive",
+      "requires_levers": [
+        "MONTH_TO_MONTH"
+      ],
+      "excludes_levers": [],
+      "min_tenure_months": 6,
+      "cost_type": "pct_of_annual",
+      "discount_pct": 0.15,
+      "unit_cost": null,
+      "delta_prior": 0.18,
+      "delta_ci": [
+        0.06,
+        0.28
+      ],
+      "delta_source": "business_judgment_v1"
+    },
+    {
+      "offer_id": "OFF-TECHSUP-12",
+      "name": "Tech Support bundled free for 12 months",
+      "category": "service_bundle",
+      "requires_levers": [
+        "NO_TECH_SUPPORT"
+      ],
+      "excludes_levers": [
+        "NO_INTERNET"
+      ],
+      "min_tenure_months": 0,
+      "cost_type": "fixed",
+      "discount_pct": 0.0,
+      "unit_cost": 60.35,
+      "delta_prior": 0.08,
+      "delta_ci": [
+        0.02,
+        0.15
+      ],
+      "delta_source": "business_judgment_v1"
+    },
+    {
+      "offer_id": "OFF-SEC-12",
+      "name": "Online Security bundled free for 12 months",
+      "category": "service_bundle",
+      "requires_levers": [
+        "NO_ONLINE_SECURITY"
+      ],
+      "excludes_levers": [
+        "NO_INTERNET"
+      ],
+      "min_tenure_months": 0,
+      "cost_type": "fixed",
+      "discount_pct": 0.0,
+      "unit_cost": 60.16,
+      "delta_prior": 0.05,
+      "delta_ci": [
+        0.01,
+        0.11
+      ],
+      "delta_source": "business_judgment_v1"
+    },
+    {
+      "offer_id": "OFF-BUNDLE-ALL",
+      "name": "Tech Support + Online Security bundle, 12 months",
+      "category": "service_bundle",
+      "requires_levers": [
+        "NO_TECH_SUPPORT",
+        "NO_ONLINE_SECURITY"
+      ],
+      "excludes_levers": [
+        "NO_INTERNET"
+      ],
+      "min_tenure_months": 0,
+      "cost_type": "fixed",
+      "discount_pct": 0.0,
+      "unit_cost": 120.51,
+      "delta_prior": 0.14,
+      "delta_ci": [
+        0.05,
+        0.24
+      ],
+      "delta_source": "business_judgment_v1",
+      "note": "v3: Device Protection REMOVED from this bundle. Counterfactual re-scoring showed support+security+protection gives mean dP +0.1546 while support+security alone gives +0.1502 -- the third service adds 0.0044 for $60.24. Two services, same effect, one third cheaper."
+    },
+    {
+      "offer_id": "OFF-AUTOPAY",
+      "name": "Switch to autopay, $5/month credit for 12 months",
+      "category": "billing",
+      "requires_levers": [
+        "MANUAL_PAYMENT"
+      ],
+      "excludes_levers": [],
+      "min_tenure_months": 0,
+      "cost_type": "fixed",
+      "discount_pct": 0.0,
+      "unit_cost": 60.0,
+      "delta_prior": 0.04,
+      "delta_ci": [
+        0.0,
+        0.1
+      ],
+      "delta_source": "business_judgment_v1",
+      "note": "Electronic check is the 45.3% churn segment -- the largest single payment-method gap in the data."
+    }
+  ]
+}
