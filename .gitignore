@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+**/node_modules/
+.pnp
+.pnp.js
+
+# Build and distribution outputs
+dist/
+**/dist/
+build/
+**/build/
+out/
+
+# TypeScript and linter caches
+*.tsbuildinfo
+**/*.tsbuildinfo
+.eslintcache
+
+# Testing and coverage
+coverage/
+**/coverage/
+.vitest/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.*
+!.env.example
+**/.env
+**/.env.local
+**/.env.*.local
+**/.env.*
+!**/.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+venv/
+.venv/
+env/
+
+# Editor and IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
