@@ -5,6 +5,8 @@ import type {
   CatalogResponse,
   CustomerDetail,
   QueueResponse,
+  ScoreRequest,
+  ScoreResponse,
   SummaryResponse,
 } from '@/types/api'
 
@@ -30,9 +32,12 @@ export class ApiError extends Error {
   get fields() {
     return this.body.fields ?? []
   }
+  get requestId(): string {
+    return this.body.request_id
+  }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     ...init,
     headers: { 'Content-Type': 'application/json', ...(init?.headers ?? {}) },
@@ -61,6 +66,11 @@ export const api = {
   catalog: () => request<CatalogResponse>('/catalog'),
   act: (id: string, body: ActionRequest) =>
     request<ActionResponse>(`/customers/${encodeURIComponent(id)}/action`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  score: (body: ScoreRequest) =>
+    request<ScoreResponse>('/score', {
       method: 'POST',
       body: JSON.stringify(body),
     }),
