@@ -13,7 +13,12 @@ const TONE: Record<RiskBand, BadgeTone> = {
  * Colour is never the only carrier of the risk level — the band word is always
  * present. Roughly 1 in 12 men cannot reliably separate our high/critical reds.
  */
-export function RiskBadge({ band, p }: { band: RiskBand; p: number }) {
+export interface RiskBadgeProps {
+  band: RiskBand
+  p: number
+}
+
+export function RiskBadge({ band, p }: RiskBadgeProps) {
   return (
     <span className="inline-flex items-center gap-2">
       <span className="num text-sm font-semibold">{pct(p)}</span>

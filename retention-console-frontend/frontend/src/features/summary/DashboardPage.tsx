@@ -13,7 +13,7 @@ import { api } from '@/lib/api'
 import { qk } from '@/lib/queryClient'
 import { Card, StatTile } from '@/components/ui/Card'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { ErrorState } from '@/components/States'
+import { ErrorState } from '@/components/ErrorState'
 import { pct, usd, usdCompact } from '@/lib/format'
 
 export function DashboardPage() {
@@ -21,7 +21,7 @@ export function DashboardPage() {
     queryKey: qk.summary(),
     queryFn: api.summary,
   })
-  if (isPending) return <Skeleton className="h-96 w-full" />
+  if (isPending) return <Skeleton className="h-96 w-full" label="Loading dashboard" />
   if (error) return <ErrorState error={error} onRetry={() => void refetch()} />
 
   const funnel = [

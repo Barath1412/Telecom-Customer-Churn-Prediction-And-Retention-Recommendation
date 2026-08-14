@@ -1,7 +1,8 @@
 import { QueueTable } from './QueueTable'
 import { useQueue } from './useQueue'
 import { TableSkeleton } from '@/components/ui/Skeleton'
-import { EmptyState, ErrorState } from '@/components/States'
+import { EmptyState } from '@/components/EmptyState'
+import { ErrorState } from '@/components/ErrorState'
 import { StatTile } from '@/components/ui/Card'
 
 export function QueuePage() {
