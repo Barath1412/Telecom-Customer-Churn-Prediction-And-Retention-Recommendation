@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { SelectField, TextField } from '@/components/ui/Field'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { EmptyState, ErrorState } from '@/components/States'
+import { EmptyState } from '@/components/EmptyState'
+import { ErrorState } from '@/components/ErrorState'
 import { RiskBadge } from '@/components/RiskBadge'
 import { LeverChips } from '@/components/LeverChips'
 import { EVBreakdown } from '@/components/EVBreakdown'
@@ -39,7 +40,7 @@ export function CustomerPage() {
   const [note, setNote] = useState('')
   const [touched, setTouched] = useState(false)
 
-  if (isPending) return <Skeleton className="h-96 w-full" />
+  if (isPending) return <Skeleton className="h-96 w-full" label="Loading customer" />
   if (error) return <ErrorState error={error} onRetry={() => void refetch()} />
 
   const rec = data.recommendation

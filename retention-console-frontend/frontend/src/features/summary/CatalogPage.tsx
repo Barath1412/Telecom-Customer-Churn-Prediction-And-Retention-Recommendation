@@ -3,7 +3,7 @@ import { api } from '@/lib/api'
 import { qk } from '@/lib/queryClient'
 import { Card } from '@/components/ui/Card'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { ErrorState } from '@/components/States'
+import { ErrorState } from '@/components/ErrorState'
 import { deltaWithRange, pct, usd } from '@/lib/format'
 
 export function CatalogPage() {
@@ -11,7 +11,7 @@ export function CatalogPage() {
     queryKey: qk.catalog(),
     queryFn: api.catalog,
   })
-  if (isPending) return <Skeleton className="h-96 w-full" />
+  if (isPending) return <Skeleton className="h-96 w-full" label="Loading catalog" />
   if (error) return <ErrorState error={error} onRetry={() => void refetch()} />
 
   return (

@@ -1,6 +1,11 @@
 import type { Lever } from '@/types/api'
 
-export function LeverChips({ levers, max = 3 }: { levers: Lever[]; max?: number }) {
+export interface LeverChipsProps {
+  levers: Lever[]
+  max?: number
+}
+
+export function LeverChips({ levers, max = 3 }: LeverChipsProps) {
   const shown = levers.slice(0, max)
   const rest = levers.length - shown.length
   return (

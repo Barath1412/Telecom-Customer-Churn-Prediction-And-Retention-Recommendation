@@ -1,13 +1,14 @@
 import { QueueTable } from './QueueTable'
 import { useQueue } from './useQueue'
 import { TableSkeleton } from '@/components/ui/Skeleton'
-import { EmptyState, ErrorState } from '@/components/States'
+import { EmptyState } from '@/components/EmptyState'
+import { ErrorState } from '@/components/ErrorState'
 import { StatTile } from '@/components/ui/Card'
 
 export function QueuePage() {
   const { data, isPending, error, refetch } = useQueue(1)
 
-  if (isPending) return <TableSkeleton rows={10} />
+  if (isPending) return <TableSkeleton rows={10} label="Loading queue" />
   if (error) return <ErrorState error={error} onRetry={() => void refetch()} />
   if (data.items.length === 0)
     return (

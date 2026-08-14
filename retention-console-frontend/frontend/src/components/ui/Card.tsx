@@ -1,19 +1,21 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/cn'
 
+export interface CardProps {
+  title?: string
+  subtitle?: string
+  actions?: ReactNode
+  children: ReactNode
+  className?: string
+}
+
 export function Card({
   title,
   subtitle,
   actions,
   children,
   className,
-}: {
-  title?: string
-  subtitle?: string
-  actions?: ReactNode
-  children: ReactNode
-  className?: string
-}) {
+}: CardProps) {
   return (
     <section className={cn('rounded-lg border border-line bg-surface shadow-card', className)}>
       {(title || actions) && (
@@ -30,15 +32,17 @@ export function Card({
   )
 }
 
+export interface StatTileProps {
+  label: string
+  value: string
+  hint?: string
+}
+
 export function StatTile({
   label,
   value,
   hint,
-}: {
-  label: string
-  value: string
-  hint?: string
-}) {
+}: StatTileProps) {
   return (
     <div className="rounded-lg border border-line bg-surface px-4 py-3">
       <div className="num text-xl font-semibold leading-tight">{value}</div>
