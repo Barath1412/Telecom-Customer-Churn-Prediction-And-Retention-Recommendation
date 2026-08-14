@@ -1,0 +1,21 @@
+# Ignore dependencies anywhere in the project 
+**/node_modules/ 
+# Ignore build outputs 
+**/dist/ 
+**/build/
+# TypeScript cache 
+**/*.tsbuildinfo 
+# Environment files 
+.env 
+.env.*
+# Logs 
+npm-debug.log* 
+yarn-debug.log* 
+yarn-error.log* 
+pnpm-debug.log*
+
+# VS Code c
+.vscode/ 
+# OS files 
+.DS_Store 
+Thumbs.db

@@ -1,32 +1,93 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer base {
-  html {
-    -webkit-font-smoothing: antialiased;
-  }
-  body {
-    @apply bg-canvas text-ink font-sans text-base;
-  }
-  /* One focus style for the whole app. Never remove the outline; if a design
-     needs it hidden, the design is wrong. */
-  :focus-visible {
-    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-canvas;
-  }
-  /* Respect the user's motion preference globally rather than per-component. */
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
+@theme {
+  --color-canvas: #f7f7f5;
+  --color-surface: #fcfcfb;
+  --color-raised: #f0efec;
+  --color-line: #dedcd6;
+  --color-line-strong: #c2c0b8;
+  --color-ink: #0b0b0b;
+  --color-ink-2: #52514e;
+  --color-ink-3: #78776f;
+  --color-accent: #2a78d6;
+  --color-critical: #b3261e;
+  --color-high: #c05621;
+  --color-medium: #8a6d00;
+  --color-low: #2f6f3e;
+  --color-ok: #008300;
+  --color-warn: #eda100;
+  --color-danger: #e34948;
+
+  --font-sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --text-micro: 11px;
+  --text-micro--line-height: 15px;
+  --text-micro--letter-spacing: 0.06em;
+  --text-xs: 12px;
+  --text-xs--line-height: 17px;
+  --text-sm: 13px;
+  --text-sm--line-height: 19px;
+  --text-base: 15px;
+  --text-base--line-height: 23px;
+  --text-lg: 17px;
+  --text-lg--line-height: 25px;
+  --text-xl: 21px;
+  --text-xl--line-height: 28px;
+  --text-2xl: 27px;
+  --text-2xl--line-height: 33px;
+
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-md: 7px;
+  --radius-lg: 9px;
+
+  --shadow-card: 0 1px 2px rgba(11, 11, 11, 0.04);
+  --shadow-pop: 0 6px 24px rgba(11, 11, 11, 0.1);
+
+  --spacing-row: 44px;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+}
+
+/* One focus style for the whole app. Never remove the outline; if a design
+   needs it hidden, the design is wrong. */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-accent);
+}
+
+/* Respect the user's motion preference globally rather than per-component. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
-@layer components {
-  .num {
-    @apply font-mono tabular-nums;
-  }
+/* Tabular monospaced numbers — every number on screen lines up vertically. */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Standard 44px table row height for Module B/C queue table rows. */
+.h-row {
+  height: var(--spacing-row);
+}
+
+.min-h-row {
+  min-height: var(--spacing-row);
 }
