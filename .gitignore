@@ -11,10 +11,12 @@ build/
 **/build/
 out/
 
-# TypeScript and linter caches
+# TypeScript, Vite, and linter caches
 *.tsbuildinfo
 **/*.tsbuildinfo
 .eslintcache
+.vite/
+**/.vite/
 
 # Testing and coverage
 coverage/
