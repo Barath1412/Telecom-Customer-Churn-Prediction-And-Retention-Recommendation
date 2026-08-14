@@ -1,0 +1,2390 @@
+{
+  "run_id": "run_2026-08-13T02:00:00Z",
+  "capacity": 40,
+  "total_eligible": 743,
+  "returned": 40,
+  "page": 1,
+  "page_size": 40,
+  "items": [
+    {
+      "rank": 1,
+      "customer_id": "0295-PPHDO",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.99,
+        "risk_band": "critical",
+        "percentile": 100.0
+      },
+      "value": {
+        "cltv": 5962.0,
+        "monthly_charges": 95.45,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 705.82,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 2,
+      "customer_id": "2754-SDJRD",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.9227,
+        "risk_band": "critical",
+        "percentile": 97.5
+      },
+      "value": {
+        "cltv": 5157.0,
+        "monthly_charges": 100.15,
+        "tenure_months": 8,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 180.27,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 676.23,
+        "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 3,
+      "customer_id": "5178-LMXOP",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.9541,
+        "risk_band": "critical",
+        "percentile": 95.0
+      },
+      "value": {
+        "cltv": 5795.0,
+        "monthly_charges": 95.1,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 653.57,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 4,
+      "customer_id": "8161-QYMTT",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.864,
+        "risk_band": "critical",
+        "percentile": 92.5
+      },
+      "value": {
+        "cltv": 5259.0,
+        "monthly_charges": 94.1,
+        "tenure_months": 7,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 169.38,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 648.46,
+        "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 5,
+      "customer_id": "1628-BIZYP",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.904,
+        "risk_band": "critical",
+        "percentile": 90.0
+      },
+      "value": {
+        "cltv": 5754.0,
+        "monthly_charges": 85.0,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 607.75,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 6,
+      "customer_id": "7180-PISOG",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.931,
+        "risk_band": "critical",
+        "percentile": 87.5
+      },
+      "value": {
+        "cltv": 5554.0,
+        "monthly_charges": 74.5,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 603.4,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 7,
+      "customer_id": "3716-BDVDB",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.8862,
+        "risk_band": "critical",
+        "percentile": 85.0
+      },
+      "value": {
+        "cltv": 5795.0,
+        "monthly_charges": 69.1,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 598.45,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 8,
+      "customer_id": "7249-WBIYX",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.8107,
+        "risk_band": "critical",
+        "percentile": 82.5
+      },
+      "value": {
+        "cltv": 5146.0,
+        "monthly_charges": 85.6,
+        "tenure_months": 10,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 154.08,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 596.87,
+        "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 9,
+      "customer_id": "6651-AZVTJ",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.6834,
+        "risk_band": "high",
+        "percentile": 80.0
+      },
+      "value": {
+        "cltv": 6088.0,
+        "monthly_charges": 99.8,
+        "tenure_months": 49,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 179.64,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 569.23,
+        "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 10,
+      "customer_id": "2865-TCHJW",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.8434,
+        "risk_band": "critical",
+        "percentile": 77.5
+      },
+      "value": {
+        "cltv": 5808.0,
+        "monthly_charges": 89.2,
+        "tenure_months": 4,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 565.28,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 11,
+      "customer_id": "5357-TZHPP",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.6901,
+        "risk_band": "high",
+        "percentile": 75.0
+      },
+      "value": {
+        "cltv": 5745.0,
+        "monthly_charges": 84.4,
+        "tenure_months": 9,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 151.92,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 561.7,
+        "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 12,
+      "customer_id": "8699-ASUFO",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.7659,
+        "risk_band": "critical",
+        "percentile": 72.5
+      },
+      "value": {
+        "cltv": 4969.0,
+        "monthly_charges": 74.4,
+        "tenure_months": 7,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 133.92,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 551.08,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 13,
+      "customer_id": "8541-QVFKM",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.6524,
+        "risk_band": "high",
+        "percentile": 70.0
+      },
+      "value": {
+        "cltv": 5777.0,
+        "monthly_charges": 73.5,
+        "tenure_months": 8,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 132.3,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 546.06,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 14,
+      "customer_id": "1768-ZAIFU",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.8388,
+        "risk_band": "critical",
+        "percentile": 67.5
+      },
+      "value": {
+        "cltv": 5688.0,
+        "monthly_charges": 25.2,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-1Y",
+        "offer_name": "1-year contract at 10% off",
+        "cost": 30.24,
+        "delta_prior": 0.12,
+        "delta_ci": [
+          0.04,
+          0.2
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 542.31,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 15,
+      "customer_id": "6910-HADCM",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.8434,
+        "risk_band": "critical",
+        "percentile": 65.0
+      },
+      "value": {
+        "cltv": 5613.0,
+        "monthly_charges": 76.35,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 542.25,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 16,
+      "customer_id": "6372-RFVNS",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.9319,
+        "risk_band": "critical",
+        "percentile": 62.5
+      },
+      "value": {
+        "cltv": 5075.0,
+        "monthly_charges": 78.8,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 541.6,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 17,
+      "customer_id": "6023-YEBUP",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.8827,
+        "risk_band": "critical",
+        "percentile": 60.0
+      },
+      "value": {
+        "cltv": 5351.0,
+        "monthly_charges": 100.95,
+        "tenure_months": 3,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 540.75,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 18,
+      "customer_id": "3006-XIMLN",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.8834,
+        "risk_band": "critical",
+        "percentile": 57.5
+      },
+      "value": {
+        "cltv": 5299.0,
+        "monthly_charges": 94.2,
+        "tenure_months": 2,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 534.85,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 19,
+      "customer_id": "2545-EBUPK",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.9263,
+        "risk_band": "critical",
+        "percentile": 55.0
+      },
+      "value": {
+        "cltv": 5039.0,
+        "monthly_charges": 84.05,
+        "tenure_months": 2,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 532.93,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 20,
+      "customer_id": "4587-VVTOX",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.9541,
+        "risk_band": "critical",
+        "percentile": 52.5
+      },
+      "value": {
+        "cltv": 4163.0,
+        "monthly_charges": 105.3,
+        "tenure_months": 6,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 189.54,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 525.42,
+        "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 21,
+      "customer_id": "8622-ZLFKO",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.8834,
+        "risk_band": "critical",
+        "percentile": 50.0
+      },
+      "value": {
+        "cltv": 4297.0,
+        "monthly_charges": 90.75,
+        "tenure_months": 6,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 163.35,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 519.93,
+        "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 22,
+      "customer_id": "3585-ISXZP",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.7175,
+        "risk_band": "high",
+        "percentile": 47.5
+      },
+      "value": {
+        "cltv": 5335.0,
+        "monthly_charges": 95.65,
+        "tenure_months": 8,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 172.17,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 516.82,
+        "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 23,
+      "customer_id": "0970-ETWGE",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.9068,
+        "risk_band": "critical",
+        "percentile": 45.0
+      },
+      "value": {
+        "cltv": 4996.0,
+        "monthly_charges": 89.55,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 513.75,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 24,
+      "customer_id": "0679-IDSTG",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.99,
+        "risk_band": "critical",
+        "percentile": 42.5
+      },
+      "value": {
+        "cltv": 4568.0,
+        "monthly_charges": 69.25,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 512.61,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 25,
+      "customer_id": "6630-UJZMY",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.8612,
+        "risk_band": "critical",
+        "percentile": 40.0
+      },
+      "value": {
+        "cltv": 5251.0,
+        "monthly_charges": 83.25,
+        "tenure_months": 4,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 512.58,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 26,
+      "customer_id": "1867-BDVFH",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.7054,
+        "risk_band": "high",
+        "percentile": 37.5
+      },
+      "value": {
+        "cltv": 5075.0,
+        "monthly_charges": 74.35,
+        "tenure_months": 11,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 133.83,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 510.53,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 27,
+      "customer_id": "7056-IMHCC",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.6514,
+        "risk_band": "high",
+        "percentile": 35.0
+      },
+      "value": {
+        "cltv": 5884.0,
+        "monthly_charges": 101.9,
+        "tenure_months": 53,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 183.42,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 506.52,
+        "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 28,
+      "customer_id": "3030-YDNRM",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.6409,
+        "risk_band": "high",
+        "percentile": 32.5
+      },
+      "value": {
+        "cltv": 5514.0,
+        "monthly_charges": 74.85,
+        "tenure_months": 8,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 134.73,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 501.4,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 29,
+      "customer_id": "4735-ASGMA",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.7435,
+        "risk_band": "high",
+        "percentile": 30.0
+      },
+      "value": {
+        "cltv": 4997.0,
+        "monthly_charges": 98.35,
+        "tenure_months": 26,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 177.03,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 491.72,
+        "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 30,
+      "customer_id": "2514-GINMM",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.9719,
+        "risk_band": "critical",
+        "percentile": 27.5
+      },
+      "value": {
+        "cltv": 4490.0,
+        "monthly_charges": 79.5,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 490.42,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 31,
+      "customer_id": "4927-WWOOZ",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.8863,
+        "risk_band": "critical",
+        "percentile": 25.0
+      },
+      "value": {
+        "cltv": 4889.0,
+        "monthly_charges": 91.45,
+        "tenure_months": 2,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 486.1,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 32,
+      "customer_id": "9465-RWMXL",
+      "arm": "control",
+      "risk": {
+        "p_churn": 0.582,
+        "risk_band": "high",
+        "percentile": 22.5
+      },
+      "value": {
+        "cltv": 5949.0,
+        "monthly_charges": 78.9,
+        "tenure_months": 32,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 142.02,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 481.17,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 33,
+      "customer_id": "7409-KIUTL",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.794,
+        "risk_band": "critical",
+        "percentile": 20.0
+      },
+      "value": {
+        "cltv": 5345.0,
+        "monthly_charges": 71.0,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 473.68,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 34,
+      "customer_id": "3338-CVVEH",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.6304,
+        "risk_band": "high",
+        "percentile": 17.5
+      },
+      "value": {
+        "cltv": 5674.0,
+        "monthly_charges": 94.55,
+        "tenure_months": 12,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 170.19,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 473.6,
+        "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 35,
+      "customer_id": "8361-LTMKD",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.7211,
+        "risk_band": "high",
+        "percentile": 15.0
+      },
+      "value": {
+        "cltv": 5839.0,
+        "monthly_charges": 74.4,
+        "tenure_months": 4,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 468.96,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 36,
+      "customer_id": "4706-AXVKM",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.6719,
+        "risk_band": "high",
+        "percentile": 12.5
+      },
+      "value": {
+        "cltv": 5118.0,
+        "monthly_charges": 84.8,
+        "tenure_months": 11,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "HIGH_CHARGE_LOW_BUNDLE",
+          "label": "High bill, few add-ons"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 152.64,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 466.38,
+        "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 37,
+      "customer_id": "7363-QTBIW",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.7239,
+        "risk_band": "high",
+        "percentile": 10.0
+      },
+      "value": {
+        "cltv": 4654.0,
+        "monthly_charges": 79.75,
+        "tenure_months": 9,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 143.55,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 462.88,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 38,
+      "customer_id": "1320-HTRDR",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.6941,
+        "risk_band": "high",
+        "percentile": 7.5
+      },
+      "value": {
+        "cltv": 5948.0,
+        "monthly_charges": 75.5,
+        "tenure_months": 3,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 457.51,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 39,
+      "customer_id": "5196-SGOAK",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.8434,
+        "risk_band": "critical",
+        "percentile": 5.0
+      },
+      "value": {
+        "cltv": 4884.0,
+        "monthly_charges": 75.7,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 456.18,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 40,
+      "customer_id": "4301-VVZKA",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.6047,
+        "risk_band": "high",
+        "percentile": 2.5
+      },
+      "value": {
+        "cltv": 5432.0,
+        "monthly_charges": 75.4,
+        "tenure_months": 16,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-CONTRACT-2Y",
+        "offer_name": "2-year contract at 15% off",
+        "cost": 135.72,
+        "delta_prior": 0.18,
+        "delta_ci": [
+          0.06,
+          0.28
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 455.5,
+        "requires_approval": false
+      },
+      "status": "recommended"
+    }
+  ]
+}
