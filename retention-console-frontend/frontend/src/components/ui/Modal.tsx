@@ -11,6 +11,15 @@ const FOCUSABLE =
  * focus returns to whatever opened it. Background content is inert to screen
  * readers via aria-hidden on the app root (set by the caller in AppShell).
  */
+export interface ModalProps {
+  open: boolean
+  onClose: () => void
+  title: string
+  description?: string
+  children: ReactNode
+  footer?: ReactNode
+}
+
 export function Modal({
   open,
   onClose,
@@ -18,14 +27,7 @@ export function Modal({
   description,
   children,
   footer,
-}: {
-  open: boolean
-  onClose: () => void
-  title: string
-  description?: string
-  children: ReactNode
-  footer?: ReactNode
-}) {
+}: ModalProps) {
   const panel = useRef<HTMLDivElement>(null)
   const restoreTo = useRef<HTMLElement | null>(null)
 

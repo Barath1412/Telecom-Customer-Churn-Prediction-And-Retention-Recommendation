@@ -2,31 +2,23 @@ import type { ReactNode } from 'react'
 import { ApiError } from '@/lib/api'
 import { Button } from './ui/Button'
 
-export function EmptyState({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="rounded-lg border border-dashed border-line-strong px-6 py-10 text-center">
-      <p className="text-sm font-medium">{title}</p>
-      <p className="mx-auto mt-1 max-w-prose text-sm text-ink-3">{body}</p>
-    </div>
-  )
+export interface ErrorStateProps {
+  error: unknown
+  onRetry?: () => void
+  children?: ReactNode
 }
 
 /**
  * LEAKAGE_REJECTED gets its own treatment on purpose: it is not a user mistake,
  * it means an upstream system sent a quarantined field and somebody needs to be
- * told, not asked to try again.
+ * told, not asked to try again. Retrying a leakage rejection just repeats the
+ * leak, so the retry affordance must not exist for this code.
  */
-export function ErrorState({
-  error,
-  onRetry,
-  children,
-}: {
-  error: unknown
-  onRetry?: () => void
-  children?: ReactNode
-}) {
+export function ErrorState({ error, onRetry, children }: ErrorStateProps) {
   const api = error instanceof ApiError ? error : null
   const leakage = api?.code === 'LEAKAGE_REJECTED'
+  const requestId = api?.requestId || (api?.body && 'request_id' in api.body ? api.body.request_id : undefined)
+
   return (
     <div
       role="alert"
@@ -35,7 +27,7 @@ export function ErrorState({
       <p className="text-sm font-semibold">
         {leakage ? 'Blocked: quarantined field received' : 'Something went wrong'}
       </p>
-      <p className="mt-1 text-sm text-ink-2">{api?.message ?? 'Unexpected error.'}</p>
+      <p className="mt-1 text-sm text-ink-2">{api?.message ?? (error instanceof Error ? error.message : 'Unexpected error.')}</p>
       {api && api.fields.length > 0 && (
         <ul className="mt-2 space-y-0.5 text-xs text-ink-2">
           {api.fields.map((f) => (
@@ -45,9 +37,9 @@ export function ErrorState({
           ))}
         </ul>
       )}
-      {api && (
+      {requestId && (
         <p className="mt-2 text-micro text-ink-3">
-          Reference <span className="font-mono">{api.body.request_id}</span>
+          Reference <span className="font-mono">{requestId}</span>
         </p>
       )}
       {leakage ? (

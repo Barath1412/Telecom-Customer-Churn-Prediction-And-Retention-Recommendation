@@ -17,15 +17,17 @@ const TONE: Record<BadgeTone, string> = {
  * Outline, not filled. Filled pills at four severity levels turn a dense table
  * into a colour chart and stop conveying urgency.
  */
+export interface BadgeProps {
+  tone?: BadgeTone
+  children: ReactNode
+  className?: string
+}
+
 export function Badge({
   tone = 'neutral',
   children,
   className,
-}: {
-  tone?: BadgeTone
-  children: ReactNode
-  className?: string
-}) {
+}: BadgeProps) {
   return (
     <span
       className={cn(
