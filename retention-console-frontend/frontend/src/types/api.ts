@@ -42,6 +42,7 @@ export interface Recommendation {
   delta_prior: number
   /** [low, high]. Never show delta_prior without this. */
   delta_ci: [number, number]
+  /** null when unsourced. Print "unsourced" explicitly in the provenance line. */
   delta_source: string | null
   expected_value: number
   requires_approval: boolean
@@ -54,13 +55,24 @@ export interface Alternative {
   expected_value: number
 }
 
-export interface PolicyRule {
+export interface PolicyRuleBase {
   rule_id: string
-  state: RuleState
   detail: string
-  /** Present only when state === 'not_evaluable'. What data feed is missing. */
-  unmet_requirement?: string
 }
+
+export interface EvaluablePolicyRule extends PolicyRuleBase {
+  state: 'pass' | 'veto'
+  /** Absent when state is evaluable ('pass' | 'veto'). */
+  unmet_requirement?: never
+}
+
+export interface NotEvaluablePolicyRule extends PolicyRuleBase {
+  state: 'not_evaluable'
+  /** Present only when state === 'not_evaluable'. What data feed is missing. */
+  unmet_requirement: string
+}
+
+export type PolicyRule = EvaluablePolicyRule | NotEvaluablePolicyRule
 
 export interface Attribution {
   feature: string
@@ -79,6 +91,15 @@ export interface Narration {
   model: string
   validator_attempts: number
   generated_at: string
+}
+
+export interface Provenance {
+  model_name: string
+  model_version: string
+  model_roc_auc: number
+  catalog_version: number
+  kb_version: number
+  scored_at: string
 }
 
 export interface QueueItem {
@@ -100,14 +121,7 @@ export interface CustomerDetail extends QueueItem {
   evidence: { ids: string[]; count: number; approx_tokens: number }
   policy_trace: PolicyRule[]
   profile: Record<string, string | number>
-  provenance: {
-    model_name: string
-    model_version: string
-    model_roc_auc: number
-    catalog_version: number
-    kb_version: number
-    scored_at: string
-  }
+  provenance: Provenance
   narration: Narration | null
 }
 
@@ -197,11 +211,32 @@ export interface ActionResponse {
   status: 'recorded'
 }
 
+export type ScoreRequest = Record<string, string | number>
+
+export interface ScoreResponse {
+  p_churn: number
+  risk_band: RiskBand
+  levers: Lever[]
+  recommendation: Recommendation
+  policy_trace: PolicyRule[]
+  provenance: Provenance
+}
+
+export type ApiErrorCode = 'VALIDATION_ERROR' | 'LEAKAGE_REJECTED' | string
+
+export interface ApiErrorField {
+  field: string
+  message: string
+  received?: unknown
+}
+
+export interface ApiErrorDetail {
+  code: ApiErrorCode
+  message: string
+  fields?: ApiErrorField[]
+  request_id: string
+}
+
 export interface ApiErrorBody {
-  error: {
-    code: 'VALIDATION_ERROR' | 'LEAKAGE_REJECTED' | string
-    message: string
-    fields?: { field: string; message: string; received?: unknown }[]
-    request_id: string
-  }
+  error: ApiErrorDetail
 }
