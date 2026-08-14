@@ -7,13 +7,13 @@ import { StatTile } from '@/components/ui/Card'
 export function QueuePage() {
   const { data, isPending, error, refetch } = useQueue(1)
 
-  if (isPending) return <TableSkeleton rows={10} />
+  if (isPending) return <TableSkeleton rows={10} label="Loading queue" />
   if (error) return <ErrorState error={error} onRetry={() => void refetch()} />
   if (data.items.length === 0)
     return (
       <EmptyState
         title="Nothing in tonight's queue"
-        body="No customer produced a positive-value, policy-approved offer in this run."
+        body="No customer produced a positive-value, policy-approved offer."
       />
     )
 
