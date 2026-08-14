@@ -3,7 +3,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import { AppShell } from '@/components/AppShell'
 import { QueuePage } from '@/features/queue/QueuePage'
 import { CustomerPage } from '@/features/customer/CustomerPage'
-import { EmptyState } from '@/components/States'
+import { NotFound } from '@/components/NotFound'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 /**
@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
       { path: 'catalog', element: lazyRoute(<CatalogPage />) },
       {
         path: '*',
-        element: <EmptyState title="Page not found" body="Check the address and try again." />,
+        element: <NotFound />,
       },
     ],
   },

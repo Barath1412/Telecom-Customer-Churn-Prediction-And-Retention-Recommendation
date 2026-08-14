@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { useEffect } from 'react'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/cn'
 
 const NAV = [
@@ -8,8 +9,14 @@ const NAV = [
 ]
 
 export function AppShell() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    document.getElementById('main')?.focus()
+  }, [pathname])
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-canvas text-ink">
       {/* First tabbable element on every page. */}
       <a
         href="#main"
@@ -41,7 +48,7 @@ export function AppShell() {
         </div>
       </header>
 
-      <main id="main" className="mx-auto max-w-[1400px] px-4 py-6">
+      <main id="main" tabIndex={-1} className="mx-auto max-w-[1400px] px-4 py-6 outline-none">
         <Outlet />
       </main>
     </div>

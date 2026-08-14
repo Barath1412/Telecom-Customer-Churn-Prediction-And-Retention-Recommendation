@@ -1,7 +1,8 @@
 # Ignore dependencies anywhere in the project 
   **/node_modules/ 
 # Ignore build outputs 
-  **/dist/ **/build/
+  **/dist/ 
+  **/build/
 # TypeScript cache 
   **/*.tsbuildinfo 
 # Environment files 

@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'fe/*']
+  pull_request:
+
+jobs:
+  verify:
+    name: Build & Verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'retention-console-frontend/frontend/package-lock.json'
+
+      - name: Install dependencies
+        run: |
+          cd retention-console-frontend/frontend
+          npm ci
+
+      - name: Lint
+        run: |
+          cd retention-console-frontend/frontend
+          npm run lint
+
+      - name: Typecheck
+        run: |
+          cd retention-console-frontend/frontend
+          npm run typecheck
+
+      - name: Test (unit, component & axe accessibility)
+        run: |
+          cd retention-console-frontend/frontend
+          npm test
+
+      - name: Production Build & Bundle Size Check
+        run: |
+          cd retention-console-frontend/frontend
+          npm run build
+          MAIN_JS=$(ls dist/assets/index-*.js | head -n 1)
+          GZIP_SIZE=$(gzip -c "$MAIN_JS" | wc -c)
+          echo "Main bundle gzip size: ${GZIP_SIZE} bytes"
+          if [ "$GZIP_SIZE" -gt 153600 ]; then
+            echo "Error: Main bundle gzip exceeds 150 kB limit ($GZIP_SIZE bytes)"
+            exit 1
+          fi
