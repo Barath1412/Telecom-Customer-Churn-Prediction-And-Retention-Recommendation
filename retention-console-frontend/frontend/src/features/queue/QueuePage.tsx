@@ -14,7 +14,7 @@ export function QueuePage() {
     return (
       <EmptyState
         title="Nothing in tonight's queue"
-        body="No customer produced a positive-value, policy-approved offer in this run."
+        body="No customer produced a positive-value, policy-approved offer."
       />
     )
 

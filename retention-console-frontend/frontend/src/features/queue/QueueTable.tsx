@@ -1,6 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
-  createColumnHelper,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
@@ -8,67 +7,16 @@ import {
   type SortingState,
 } from '@tanstack/react-table'
 import { useNavigate } from 'react-router-dom'
-import { RiskBadge } from '@/components/RiskBadge'
-import { LeverChips } from '@/components/LeverChips'
-import { Badge } from '@/components/ui/Badge'
-import { usd } from '@/lib/format'
+import { columns } from './columns'
 import type { QueueItem } from '@/types/api'
 
-const col = createColumnHelper<QueueItem>()
+export interface QueueTableProps {
+  items: QueueItem[]
+}
 
-export function QueueTable({ items }: { items: QueueItem[] }) {
+export function QueueTable({ items }: QueueTableProps) {
   const navigate = useNavigate()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'ev', desc: true }])
-
-  const columns = useMemo(
-    () => [
-      col.accessor('rank', { header: '#', cell: (c) => <span className="num">{c.getValue()}</span> }),
-      col.accessor('customer_id', {
-        header: 'Customer',
-        cell: (c) => <span className="font-mono text-xs">{c.getValue()}</span>,
-      }),
-      col.accessor((r) => r.risk.p_churn, {
-        id: 'risk',
-        header: 'Risk',
-        cell: (c) => <RiskBadge band={c.row.original.risk.risk_band} p={c.getValue()} />,
-      }),
-      col.accessor((r) => r.value.cltv, {
-        id: 'cltv',
-        header: 'CLTV',
-        cell: (c) => <span className="num">{usd(c.getValue())}</span>,
-      }),
-      col.accessor((r) => r.recommendation.offer_name ?? '—', {
-        id: 'offer',
-        header: 'Recommended offer',
-        cell: (c) => <span className="text-xs">{c.getValue()}</span>,
-      }),
-      col.accessor((r) => r.recommendation.cost, {
-        id: 'cost',
-        header: 'Cost',
-        cell: (c) => <span className="num">{usd(c.getValue())}</span>,
-      }),
-      col.accessor((r) => r.recommendation.expected_value, {
-        id: 'ev',
-        header: 'Expected value',
-        cell: (c) => <span className="num font-semibold">{usd(c.getValue())}</span>,
-      }),
-      col.accessor('levers', {
-        header: 'Levers',
-        enableSorting: false,
-        cell: (c) => <LeverChips levers={c.getValue()} />,
-      }),
-      col.accessor('arm', {
-        header: 'Arm',
-        cell: (c) =>
-          c.getValue() === 'control' ? (
-            <Badge tone="warn">control — do not contact</Badge>
-          ) : (
-            <Badge>treatment</Badge>
-          ),
-      }),
-    ],
-    [],
-  )
 
   const table = useReactTable({
     data: items,
@@ -110,7 +58,7 @@ export function QueueTable({ items }: { items: QueueItem[] }) {
                       <button
                         type="button"
                         onClick={h.column.getToggleSortingHandler()}
-                        className="inline-flex items-center gap-1 rounded"
+                        className="inline-flex items-center gap-1 rounded focus-visible:ring-2"
                       >
                         {flexRender(h.column.columnDef.header, h.getContext())}
                         <span aria-hidden="true">
@@ -131,14 +79,14 @@ export function QueueTable({ items }: { items: QueueItem[] }) {
             <tr
               key={row.id}
               tabIndex={0}
-              onClick={() => navigate(`/customers/${row.original.customer_id}`)}
+              onClick={() => navigate(`/customers/${encodeURIComponent(row.original.customer_id)}`)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault()
-                  navigate(`/customers/${row.original.customer_id}`)
+                  navigate(`/customers/${encodeURIComponent(row.original.customer_id)}`)
                 }
               }}
-              className="cursor-pointer border-b border-line last:border-0 hover:bg-raised focus-visible:bg-raised"
+              className="h-11 cursor-pointer border-b border-line last:border-0 hover:bg-raised focus-visible:bg-raised"
             >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="px-3 py-2 align-middle">
