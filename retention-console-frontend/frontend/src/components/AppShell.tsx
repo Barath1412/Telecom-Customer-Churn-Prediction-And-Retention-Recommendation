@@ -6,6 +6,7 @@ const NAV = [
   { to: '/', label: 'Queue', end: true },
   { to: '/dashboard', label: 'Run summary', end: false },
   { to: '/catalog', label: 'Offer catalog', end: false },
+  { to: '/score', label: 'Manual scoring', end: false },
 ]
 
 export function AppShell() {
