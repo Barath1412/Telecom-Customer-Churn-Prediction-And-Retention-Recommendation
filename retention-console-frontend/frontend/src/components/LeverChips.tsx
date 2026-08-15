@@ -1,15 +1,17 @@
+import { cn } from '@/lib/cn'
 import type { Lever } from '@/types/api'
 
 export interface LeverChipsProps {
   levers: Lever[]
   max?: number
+  className?: string
 }
 
-export function LeverChips({ levers, max = 3 }: LeverChipsProps) {
+export function LeverChips({ levers, max = 3, className }: LeverChipsProps) {
   const shown = levers.slice(0, max)
   const rest = levers.length - shown.length
   return (
-    <ul className="flex flex-wrap gap-1">
+    <ul className={cn('flex gap-1', className ?? 'flex-wrap')}>
       {shown.map((l) => (
         <li
           key={l.code}

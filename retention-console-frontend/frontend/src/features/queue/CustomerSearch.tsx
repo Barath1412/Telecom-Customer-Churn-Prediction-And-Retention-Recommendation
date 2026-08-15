@@ -7,12 +7,14 @@ export interface CustomerSearchProps {
 
 export function CustomerSearch({ value, onChange }: CustomerSearchProps) {
   return (
-    <TextField
-      label="Find customer"
-      type="search"
-      placeholder="e.g. 0295-PPHDO"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
+    <div className="max-w-xs">
+      <TextField
+        label="Find customer"
+        type="search"
+        placeholder="e.g. 7590-VHVEG"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
   )
 }

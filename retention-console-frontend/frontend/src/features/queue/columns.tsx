@@ -18,7 +18,7 @@ export const columns = [
     cell: (c) => (
       <Link
         to={`/customers/${encodeURIComponent(c.getValue())}`}
-        className="font-mono text-xs hover:underline focus-visible:underline"
+        className="font-mono text-xs whitespace-nowrap hover:underline focus-visible:underline"
         onClick={(e) => e.stopPropagation()}
       >
         {c.getValue()}
@@ -41,9 +41,9 @@ export const columns = [
     cell: (c) => {
       const name = c.getValue()
       return name ? (
-        <span className="text-xs">{name}</span>
+        <span className="text-xs whitespace-nowrap">{name}</span>
       ) : (
-        <span className="text-xs text-ink-3">No eligible offer</span>
+        <span className="text-xs text-ink-3 whitespace-nowrap">No eligible offer</span>
       )
     },
   }),
@@ -58,11 +58,11 @@ export const columns = [
     cell: (c) => {
       const rec = c.row.original.recommendation
       return (
-        <div>
-          <div className="num font-semibold">{usd(c.getValue())}</div>
-          <div className="text-micro text-ink-3">
+        <div className="flex items-baseline gap-1.5 whitespace-nowrap">
+          <span className="num font-semibold">{usd(c.getValue())}</span>
+          <span className="text-micro text-ink-3">
             {deltaWithRange(rec.delta_prior, rec.delta_ci)} · {rec.delta_source ?? 'unsourced'}
-          </div>
+          </span>
         </div>
       )
     },
@@ -70,7 +70,13 @@ export const columns = [
   col.accessor('levers', {
     header: 'Levers',
     enableSorting: false,
-    cell: (c) => <LeverChips levers={c.getValue()} />,
+    cell: (c) => (
+      <LeverChips
+        levers={c.getValue()}
+        max={1}
+        className="flex-nowrap items-center whitespace-nowrap"
+      />
+    ),
   }),
   col.accessor('arm', {
     header: 'Arm',
