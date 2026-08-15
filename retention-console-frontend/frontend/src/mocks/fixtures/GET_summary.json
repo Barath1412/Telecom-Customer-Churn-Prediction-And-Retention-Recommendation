@@ -10,16 +10,17 @@
   },
   "funnel": {
     "scored": 1409,
-    "involuntary": 9,
-    "no_eligible_offer": 657,
-    "recommended": 743,
+    "recommended": 688,
+    "review_no_profitable_offer": 18,
+    "review_no_applicable_offer": 3,
+    "no_action_needed": 700,
     "queued_today": 40,
     "treatment": 39,
     "control": 1
   },
   "economics": {
     "offer_spend": 5298.12,
-    "expected_value": 20921.08
+    "expected_value": 20921.2
   },
   "offer_mix": {
     "OFF-BUNDLE-ALL": 20,

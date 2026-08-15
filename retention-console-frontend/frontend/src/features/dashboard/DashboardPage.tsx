@@ -22,8 +22,9 @@ export function DashboardPage() {
 
   const funnel = [
     { stage: 'Scored', n: data.funnel.scored },
-    { stage: 'Involuntary', n: data.funnel.involuntary },
-    { stage: 'No offer', n: data.funnel.no_eligible_offer },
+    { stage: 'No action needed', n: data.funnel.no_action_needed },
+    { stage: 'No profitable offer', n: data.funnel.review_no_profitable_offer },
+    { stage: 'No applicable offer', n: data.funnel.review_no_applicable_offer },
     { stage: 'Recommended', n: data.funnel.recommended },
     { stage: 'Queued', n: data.funnel.queued_today },
   ]

@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw'
 import queue from './fixtures/GET_queue.json'
 import detail from './fixtures/GET_customer_detail.json'
-import involuntary from './fixtures/GET_customer_involuntary.json'
+import noOffer from './fixtures/GET_customer_no_offer.json'
 import summary from './fixtures/GET_summary.json'
 import catalog from './fixtures/GET_catalog.json'
 import action from './fixtures/POST_action.json'
@@ -19,7 +19,7 @@ export const handlers = [
   http.get('/api/summary', () => HttpResponse.json(summary)),
   http.get('/api/catalog', () => HttpResponse.json(catalog)),
   http.get('/api/customers/:id', ({ params }) =>
-    HttpResponse.json(params.id === involuntary.customer_id ? involuntary : detail),
+    HttpResponse.json(params.id === noOffer.customer_id ? noOffer : detail),
   ),
   http.post('/api/customers/:id/action', () => HttpResponse.json(action.response_example)),
   http.post('/api/score', () => HttpResponse.json(score.response_example)),

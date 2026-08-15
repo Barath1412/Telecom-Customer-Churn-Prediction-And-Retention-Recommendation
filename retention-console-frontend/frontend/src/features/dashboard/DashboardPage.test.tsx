@@ -55,14 +55,17 @@ describe('DashboardPage', () => {
     expect(tableScope.getByRole('rowheader', { name: 'Scored' })).toBeInTheDocument()
     expect(tableScope.getByText('1,409')).toBeInTheDocument()
 
-    expect(tableScope.getByRole('rowheader', { name: 'Involuntary' })).toBeInTheDocument()
-    expect(tableScope.getByText('9')).toBeInTheDocument()
+    expect(tableScope.getByRole('rowheader', { name: 'No action needed' })).toBeInTheDocument()
+    expect(tableScope.getByText('700')).toBeInTheDocument()
 
-    expect(tableScope.getByRole('rowheader', { name: 'No offer' })).toBeInTheDocument()
-    expect(tableScope.getByText('657')).toBeInTheDocument()
+    expect(tableScope.getByRole('rowheader', { name: 'No profitable offer' })).toBeInTheDocument()
+    expect(tableScope.getByText('18')).toBeInTheDocument()
+
+    expect(tableScope.getByRole('rowheader', { name: 'No applicable offer' })).toBeInTheDocument()
+    expect(tableScope.getByText('3')).toBeInTheDocument()
 
     expect(tableScope.getByRole('rowheader', { name: 'Recommended' })).toBeInTheDocument()
-    expect(tableScope.getByText('743')).toBeInTheDocument()
+    expect(tableScope.getByText('688')).toBeInTheDocument()
 
     expect(tableScope.getByRole('rowheader', { name: 'Queued' })).toBeInTheDocument()
     expect(tableScope.getByText('40')).toBeInTheDocument()

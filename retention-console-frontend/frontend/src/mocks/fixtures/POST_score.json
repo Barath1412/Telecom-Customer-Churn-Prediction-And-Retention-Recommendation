@@ -100,11 +100,6 @@
         "unmet_requirement": "recommendation history for the current quarter"
       },
       {
-        "rule_id": "R6_INVOLUNTARY",
-        "state": "pass",
-        "detail": "voluntary churn risk"
-      },
-      {
         "rule_id": "R7_DISCOUNT_CAP",
         "state": "pass",
         "detail": "within 20% cap"

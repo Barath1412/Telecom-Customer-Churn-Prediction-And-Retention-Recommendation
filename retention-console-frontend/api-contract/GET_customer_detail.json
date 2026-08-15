@@ -132,7 +132,7 @@
       "POLICY-003"
     ],
     "count": 12,
-    "approx_tokens": 3088
+    "approx_tokens": 4235
   },
   "policy_trace": [
     {
@@ -161,11 +161,6 @@
       "state": "not_evaluable",
       "detail": "no offer-history feed connected",
       "unmet_requirement": "recommendation history for the current quarter"
-    },
-    {
-      "rule_id": "R6_INVOLUNTARY",
-      "state": "pass",
-      "detail": "voluntary churn risk"
     },
     {
       "rule_id": "R7_DISCOUNT_CAP",

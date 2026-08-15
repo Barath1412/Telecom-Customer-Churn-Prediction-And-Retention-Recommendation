@@ -11,9 +11,9 @@ const samplePassRule: PolicyRule = {
 }
 
 const sampleVetoRule: PolicyRule = {
-  rule_id: 'R6_INVOLUNTARY',
+  rule_id: 'R3_POSITIVE_EV',
   state: 'veto',
-  detail: 'account flagged involuntary (moved / deceased)',
+  detail: 'EV -7.50 (minimum 20.00)',
 }
 
 const sampleNotEvaluableRule: PolicyRule = {
@@ -76,7 +76,7 @@ describe('PolicyTrace', () => {
     const monoIds = Array.from(container.querySelectorAll('.font-mono')).map(
       (el) => el.textContent,
     )
-    expect(monoIds).toEqual(['R1_ELIGIBILITY', 'R6_INVOLUNTARY', 'R4_COOLDOWN'])
+    expect(monoIds).toEqual(['R1_ELIGIBILITY', 'R3_POSITIVE_EV', 'R4_COOLDOWN'])
   })
 
   it('passes axe accessibility checks standalone on a multi-state rule list with zero violations', async () => {

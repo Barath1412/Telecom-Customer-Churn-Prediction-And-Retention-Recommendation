@@ -1,7 +1,7 @@
 {
   "run_id": "run_2026-08-13T02:00:00Z",
   "capacity": 40,
-  "total_eligible": 743,
+  "total_eligible": 688,
   "returned": 40,
   "page": 1,
   "page_size": 40,
@@ -117,7 +117,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 676.23,
+        "expected_value": 676.24,
         "requires_approval": true
       },
       "status": "recommended"
@@ -181,7 +181,7 @@
           0.24
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 653.57,
+        "expected_value": 653.55,
         "requires_approval": false
       },
       "status": "recommended"
@@ -245,7 +245,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 648.46,
+        "expected_value": 648.5,
         "requires_approval": true
       },
       "status": "recommended"
@@ -309,7 +309,7 @@
           0.24
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 607.75,
+        "expected_value": 607.72,
         "requires_approval": false
       },
       "status": "recommended"
@@ -429,7 +429,7 @@
           0.24
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 598.45,
+        "expected_value": 598.46,
         "requires_approval": false
       },
       "status": "recommended"
@@ -493,7 +493,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 596.87,
+        "expected_value": 596.86,
         "requires_approval": true
       },
       "status": "recommended"
@@ -545,7 +545,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 569.23,
+        "expected_value": 569.26,
         "requires_approval": true
       },
       "status": "recommended"
@@ -665,7 +665,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 561.7,
+        "expected_value": 561.71,
         "requires_approval": true
       },
       "status": "recommended"
@@ -725,7 +725,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 551.08,
+        "expected_value": 551.12,
         "requires_approval": false
       },
       "status": "recommended"
@@ -785,7 +785,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 546.06,
+        "expected_value": 546.1,
         "requires_approval": false
       },
       "status": "recommended"
@@ -841,7 +841,7 @@
           0.2
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 542.31,
+        "expected_value": 542.29,
         "requires_approval": false
       },
       "status": "recommended"
@@ -1013,7 +1013,7 @@
           0.24
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 540.75,
+        "expected_value": 540.76,
         "requires_approval": false
       },
       "status": "recommended"
@@ -1137,7 +1137,7 @@
           0.24
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 532.93,
+        "expected_value": 532.96,
         "requires_approval": false
       },
       "status": "recommended"
@@ -1193,7 +1193,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 525.42,
+        "expected_value": 525.41,
         "requires_approval": true
       },
       "status": "recommended"
@@ -1257,7 +1257,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 519.93,
+        "expected_value": 519.92,
         "requires_approval": true
       },
       "status": "recommended"
@@ -1317,7 +1317,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 516.82,
+        "expected_value": 516.85,
         "requires_approval": true
       },
       "status": "recommended"
@@ -1381,7 +1381,7 @@
           0.24
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 513.75,
+        "expected_value": 513.74,
         "requires_approval": false
       },
       "status": "recommended"
@@ -1505,7 +1505,7 @@
           0.24
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 512.58,
+        "expected_value": 512.59,
         "requires_approval": false
       },
       "status": "recommended"
@@ -1565,7 +1565,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 510.53,
+        "expected_value": 510.55,
         "requires_approval": false
       },
       "status": "recommended"
@@ -1621,7 +1621,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 506.52,
+        "expected_value": 506.49,
         "requires_approval": true
       },
       "status": "recommended"
@@ -1681,7 +1681,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 501.4,
+        "expected_value": 501.38,
         "requires_approval": false
       },
       "status": "recommended"
@@ -1793,7 +1793,7 @@
           0.24
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 490.42,
+        "expected_value": 490.43,
         "requires_approval": false
       },
       "status": "recommended"
@@ -1853,7 +1853,7 @@
           0.24
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 486.1,
+        "expected_value": 486.13,
         "requires_approval": false
       },
       "status": "recommended"
@@ -1905,79 +1905,19 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 481.17,
+        "expected_value": 481.2,
         "requires_approval": false
       },
       "status": "recommended"
     },
     {
       "rank": 33,
-      "customer_id": "7409-KIUTL",
-      "arm": "treatment",
-      "risk": {
-        "p_churn": 0.794,
-        "risk_band": "critical",
-        "percentile": 20.0
-      },
-      "value": {
-        "cltv": 5345.0,
-        "monthly_charges": 71.0,
-        "tenure_months": 1,
-        "currency": "USD"
-      },
-      "levers": [
-        {
-          "code": "NO_TECH_SUPPORT",
-          "label": "No tech support add-on"
-        },
-        {
-          "code": "NO_ONLINE_SECURITY",
-          "label": "No online security add-on"
-        },
-        {
-          "code": "NO_DEVICE_PROTECTION",
-          "label": "No device protection"
-        },
-        {
-          "code": "MONTH_TO_MONTH",
-          "label": "Rolling month-to-month contract"
-        },
-        {
-          "code": "MANUAL_PAYMENT",
-          "label": "Manual payment method"
-        },
-        {
-          "code": "NEW_CUSTOMER",
-          "label": "Under 12 months tenure"
-        },
-        {
-          "code": "FIBER_PREMIUM",
-          "label": "Premium fiber plan"
-        }
-      ],
-      "recommendation": {
-        "offer_id": "OFF-BUNDLE-ALL",
-        "offer_name": "Tech Support + Online Security bundle, 12 months",
-        "cost": 120.51,
-        "delta_prior": 0.14,
-        "delta_ci": [
-          0.05,
-          0.24
-        ],
-        "delta_source": "business_judgment_v1",
-        "expected_value": 473.68,
-        "requires_approval": false
-      },
-      "status": "recommended"
-    },
-    {
-      "rank": 34,
       "customer_id": "3338-CVVEH",
       "arm": "treatment",
       "risk": {
         "p_churn": 0.6304,
         "risk_band": "high",
-        "percentile": 17.5
+        "percentile": 20.0
       },
       "value": {
         "cltv": 5674.0,
@@ -2025,8 +1965,68 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 473.6,
+        "expected_value": 473.65,
         "requires_approval": true
+      },
+      "status": "recommended"
+    },
+    {
+      "rank": 34,
+      "customer_id": "7409-KIUTL",
+      "arm": "treatment",
+      "risk": {
+        "p_churn": 0.794,
+        "risk_band": "critical",
+        "percentile": 17.5
+      },
+      "value": {
+        "cltv": 5345.0,
+        "monthly_charges": 71.0,
+        "tenure_months": 1,
+        "currency": "USD"
+      },
+      "levers": [
+        {
+          "code": "NO_TECH_SUPPORT",
+          "label": "No tech support add-on"
+        },
+        {
+          "code": "NO_ONLINE_SECURITY",
+          "label": "No online security add-on"
+        },
+        {
+          "code": "NO_DEVICE_PROTECTION",
+          "label": "No device protection"
+        },
+        {
+          "code": "MONTH_TO_MONTH",
+          "label": "Rolling month-to-month contract"
+        },
+        {
+          "code": "MANUAL_PAYMENT",
+          "label": "Manual payment method"
+        },
+        {
+          "code": "NEW_CUSTOMER",
+          "label": "Under 12 months tenure"
+        },
+        {
+          "code": "FIBER_PREMIUM",
+          "label": "Premium fiber plan"
+        }
+      ],
+      "recommendation": {
+        "offer_id": "OFF-BUNDLE-ALL",
+        "offer_name": "Tech Support + Online Security bundle, 12 months",
+        "cost": 120.51,
+        "delta_prior": 0.14,
+        "delta_ci": [
+          0.05,
+          0.24
+        ],
+        "delta_source": "business_judgment_v1",
+        "expected_value": 473.64,
+        "requires_approval": false
       },
       "status": "recommended"
     },
@@ -2145,7 +2145,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 466.38,
+        "expected_value": 466.34,
         "requires_approval": true
       },
       "status": "recommended"
@@ -2265,7 +2265,7 @@
           0.24
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 457.51,
+        "expected_value": 457.48,
         "requires_approval": false
       },
       "status": "recommended"
@@ -2325,7 +2325,7 @@
           0.24
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 456.18,
+        "expected_value": 456.17,
         "requires_approval": false
       },
       "status": "recommended"
@@ -2381,7 +2381,7 @@
           0.28
         ],
         "delta_source": "business_judgment_v1",
-        "expected_value": 455.5,
+        "expected_value": 455.53,
         "requires_approval": false
       },
       "status": "recommended"
