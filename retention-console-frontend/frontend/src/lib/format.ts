@@ -7,11 +7,6 @@
  * outside this file.
  */
 
-const money0 = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0,
-})
 const money2 = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
@@ -21,9 +16,6 @@ const money2 = new Intl.NumberFormat('en-US', {
 
 /** Costs and expected values an agent may quote. Always two decimals. */
 export const usd = (n: number): string => money2.format(n)
-
-/** Totals in dashboard tiles, where cents are noise. */
-export const usdCompact = (n: number): string => money0.format(n)
 
 /** Probabilities. One decimal — the model is not precise enough for two. */
 export const pct = (p: number, digits = 1): string =>

@@ -12,7 +12,7 @@ import { useSummary } from './useSummary'
 import { Card, StatTile } from '@/components/ui/Card'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ErrorState } from '@/components/ErrorState'
-import { pct, usd, usdCompact } from '@/lib/format'
+import { pct, usd } from '@/lib/format'
 
 export function DashboardPage() {
   const { data, isPending, error, refetch } = useSummary()
@@ -39,10 +39,10 @@ export function DashboardPage() {
             data.base_rate,
           )} base rate`}
         />
-        <StatTile label="Offer spend" value={usdCompact(data.economics.offer_spend)} />
+        <StatTile label="Offer spend" value={usd(data.economics.offer_spend)} />
         <StatTile
           label="Expected value"
-          value={usdCompact(data.economics.expected_value)}
+          value={usd(data.economics.expected_value)}
           hint="assumption-based — not measured"
         />
         <StatTile
