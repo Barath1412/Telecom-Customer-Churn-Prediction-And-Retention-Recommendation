@@ -16,6 +16,9 @@ const DashboardPage = lazy(() =>
 const CatalogPage = lazy(() =>
   import('@/features/summary/CatalogPage').then((m) => ({ default: m.CatalogPage })),
 )
+const ScorePage = lazy(() =>
+  import('@/features/score/ScorePage').then((m) => ({ default: m.ScorePage })),
+)
 
 const lazyRoute = (el: React.ReactNode) => (
   <Suspense fallback={<Skeleton className="h-96 w-full" />}>{el}</Suspense>
@@ -30,6 +33,7 @@ export const router = createBrowserRouter([
       { path: 'customers/:id', element: <CustomerPage /> },
       { path: 'dashboard', element: lazyRoute(<DashboardPage />) },
       { path: 'catalog', element: lazyRoute(<CatalogPage />) },
+      { path: 'score', element: lazyRoute(<ScorePage />) },
       {
         path: '*',
         element: <NotFound />,
