@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Modal } from '@/components/ui/Modal'
-import { SelectField, TextField } from '@/components/ui/Field'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/EmptyState'
 import { ErrorState } from '@/components/ErrorState'
@@ -13,57 +10,38 @@ import { EVBreakdown } from '@/components/EVBreakdown'
 import { PolicyTrace } from '@/components/PolicyTrace'
 import { NarrationPanel } from '@/components/NarrationPanel'
 import { months, usd } from '@/lib/format'
-import { useAct, useCustomer } from './useCustomer'
+import { useCustomer } from './useCustomer'
+import { useAct } from './useAct'
+import { ActionBar } from './ActionBar'
+import { ConfirmDialog } from './ConfirmDialog'
 import type { ActionKind } from '@/types/api'
 
-const ACTION_LABEL: Record<ActionKind, string> = {
-  approve: 'Approve recommendation',
-  edit: 'Change the offer',
-  reject: 'Reject recommendation',
+export interface CustomerPageProps {
+  customerId?: string
 }
 
-const REASONS = [
-  { value: 'already_contacted', label: 'Already contacted' },
-  { value: 'offer_not_suitable', label: 'Offer not suitable' },
-  { value: 'customer_unreachable', label: 'Customer unreachable' },
-  { value: 'account_closing', label: 'Account closing' },
-  { value: 'data_looks_wrong', label: 'Data looks wrong' },
-  { value: 'other', label: 'Other' },
-]
-
-export function CustomerPage() {
-  const { id = '' } = useParams()
+export function CustomerPage({ customerId }: CustomerPageProps = {}) {
+  const { id: paramId } = useParams()
+  const id = customerId ?? paramId ?? '0295-PPHDO'
   const { data, isPending, error, refetch } = useCustomer(id)
   const act = useAct(id)
-  const [pending, setPending] = useState<ActionKind | null>(null)
-  const [reason, setReason] = useState(REASONS[0]!.value)
-  const [note, setNote] = useState('')
-  const [touched, setTouched] = useState(false)
+  const [pendingAction, setPendingAction] = useState<ActionKind | null>(null)
 
-  if (isPending) return <Skeleton className="h-96 w-full" label="Loading customer" />
-  if (error) return <ErrorState error={error} onRetry={() => void refetch()} />
+  if (isPending) {
+    return <Skeleton className="h-96 w-full" label="Loading customer" />
+  }
+
+  if (error) {
+    return <ErrorState error={error} onRetry={() => void refetch()} />
+  }
 
   const rec = data.recommendation
-  const noteRequired = pending === 'reject' && reason === 'other'
-  const noteError = touched && noteRequired && note.trim().length < 5 ? 'Add a short note.' : undefined
-
-  const submit = () => {
-    setTouched(true)
-    if (noteError || !pending) return
-    act.mutate(
-      {
-        action: pending,
-        actor: 'agent_42',
-        reason_code: pending === 'reject' ? reason : null,
-        modified_offer_id: null,
-        note: note.trim() || null,
-      },
-      { onSuccess: () => setPending(null) },
-    )
-  }
+  const hasOffer = !!rec.offer_id
+  const hasAlternatives = data.alternatives.length > 0
 
   return (
     <div className="space-y-4 pb-24">
+      {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-mono text-lg font-semibold">{data.customer_id}</h1>
@@ -75,7 +53,9 @@ export function CustomerPage() {
         <RiskBadge band={data.risk.risk_band} p={data.risk.p_churn} />
       </div>
 
+      {/* 2-Column Responsive Layout (2/1 split at lg) */}
       <div className="grid gap-4 lg:grid-cols-3">
+        {/* Left Column (2 cols): Recommendation, Agent Note, Attribution */}
         <div className="space-y-4 lg:col-span-2">
           <Card title="Recommendation" subtitle={rec.offer_name ?? undefined}>
             {rec.offer_id ? (
@@ -110,83 +90,59 @@ export function CustomerPage() {
           </Card>
         </div>
 
-        <div className="space-y-4">
+        {/* Right Column (1 col): Levers, Policy trace, Provenance */}
+        <div className="space-y-4 lg:col-span-1">
           <Card title="Levers">
             <LeverChips levers={data.levers} max={99} />
           </Card>
+
           <Card title="Policy trace">
             <PolicyTrace rules={data.policy_trace} />
           </Card>
+
           <Card title="Provenance">
             <dl className="space-y-1 text-xs">
-              <Line k="Model" v={`${data.provenance.model_name} ${data.provenance.model_version}`} />
-              <Line k="Catalog" v={`v${data.provenance.catalog_version}`} />
-              <Line k="Knowledge base" v={`v${data.provenance.kb_version}`} />
-              <Line k="Evidence shown" v={`${data.evidence.count} documents`} />
+              <ProvenanceLine
+                k="Model"
+                v={`${data.provenance.model_name} ${data.provenance.model_version}`}
+              />
+              <ProvenanceLine k="Catalog" v={`v${data.provenance.catalog_version}`} />
+              <ProvenanceLine k="Knowledge base" v={`v${data.provenance.kb_version}`} />
+              <ProvenanceLine k="Evidence shown" v={`${data.evidence.count} documents`} />
             </dl>
           </Card>
         </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface">
-        <div className="mx-auto flex max-w-[1400px] flex-wrap gap-2 px-4 py-3">
-        <Button variant="primary" onClick={() => setPending('approve')} disabled={!rec.offer_id}>
-          Approve
-        </Button>
-        <Button onClick={() => setPending('edit')} disabled={!rec.offer_id}>
-          Edit offer
-        </Button>
-        <Button variant="danger" onClick={() => setPending('reject')}>
-          Reject
-        </Button>
-          {!rec.offer_id && (
-            <p className="self-center text-xs text-ink-3">
-              Approve is unavailable because no offer qualified.
-            </p>
-          )}
-        </div>
-      </div>
+      {/* Sticky Bottom Action Bar */}
+      <ActionBar
+        hasOffer={hasOffer}
+        hasAlternatives={hasAlternatives}
+        onApprove={() => setPendingAction('approve')}
+        onEdit={() => setPendingAction('edit')}
+        onReject={() => setPendingAction('reject')}
+      />
 
-      <Modal
-        open={pending !== null}
-        onClose={() => setPending(null)}
-        title={pending ? ACTION_LABEL[pending] : ''}
-        description={`This writes an audit record against ${data.customer_id}. It cannot be undone.`}
-        footer={
-          <>
-            <Button onClick={() => setPending(null)}>Cancel</Button>
-            <Button variant="primary" loading={act.isPending} onClick={submit}>
-              Confirm
-            </Button>
-          </>
-        }
-      >
-        <div className="space-y-3">
-          {pending === 'reject' && (
-            <SelectField
-              label="Reason"
-              options={REASONS}
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              required
-            />
-          )}
-          <TextField
-            label="Note"
-            hint="Stored in the audit log."
-            required={noteRequired}
-            error={noteError}
-            value={note}
-            onBlur={() => setTouched(true)}
-            onChange={(e) => setNote(e.target.value)}
-          />
-        </div>
-      </Modal>
+      {/* Audit Confirmation Dialog */}
+      <ConfirmDialog
+        open={pendingAction !== null}
+        onClose={() => setPendingAction(null)}
+        customerId={data.customer_id}
+        action={pendingAction}
+        alternatives={data.alternatives}
+        loading={act.isPending}
+        serverError={act.error}
+        onSubmit={(payload) => {
+          act.mutate(payload, {
+            onSuccess: () => setPendingAction(null),
+          })
+        }}
+      />
     </div>
   )
 }
 
-function Line({ k, v }: { k: string; v: string }) {
+function ProvenanceLine({ k, v }: { k: string; v: string }) {
   return (
     <div className="flex justify-between gap-3">
       <dt className="text-ink-3">{k}</dt>
