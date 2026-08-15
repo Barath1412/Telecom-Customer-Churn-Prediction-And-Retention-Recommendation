@@ -32,10 +32,10 @@ describe('ApiError and api client', () => {
     expect(res.policy_trace.length).toBeGreaterThan(0)
   })
 
-  it('fetches involuntary customer detail via api.customer', async () => {
-    const res = await api.customer('9254-RBFON')
-    expect(res.customer_id).toBe('9254-RBFON')
-    expect(res.status).toBe('involuntary_routed_to_account_ops')
+  it('fetches a no-offer customer detail via api.customer', async () => {
+    const res = await api.customer('5461-QKNTN')
+    expect(res.customer_id).toBe('5461-QKNTN')
+    expect(res.status).toBe('review_no_profitable_offer')
   })
 
   it('fetches summary data via api.summary', async () => {

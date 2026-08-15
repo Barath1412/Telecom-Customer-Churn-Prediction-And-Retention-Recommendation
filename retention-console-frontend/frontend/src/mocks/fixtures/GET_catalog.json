@@ -6,7 +6,8 @@
     "max_discount_pct": 0.2,
     "cooldown_days": 90,
     "max_offers_per_quarter": 1,
-    "approval_required_above_cost": 150.0
+    "approval_required_above_cost": 150.0,
+    "min_expected_value_usd": 20.0
   },
   "offers": [
     {

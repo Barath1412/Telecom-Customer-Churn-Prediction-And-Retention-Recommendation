@@ -8,6 +8,22 @@
         "message": "quarantined: model-output leak"
       }
     ],
+    "quarantined_fields": [
+      "CLTV",
+      "Churn Label",
+      "Churn Reason",
+      "Churn Score",
+      "Churn Value",
+      "City",
+      "Count",
+      "Country",
+      "CustomerID",
+      "Lat Long",
+      "Latitude",
+      "Longitude",
+      "State",
+      "Zip Code"
+    ],
     "request_id": "req_01J8XYZ"
   }
 }

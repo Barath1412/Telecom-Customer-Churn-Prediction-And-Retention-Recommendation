@@ -6,7 +6,7 @@ import { CustomerPage } from './CustomerPage'
 import { server } from '@/mocks/server'
 import { renderApp, screen, waitFor } from '@/test/utils'
 import detail from '@/mocks/fixtures/GET_customer_detail.json'
-import involuntary from '@/mocks/fixtures/GET_customer_involuntary.json'
+import noOffer from '@/mocks/fixtures/GET_customer_no_offer.json'
 import actionFixture from '@/mocks/fixtures/POST_action.json'
 
 describe('CustomerPage', () => {
@@ -45,9 +45,9 @@ describe('CustomerPage', () => {
     expect(screen.getByRole('button', { name: 'Reject' })).toBeEnabled()
   })
 
-  it('renders involuntary customer fixture with no-offer empty state', async () => {
-    renderApp(<CustomerPage customerId={involuntary.customer_id} />)
-    await waitFor(() => expect(screen.getByText(involuntary.customer_id)).toBeInTheDocument())
+  it('renders customer with no qualifying offer fixture with no-offer empty state', async () => {
+    renderApp(<CustomerPage customerId={noOffer.customer_id} />)
+    await waitFor(() => expect(screen.getByText(noOffer.customer_id)).toBeInTheDocument())
 
     // Empty state for recommendation
     expect(screen.getByText('No qualifying offer')).toBeInTheDocument()

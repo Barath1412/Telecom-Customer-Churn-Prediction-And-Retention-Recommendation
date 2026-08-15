@@ -13,8 +13,9 @@ export type RiskBand = 'critical' | 'high' | 'medium' | 'low'
 export type RuleState = 'pass' | 'veto' | 'not_evaluable'
 export type QueueStatus =
   | 'recommended'
-  | 'no_eligible_offer'
-  | 'involuntary_routed_to_account_ops'
+  | 'review_no_profitable_offer'
+  | 'review_no_applicable_offer'
+  | 'no_action_needed'
 
 export interface Lever {
   code: string
@@ -141,9 +142,10 @@ export interface SummaryResponse {
   model: { name: string; version: string; roc_auc: number; pr_auc: number; brier: number }
   funnel: {
     scored: number
-    involuntary: number
-    no_eligible_offer: number
     recommended: number
+    review_no_profitable_offer: number
+    review_no_applicable_offer: number
+    no_action_needed: number
     queued_today: number
     treatment: number
     control: number
@@ -176,6 +178,7 @@ export interface Offer {
   delta_prior: number
   delta_ci: [number, number]
   delta_source: string
+  note: string
 }
 
 export interface CatalogResponse {
@@ -187,6 +190,7 @@ export interface CatalogResponse {
     cooldown_days: number
     max_offers_per_quarter: number
     approval_required_above_cost: number
+    min_expected_value_usd: number
   }
   offers: Offer[]
 }
