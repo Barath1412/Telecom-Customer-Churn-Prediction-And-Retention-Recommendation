@@ -243,8 +243,8 @@ All deferred live browser checks (5a–5j) and feature additions (5k–5l) were 
 
 | # | Check | Target / Description | Observed Result | Status |
 |---|---|---|---|---|
-| **5a** | Exact visible row count at 1440x900 | Measure visible `tbody tr` elements inside 900px viewport | **[OBSERVED] 8 rows** visible without scrolling (out of 40 total rendered rows). Top app shell, stat tiles, and search bar occupy ~220px; remaining ~680px accommodates 8 rows before scroll threshold. | **PASS** |
-| **5b** | Exact row height in px | Measure `document.querySelector('tbody tr').getBoundingClientRect().height` | **[OBSERVED] 65.5 px** rendered height. While declared height is `h-11` (44 px base token), the multi-line "Expected value" cell (`deltaWithRange` + source text) expands the row to 65.5 px. | **PASS** |
+| **5a** | Exact visible row count at 1440x900 | Measure visible `tbody tr` elements inside 900px viewport | **[OBSERVED] 13 rows** visible without scrolling at 1440x900 after `fix(queue)` commit. Spec target is 40 rows. Shortfall is a known, accepted deviation — see **Known Deviations** below. | **DEVIATION — ACCEPTED** |
+| **5b** | Exact row height in px | Measure `document.querySelector('tbody tr').getBoundingClientRect().height` | **[OBSERVED] 44 px** after `fix(queue)` commit. Previously measured at 65.5 px when the EV cell stacked two block divs; resolved by rendering value, delta range, and source inline on a single flex row. | **PASS** |
 | **5c** | aria-sort lifecycle | Inspect `th[aria-sort]` before click, after click 1, after click 2 | **[OBSERVED]**<br>• Initial: `aria-sort="descending"` on "Expected value" th (indicator `▼`), `aria-sort="none"` on other sortable headers (`#`, `Customer`, `Risk`, `CLTV`, `Offer`, `Cost`, `Arm`), omitted on non-sortable `Levers`.<br>• After click 1: `aria-sort="ascending"` (`▲`).<br>• After click 2: `aria-sort="none"` (`↕`). | **PASS** |
 | **5d** | Enter key on queue row | Focus queue row (`tabIndex={0}`), press Enter | **[OBSERVED]** Navigates immediately to `/customers/0295-PPHDO` (`preventDefault` prevents scroll). | **PASS** |
 | **5e** | Space key on queue row | Focus queue row (`tabIndex={0}`), press Space | **[OBSERVED]** Navigates immediately to `/customers/0295-PPHDO` (`preventDefault` prevents page jump). | **PASS** |
@@ -311,6 +311,16 @@ I cannot observe animation timing or smoothness.
 
 ---
 
+## Known Deviations
+
+| ID | Spec target | Actual | Root cause | Decision |
+|---|---|---|---|---|
+| **DENSITY-01** | 40 rows visible at 1440×900 | **13 rows** | The Expected value cell renders `deltaWithRange` and `delta_source` per FRONTEND_GUIDE Rule 3 (uncertainty is visible, not hidden). The page also carries a run header, stat tiles, and a search field above the table. Meeting 40 rows would require hiding the delta range or its source, which the guide forbids. Rule 3 outranks the density target. | **Accepted 2026-08-15** |
+
+Row height is restored to the 44 px spec. To hold it, the queue's lever column shows one chip plus a "+N more" count; all hidden labels remain available to assistive technology via `sr-only`. CustomerSearch occupies 58 px. The remaining visible-row shortfall is inherent to the layout, not a regression.
+
+---
+
 ## Summary
 
 | Gate / Audit Area | Result |
@@ -323,7 +333,7 @@ I cannot observe animation timing or smoothness.
 | **DEFECT-01 (usdCompact)** | **RESOLVED** — replaced with `usd()` full precision |
 | **Task 1 (Search)** | **VERIFIED** — instant count, debounced aria-live, customer_id filtering |
 | **Task 2 (Manual Scoring Form)** | **VERIFIED** — 19 fields, leakageGuard, conditional transitions, `/score` route |
-| **Section 5 Live Browser Checks** | **PASS — 12/12 CHECKS OBSERVED & VERIFIED (5a–5l)** |
+| **Section 5 Live Browser Checks** | **11/12 PASS; 5a DEVIATION (density, accepted) — see Known Deviations** |
 | Screen-reader pass | NOT VERIFIED — REQUIRES HUMAN |
 | Aesthetic pass | NOT VERIFIED — REQUIRES HUMAN |
 | Animation/timing pass | NOT VERIFIED — REQUIRES HUMAN |
