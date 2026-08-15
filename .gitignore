@@ -94,6 +94,3 @@ ENV/
 ehthumbs.db
 Thumbs.db
 desktop.ini
-# Audit & QA Reports
-FRONTEND_AUDIT_REPORT.md
-**/FRONTEND_AUDIT_REPORT.md
