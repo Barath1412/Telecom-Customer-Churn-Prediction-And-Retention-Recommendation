@@ -82,4 +82,80 @@ describe('QueuePage', () => {
     const results = await axe(container)
     expect(results.violations).toEqual([])
   })
+
+  describe('CustomerSearch — client-side filtering', () => {
+    it('typing a partial id filters the visible rows', async () => {
+      const user = userEvent.setup()
+      renderApp(<QueuePage />)
+      await waitFor(() => expect(screen.getByRole('table')).toBeInTheDocument())
+
+      const input = screen.getByRole('searchbox', { name: /find customer/i })
+      await user.type(input, '0295')
+
+      // Only the matching customer ID link should remain
+      await waitFor(() => {
+        const links = screen
+          .getAllByRole('link')
+          .filter((l) => /^\w{4}-/.test(l.textContent ?? ''))
+        expect(links.length).toBeGreaterThan(0)
+        links.forEach((link) => {
+          expect(link.textContent?.toLowerCase()).toContain('0295')
+        })
+      })
+    })
+
+    it('a non-matching query renders the empty state, not a blank table', async () => {
+      const user = userEvent.setup()
+      const { container } = renderApp(<QueuePage />)
+      await waitFor(() => expect(screen.getByRole('table')).toBeInTheDocument())
+
+      const input = screen.getByRole('searchbox', { name: /find customer/i })
+      await user.type(input, 'XXXXXXXX')
+
+      await waitFor(() => expect(screen.queryByRole('table')).not.toBeInTheDocument())
+      expect(screen.getByText(/no customer id contains/i)).toBeInTheDocument()
+
+      // The role="status" region must remain in the DOM (never unmounts) so that
+      // the "Showing 0 of 40" count change is announced even when the table is hidden.
+      expect(screen.getByRole('status')).toBeInTheDocument()
+
+      // axe on the filtered-to-zero state (complements the existing normal-state axe test)
+      const results = await axe(container)
+      expect(results.violations).toEqual([])
+    })
+
+    it('clearing the input restores the full row count', async () => {
+      const user = userEvent.setup()
+      renderApp(<QueuePage />)
+      await waitFor(() => expect(screen.getByRole('table')).toBeInTheDocument())
+
+      const totalRows = screen.getAllByRole('row').length
+      const input = screen.getByRole('searchbox', { name: /find customer/i })
+      await user.type(input, '0295')
+      await waitFor(() => expect(screen.getAllByRole('row').length).toBeLessThan(totalRows))
+
+      await user.clear(input)
+      await waitFor(() => expect(screen.getAllByRole('row').length).toBe(totalRows))
+    })
+
+    it('sorting still works while a filter is active', async () => {
+      const user = userEvent.setup()
+      renderApp(<QueuePage />)
+      await waitFor(() => expect(screen.getByRole('table')).toBeInTheDocument())
+
+      // Apply filter first
+      const input = screen.getByRole('searchbox', { name: /find customer/i })
+      await user.type(input, '0295')
+      await waitFor(() => expect(screen.getByRole('table')).toBeInTheDocument())
+
+      // EV column starts sorted descending
+      const evHeader = screen.getByRole('columnheader', { name: /expected value/i })
+      expect(evHeader).toHaveAttribute('aria-sort', 'descending')
+
+      // Click the sort button within the EV header — toggle to ascending
+      const sortBtn = screen.getByRole('button', { name: /expected value/i })
+      await user.click(sortBtn)
+      await waitFor(() => expect(evHeader).toHaveAttribute('aria-sort', 'ascending'))
+    })
+  })
 })

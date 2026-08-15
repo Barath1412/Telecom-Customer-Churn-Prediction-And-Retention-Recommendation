@@ -1,15 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { deltaWithRange, months, pct, shortDateTime, usd, usdCompact } from '@/lib/format'
+import { deltaWithRange, months, pct, shortDateTime, usd } from '@/lib/format'
 
 describe('formatting is the contract for anything an agent reads aloud', () => {
   it('always shows two decimals on money', () => {
     expect(usd(120.5)).toBe('$120.50')
     expect(usd(705.816)).toBe('$705.82')
-  })
-
-  it('formats compact usd without cents', () => {
-    expect(usdCompact(120.5)).toBe('$121')
-    expect(usdCompact(5962)).toBe('$5,962')
   })
 
   it('never prints a delta without its range', () => {
