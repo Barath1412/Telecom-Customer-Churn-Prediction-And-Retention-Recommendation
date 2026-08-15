@@ -66,12 +66,14 @@ export function QueueTable({ items, globalFilter, onClearFilter }: QueueTablePro
 
   return (
     <div className="space-y-3">
-      {/* Visible count — updates instantly so the agent sees feedback immediately */}
-      <p className="text-xs text-ink-3">{`Showing ${filteredCount} of ${items.length}`}</p>
+      {/* Visible count — updates instantly so the agent sees feedback immediately.
+          aria-hidden because the debounced role="status" region below is the
+          designated announcement path; without this the count is read twice. */}
+      <p className="text-xs text-ink-3" aria-hidden="true">{`Showing ${filteredCount} of ${items.length}`}</p>
 
-      {/* Debounced aria-live region — always rendered (never unmounts) so count
+      {/* Debounced role="status" region — always rendered (never unmounts) so count
           changes are announced even when the table is replaced by the empty state. */}
-      <p aria-live="polite" className="sr-only" data-testid="count-announce">
+      <p role="status" aria-live="polite" className="sr-only">
         {`Showing ${announcedCount} of ${items.length}`}
       </p>
 

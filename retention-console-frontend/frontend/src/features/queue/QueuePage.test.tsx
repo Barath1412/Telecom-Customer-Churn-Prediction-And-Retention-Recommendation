@@ -115,9 +115,9 @@ describe('QueuePage', () => {
       await waitFor(() => expect(screen.queryByRole('table')).not.toBeInTheDocument())
       expect(screen.getByText(/no customer id contains/i)).toBeInTheDocument()
 
-      // The aria-live region must remain in the DOM (never unmounts) so that the
-      // "Showing 0 of 40" count change is announced even when the table is hidden.
-      expect(screen.getByTestId('count-announce')).toBeInTheDocument()
+      // The role="status" region must remain in the DOM (never unmounts) so that
+      // the "Showing 0 of 40" count change is announced even when the table is hidden.
+      expect(screen.getByRole('status')).toBeInTheDocument()
 
       // axe on the filtered-to-zero state (complements the existing normal-state axe test)
       const results = await axe(container)
