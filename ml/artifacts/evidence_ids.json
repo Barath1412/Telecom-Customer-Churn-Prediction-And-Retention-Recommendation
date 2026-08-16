@@ -1,0 +1,583 @@
+{
+  "kb_version": 4,
+  "n_documents": 72,
+  "n_serve_time": 19,
+  "documents": {
+    "HIST-REASON-001": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 151
+    },
+    "ASSOC-002": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 280
+    },
+    "HIST-REASON-003": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Competitor pressure",
+      "approx_tokens": 156
+    },
+    "ASSOC-004": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Competitor pressure",
+      "approx_tokens": 287
+    },
+    "HIST-REASON-005": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Competitor pressure",
+      "approx_tokens": 150
+    },
+    "ASSOC-006": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Competitor pressure",
+      "approx_tokens": 287
+    },
+    "HIST-REASON-007": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Uncertain",
+      "approx_tokens": 138
+    },
+    "ASSOC-008": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Uncertain",
+      "approx_tokens": 270
+    },
+    "HIST-REASON-009": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Competitor pressure",
+      "approx_tokens": 149
+    },
+    "ASSOC-010": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Competitor pressure",
+      "approx_tokens": 281
+    },
+    "HIST-REASON-011": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 152
+    },
+    "ASSOC-012": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 287
+    },
+    "HIST-REASON-013": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Competitor pressure",
+      "approx_tokens": 150
+    },
+    "ASSOC-014": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Competitor pressure",
+      "approx_tokens": 284
+    },
+    "HIST-REASON-015": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Network / performance",
+      "approx_tokens": 145
+    },
+    "ASSOC-016": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Network / performance",
+      "approx_tokens": 281
+    },
+    "HIST-REASON-017": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Product / service fit",
+      "approx_tokens": 148
+    },
+    "ASSOC-018": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Product / service fit",
+      "approx_tokens": 279
+    },
+    "HIST-REASON-019": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Pricing & charges",
+      "approx_tokens": 141
+    },
+    "ASSOC-020": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Pricing & charges",
+      "approx_tokens": 270
+    },
+    "HIST-REASON-021": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 149
+    },
+    "ASSOC-022": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 283
+    },
+    "HIST-REASON-023": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 153
+    },
+    "ASSOC-024": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 286
+    },
+    "HIST-REASON-025": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Pricing & charges",
+      "approx_tokens": 144
+    },
+    "ASSOC-026": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Pricing & charges",
+      "approx_tokens": 282
+    },
+    "HIST-REASON-027": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Life event (involuntary)",
+      "approx_tokens": 139
+    },
+    "ASSOC-028": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Life event (involuntary)",
+      "approx_tokens": 268
+    },
+    "HIST-REASON-029": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Product / service fit",
+      "approx_tokens": 148
+    },
+    "ASSOC-030": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Product / service fit",
+      "approx_tokens": 284
+    },
+    "HIST-REASON-031": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Network / performance",
+      "approx_tokens": 156
+    },
+    "ASSOC-032": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Network / performance",
+      "approx_tokens": 292
+    },
+    "HIST-REASON-033": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Pricing & charges",
+      "approx_tokens": 145
+    },
+    "ASSOC-034": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Pricing & charges",
+      "approx_tokens": 284
+    },
+    "HIST-REASON-035": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 153
+    },
+    "ASSOC-036": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 294
+    },
+    "HIST-REASON-037": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 153
+    },
+    "ASSOC-038": {
+      "type": "ASSOC",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 283
+    },
+    "HIST-REASON-039": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Life event (involuntary)",
+      "approx_tokens": 140
+    },
+    "HIST-THEME-040": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Competitor pressure",
+      "approx_tokens": 131
+    },
+    "HIST-THEME-041": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 137
+    },
+    "HIST-THEME-042": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Pricing & charges",
+      "approx_tokens": 132
+    },
+    "HIST-THEME-043": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Uncertain",
+      "approx_tokens": 126
+    },
+    "HIST-THEME-044": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Network / performance",
+      "approx_tokens": 127
+    },
+    "HIST-THEME-045": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Product / service fit",
+      "approx_tokens": 130
+    },
+    "HIST-THEME-046": {
+      "type": "HIST",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Life event (involuntary)",
+      "approx_tokens": 130
+    },
+    "DELTA-047": {
+      "type": "DELTA",
+      "applies_to": "this_customer_observable",
+      "lever": null,
+      "offer": "OFF-CONTRACT-1Y",
+      "theme": null,
+      "approx_tokens": 271
+    },
+    "DELTA-048": {
+      "type": "DELTA",
+      "applies_to": "this_customer_observable",
+      "lever": null,
+      "offer": "OFF-CONTRACT-2Y",
+      "theme": null,
+      "approx_tokens": 271
+    },
+    "DELTA-049": {
+      "type": "DELTA",
+      "applies_to": "this_customer_observable",
+      "lever": null,
+      "offer": "OFF-TECHSUP-12",
+      "theme": null,
+      "approx_tokens": 272
+    },
+    "DELTA-050": {
+      "type": "DELTA",
+      "applies_to": "this_customer_observable",
+      "lever": null,
+      "offer": "OFF-SEC-12",
+      "theme": null,
+      "approx_tokens": 273
+    },
+    "DELTA-051": {
+      "type": "DELTA",
+      "applies_to": "this_customer_observable",
+      "lever": null,
+      "offer": "OFF-BUNDLE-ALL",
+      "theme": null,
+      "approx_tokens": 222
+    },
+    "DELTA-052": {
+      "type": "DELTA",
+      "applies_to": "this_customer_observable",
+      "lever": null,
+      "offer": "OFF-AUTOPAY",
+      "theme": null,
+      "approx_tokens": 282
+    },
+    "DOMAIN-053": {
+      "type": "DOMAIN",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Competitor pressure",
+      "approx_tokens": 258
+    },
+    "DOMAIN-054": {
+      "type": "DOMAIN",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Service & support experience",
+      "approx_tokens": 214
+    },
+    "DOMAIN-055": {
+      "type": "DOMAIN",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Pricing & charges",
+      "approx_tokens": 225
+    },
+    "DOMAIN-056": {
+      "type": "DOMAIN",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Product / service fit",
+      "approx_tokens": 189
+    },
+    "DOMAIN-057": {
+      "type": "DOMAIN",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Network / performance",
+      "approx_tokens": 208
+    },
+    "DOMAIN-058": {
+      "type": "DOMAIN",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Life event (involuntary)",
+      "approx_tokens": 237
+    },
+    "DOMAIN-059": {
+      "type": "DOMAIN",
+      "applies_to": "historical_cohort",
+      "lever": null,
+      "offer": null,
+      "theme": "Uncertain",
+      "approx_tokens": 178
+    },
+    "LEVER-060": {
+      "type": "LEVER",
+      "applies_to": "this_customer_observable",
+      "lever": "NO_TECH_SUPPORT",
+      "offer": null,
+      "theme": null,
+      "approx_tokens": 305
+    },
+    "LEVER-061": {
+      "type": "LEVER",
+      "applies_to": "this_customer_observable",
+      "lever": "NO_ONLINE_SECURITY",
+      "offer": null,
+      "theme": null,
+      "approx_tokens": 307
+    },
+    "LEVER-062": {
+      "type": "LEVER",
+      "applies_to": "this_customer_observable",
+      "lever": "NO_DEVICE_PROTECTION",
+      "offer": null,
+      "theme": null,
+      "approx_tokens": 306
+    },
+    "LEVER-063": {
+      "type": "LEVER",
+      "applies_to": "this_customer_observable",
+      "lever": "MONTH_TO_MONTH",
+      "offer": null,
+      "theme": null,
+      "approx_tokens": 307
+    },
+    "LEVER-064": {
+      "type": "LEVER",
+      "applies_to": "this_customer_observable",
+      "lever": "MANUAL_PAYMENT",
+      "offer": null,
+      "theme": null,
+      "approx_tokens": 305
+    },
+    "LEVER-065": {
+      "type": "LEVER",
+      "applies_to": "this_customer_observable",
+      "lever": "HIGH_CHARGE_LOW_BUNDLE",
+      "offer": null,
+      "theme": null,
+      "approx_tokens": 258
+    },
+    "LEVER-066": {
+      "type": "LEVER",
+      "applies_to": "this_customer_observable",
+      "lever": "NEW_CUSTOMER",
+      "offer": null,
+      "theme": null,
+      "approx_tokens": 256
+    },
+    "LEVER-067": {
+      "type": "LEVER",
+      "applies_to": "this_customer_observable",
+      "lever": "FIBER_PREMIUM",
+      "offer": null,
+      "theme": null,
+      "approx_tokens": 256
+    },
+    "LEVER-068": {
+      "type": "LEVER",
+      "applies_to": "this_customer_observable",
+      "lever": "NO_INTERNET",
+      "offer": null,
+      "theme": null,
+      "approx_tokens": 270
+    },
+    "OUTCOME-TEMPLATE": {
+      "type": "OUTCOME",
+      "applies_to": "this_customer_observable",
+      "lever": null,
+      "offer": null,
+      "theme": null,
+      "approx_tokens": 114
+    },
+    "POLICY-001": {
+      "type": "POLICY",
+      "applies_to": "this_customer_observable",
+      "lever": null,
+      "offer": null,
+      "theme": "live_prediction",
+      "approx_tokens": 142
+    },
+    "POLICY-002": {
+      "type": "POLICY",
+      "applies_to": "this_customer_observable",
+      "lever": null,
+      "offer": null,
+      "theme": "context_assembly",
+      "approx_tokens": 244
+    },
+    "POLICY-003": {
+      "type": "POLICY",
+      "applies_to": "this_customer_observable",
+      "lever": null,
+      "offer": null,
+      "theme": "evidence_governance",
+      "approx_tokens": 178
+    }
+  }
+}

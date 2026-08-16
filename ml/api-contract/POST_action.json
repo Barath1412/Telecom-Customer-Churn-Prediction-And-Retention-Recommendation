@@ -1,0 +1,31 @@
+{
+  "request_example": {
+    "action": "approve",
+    "actor": "agent_42",
+    "reason_code": null,
+    "modified_offer_id": null,
+    "note": "Customer accepted on first call."
+  },
+  "response_example": {
+    "recommendation_id": "rec_01J8XYZ",
+    "customer_id": "0295-PPHDO",
+    "action": "approve",
+    "actor": "agent_42",
+    "acted_at": "2026-08-13T09:14:22Z",
+    "audit_id": "aud_01J8XYZ",
+    "status": "recorded"
+  },
+  "actions": [
+    "approve",
+    "edit",
+    "reject"
+  ],
+  "reason_codes_for_reject": [
+    "already_contacted",
+    "offer_not_suitable",
+    "customer_unreachable",
+    "account_closing",
+    "data_looks_wrong",
+    "other"
+  ]
+}
