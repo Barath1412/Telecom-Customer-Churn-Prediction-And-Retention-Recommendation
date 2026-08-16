@@ -1,0 +1,218 @@
+## Offer catalog -- VERSIONED DATA, NOT CODE.
+##
+## Offers change weekly; models change quarterly. Keeping the catalog in a
+## versioned file means a pricing manager can add an offer without a deploy,
+## every recommendation records which catalog version produced it, and any past
+## decision can be replayed exactly.
+##
+## COST PROVENANCE (v2 of this catalog)
+## The unit_cost of every SERVICE offer is now DERIVED, not invented. Regressing
+## Monthly Charges on the service flags recovers the dataset's own price list with
+## R2 = 0.9988:
+##
+##     Phone Service     $20.05/mo      Online Security    $5.01/mo
+##     Multiple Lines     $5.01/mo      Online Backup      $4.99/mo
+##     Streaming TV       $9.97/mo      Device Protection  $5.02/mo
+##     Streaming Movies   $9.96/mo      Tech Support       $5.03/mo
+##     Internet Fiber    $50.01/mo      Internet DSL      $25.05/mo
+##     base constant     -$0.10         (i.e. zero)
+##
+## So bundling Tech Support free for 12 months forgoes 12 x $5.03 = $60.35 of
+## revenue. My v1 catalog guessed $95 -- 57% too high. Reproduce with:
+##     python -m src.derive_costs
+##
+## STILL INVENTED (no field in the dataset supports them): the three STAFF-TIME
+## offers (OFF-PLANFIT, OFF-ONBOARD, OFF-RETENTION-CALL) and all five policy
+## thresholds. Those remain placeholders and are flagged as such below.
+##
+## SLEEPING-DOG RISK -- applies to EVERY offer in this file.
+## An intervention can INCREASE churn. Contacting a quiet, satisfied customer to
+## discuss their contract can remind them to shop around. v1-v2 encoded this as a
+## negative delta_ci lower bound on OFF-RETENTION-CALL; v3 removed that offer because
+## its action maps to no dataset field, but the RISK did not go away -- it now applies
+## unquantified to all six remaining offers. Only the randomised control group can
+## settle it. Until then, no delta_prior in this file may be treated as a floor.
+##
+## delta_prior IS A HYPOTHESIS, NOT A MEASUREMENT.
+## There is no intervention-outcome data in this dataset -- nobody has ever
+## recorded "we offered X and the customer stayed". These numbers are business
+## judgment. They are logged on every recommendation so that when the control
+## group returns real effects, you can measure how wrong they were and replace
+## them. Treat the whole ranking as an experiment under test until then.
+
+catalog_version: 3
+currency: USD
+
+policy:
+  # Must stay STRICTLY ABOVE the largest discount_pct in the catalog (0.15),
+  # otherwise the biggest contract offer sits exactly on the cap and the rule
+  # becomes a coin flip on floating-point noise. 0.18 leaves real headroom.
+  margin_floor_pct: 0.18      # offer cost may not exceed 18% of annual revenue
+  max_discount_pct: 0.20      # hard financial ceiling
+  cooldown_days: 90           # no repeat of the same offer inside this window
+  max_offers_per_quarter: 1
+  approval_required_above_cost: 150.0
+  # ^ ALL FIVE THRESHOLDS ABOVE ARE INVENTED PLACEHOLDERS. No field in the dataset
+  #   supports them. Sensitivity to each is measured in src/sensitivity.py -- run it
+  #   before defending any of these numbers to a stakeholder.
+
+  # ------------------------------------------------------------------------- #
+  #  MINIMUM EXPECTED VALUE  (added v5.1)
+  # ------------------------------------------------------------------------- #
+  #  R3 used to read `EV > 0`. That rule was written as a TRIPWIRE -- "never make
+  #  an offer that loses money" -- and it was quietly doing a second job it was
+  #  never designed for: "is this worth an agent's time?". Two questions, two
+  #  numbers, only one supplied. The result was a real customer recommended at an
+  #  expected value of $0.18.
+  #
+  #  WHERE 20 COMES FROM -- two independent arguments, both measured:
+  #
+  #  1. AGENT TIME. A retention agent at roughly $35/hour loaded cost spending
+  #     ~12 minutes on a call costs about $7. $20 is ~3x that: an action must be
+  #     worth clearly more than the labour it consumes, not marginally more.
+  #
+  #  2. PARAMETER STABILITY. `python -m src.sensitivity` shows that halving every
+  #     delta_prior moves only 13% of the top-200 queue but changes the ELIGIBLE
+  #     population by 1,107 customers (3,758 -> 2,651). Delta uncertainty lands
+  #     almost entirely on near-zero-EV customers. A floor is the buffer that keeps
+  #     the queue stable when the least trustworthy number in this file moves.
+  #
+  #  MEASURED CONSEQUENCE on the 1,409-customer holdout (sweep, floor $0 -> $200):
+  #     floor $20  ->  752 recommended becomes 688 (-64), 0.46% of queue EV removed,
+  #                    51 of the 176 below-base-rate recommendations removed,
+  #                    precision@40 UNCHANGED at 0.700.
+  #     precision@40 does not move at ANY floor up to $200, because the 40th-ranked
+  #     customer sits far above it. The floor only removes people an agent was never
+  #     going to reach.
+  #
+  #  KNOWN SIDE EFFECT, STATED RATHER THAN HIDDEN: OFF-AUTOPAY won for exactly one
+  #  customer in the holdout, at EV $0.18. At a $20 floor it wins for nobody. That
+  #  offer costs $60 against the catalog's smallest assumed effect (4%), so it needs
+  #  p_churn x CLTV >= $2,000 before it clears $20. That is the arithmetic telling
+  #  us the offer is priced wrong, not the floor being too aggressive.
+  #
+  #  THIS IS ALSO A PLACEHOLDER. Replace it with the real loaded cost of a call the
+  #  moment operations can supply one.
+  min_expected_value_usd: 20.0
+
+
+## ================================================================================
+## REMOVED IN v3 — four offers deleted after cross-validation against the dataset.
+## Reproduce the analysis with:  python -m src.validate_catalog
+##
+## Each offer was scored on 7 objective checks. The critical one is check 4: can the
+## offer's ACTION be expressed as a change to a real dataset column? If not, the
+## counterfactual engine cannot estimate its effect, the cost cannot be derived, and
+## a language model asked to explain it has nothing to anchor on -- so it invents.
+##
+##   OFF-PROTECT-12   (Device Protection free 12mo)      score 6/7
+##       Action IS representable, but flipping Device Protection to "Yes" moves the
+##       model's prediction by mean dP +0.0031 / median 0.0000 over 3,095 customers.
+##       The other levers move it 0.040-0.289. Also never won on EV in any run.
+##
+##   OFF-PLANFIT      (Plan-fit review, right-size)      score 3/7
+##       "Right-size the plan" maps to NO dataset column. There is no usage data, so
+##       we cannot know what to remove. Cost $40 was pure invention.
+##
+##   OFF-ONBOARD      (Onboarding + 90-day check-in)     score 3/7
+##       Tenure cannot be changed by an offer. No field represents this action.
+##       Cost $35 was pure invention.
+##
+##   OFF-RETENTION-CALL (Proactive call)                 score 2/7
+##       No field changes. Also failed check 3: its segment is "everyone", so its
+##       churn rate equals the base rate exactly -- it targets nobody in particular.
+##       Cost $25 was pure invention.
+##
+## IMPACT MEASURED BEFORE REMOVAL: eligible customers 3,904 -> 3,702 (-202, 2.9%).
+## Top-200 queue overlap: 200/200 = 100% UNCHANGED. The 202 customers who lose their
+## only offer are LOWER risk and LOWER value than average (mean P 0.226 vs 0.268;
+## actual churn 22.8% vs 26.5%). Reporting "no qualifying offer" for them is more
+## honest than recommending an action the system cannot evaluate, price, or explain.
+## ================================================================================
+
+offers:
+  - offer_id: OFF-CONTRACT-1Y
+    name: "1-year contract at 10% off"
+    category: contract_incentive
+    requires_levers: [MONTH_TO_MONTH]
+    excludes_levers: []
+    min_tenure_months: 1
+    cost_type: pct_of_annual        # cost = monthly * 12 * discount_pct
+    discount_pct: 0.10
+    unit_cost: null
+    delta_prior: 0.12
+    delta_ci: [0.04, 0.20]
+    delta_source: business_judgment_v1
+    note: "Highest prior AND highest confounding risk -- long-contract customers
+           self-select for loyalty. Do not read the 15x churn gap as causal."
+
+  - offer_id: OFF-CONTRACT-2Y
+    name: "2-year contract at 15% off"
+    category: contract_incentive
+    requires_levers: [MONTH_TO_MONTH]
+    excludes_levers: []
+    min_tenure_months: 6
+    cost_type: pct_of_annual
+    discount_pct: 0.15
+    unit_cost: null
+    delta_prior: 0.18
+    delta_ci: [0.06, 0.28]
+    delta_source: business_judgment_v1
+
+  - offer_id: OFF-TECHSUP-12
+    name: "Tech Support bundled free for 12 months"
+    category: service_bundle
+    requires_levers: [NO_TECH_SUPPORT]
+    excludes_levers: [NO_INTERNET]
+    min_tenure_months: 0
+    cost_type: fixed
+    discount_pct: 0.0
+    unit_cost: 60.35   # DERIVED: 12 x $5.03/mo implied price (R2 0.9988)
+    delta_prior: 0.08
+    delta_ci: [0.02, 0.15]
+    delta_source: business_judgment_v1
+
+  - offer_id: OFF-SEC-12
+    name: "Online Security bundled free for 12 months"
+    category: service_bundle
+    requires_levers: [NO_ONLINE_SECURITY]
+    excludes_levers: [NO_INTERNET]
+    min_tenure_months: 0
+    cost_type: fixed
+    discount_pct: 0.0
+    unit_cost: 60.16   # DERIVED: 12 x $5.01/mo implied price
+    delta_prior: 0.05
+    delta_ci: [0.01, 0.11]
+    delta_source: business_judgment_v1
+
+  - offer_id: OFF-BUNDLE-ALL
+    name: "Tech Support + Online Security bundle, 12 months"
+    category: service_bundle
+    requires_levers: [NO_TECH_SUPPORT, NO_ONLINE_SECURITY]
+    excludes_levers: [NO_INTERNET]
+    min_tenure_months: 0
+    cost_type: fixed
+    discount_pct: 0.0
+    unit_cost: 120.51  # DERIVED: 12 x (5.03 + 5.01) implied price
+    delta_prior: 0.14
+    delta_ci: [0.05, 0.24]
+    delta_source: business_judgment_v1
+    note: "v3: Device Protection REMOVED from this bundle. Counterfactual re-scoring
+           showed support+security+protection gives mean dP +0.1546 while
+           support+security alone gives +0.1502 -- the third service adds 0.0044 for
+           $60.24. Two services, same effect, one third cheaper."
+
+  - offer_id: OFF-AUTOPAY
+    name: "Switch to autopay, $5/month credit for 12 months"
+    category: billing
+    requires_levers: [MANUAL_PAYMENT]
+    excludes_levers: []
+    min_tenure_months: 0
+    cost_type: fixed
+    discount_pct: 0.0
+    unit_cost: 60.00   # BY CONSTRUCTION: $5/mo credit x 12
+    delta_prior: 0.04
+    delta_ci: [0.00, 0.10]
+    delta_source: business_judgment_v1
+    note: "Electronic check is the 45.3% churn segment -- the largest single
+           payment-method gap in the data."
