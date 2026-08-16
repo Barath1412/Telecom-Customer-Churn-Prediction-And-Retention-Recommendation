@@ -1,0 +1,42 @@
+{
+  "run_utc": "2026-08-15T11:30:10.827198+00:00",
+  "model": {
+    "model_name": "xgboost",
+    "version": "v1",
+    "artifact_path": "artifacts/churn_model_v1.joblib"
+  },
+  "model_roc_auc": 0.849678,
+  "catalog_version": 3,
+  "policy": {
+    "margin_floor_pct": 0.18,
+    "max_discount_pct": 0.2,
+    "cooldown_days": 90,
+    "max_offers_per_quarter": 1,
+    "approval_required_above_cost": 150.0,
+    "min_expected_value_usd": 20.0
+  },
+  "capacity": 40,
+  "control_fraction": 0.1,
+  "funnel": {
+    "scored": 1409,
+    "recommended": 688,
+    "review_no_profitable_offer": 18,
+    "review_no_applicable_offer": 3,
+    "no_action_needed": 700,
+    "queued_today": 40,
+    "treatment": 39,
+    "control": 1
+  },
+  "economics": {
+    "offer_spend": 5298.12,
+    "expected_value": 20921.2
+  },
+  "precision_at_capacity": 0.7,
+  "offer_mix": {
+    "OFF-BUNDLE-ALL": 20,
+    "OFF-CONTRACT-2Y": 19,
+    "OFF-CONTRACT-1Y": 1
+  },
+  "delta_priors_are_hypotheses": true,
+  "delta_source": "business_judgment_v1 -- replace with measured effects once the control arm returns outcomes"
+}

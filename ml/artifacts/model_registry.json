@@ -1,0 +1,173 @@
+{
+  "created_utc": "2026-08-13T08:31:04.525246+00:00",
+  "python": "3.11.15",
+  "random_state": 42,
+  "n_features_source": 19,
+  "n_features_encoded": 44,
+  "train_rows": 5634,
+  "test_rows": 1409,
+  "base_rate": 0.2654,
+  "banned_columns_enforced": true,
+  "gate": [
+    {
+      "n": 1,
+      "name": "No banned column in features",
+      "passed": true,
+      "detail": "clean"
+    },
+    {
+      "n": 2,
+      "name": "ROC-AUC >= floor",
+      "passed": true,
+      "detail": "0.8497 >= 0.83"
+    },
+    {
+      "n": 3,
+      "name": "ROC-AUC <= ceiling (leak canary)",
+      "passed": true,
+      "detail": "0.8497 <= 0.95"
+    },
+    {
+      "n": 4,
+      "name": "Brier score <= max",
+      "passed": true,
+      "detail": "0.1346 <= 0.145"
+    },
+    {
+      "n": 5,
+      "name": "Calibration slope in range",
+      "passed": true,
+      "detail": "0.9469 in [0.9, 1.1]"
+    },
+    {
+      "n": 6,
+      "name": "Probabilities strictly in (0,1)",
+      "passed": true,
+      "detail": "range [0.0100, 0.9900]"
+    },
+    {
+      "n": 7,
+      "name": "Calibration parity across groups",
+      "passed": true,
+      "detail": "max ECE gap = 0.0237 (Senior Citizen: No=0.0263, Yes=0.0499) < 0.05"
+    }
+  ],
+  "models": [
+    {
+      "model_name": "logistic_regression",
+      "version": "v1",
+      "selected": false,
+      "artifact_path": null,
+      "metrics": {
+        "roc_auc": 0.849107,
+        "pr_auc": 0.644218,
+        "brier": 0.135892,
+        "calibration_slope": 0.901578,
+        "accuracy": 0.801987,
+        "precision": 0.647059,
+        "recall": 0.558824,
+        "f1": 0.599713,
+        "cv_roc_auc_mean": 0.858982,
+        "cv_roc_auc_std": 0.012683
+      },
+      "metrics_uncalibrated": {
+        "roc_auc": 0.84888,
+        "pr_auc": 0.645128,
+        "brier": 0.164489,
+        "calibration_slope": 0.945115,
+        "accuracy": 0.74379,
+        "precision": 0.511384,
+        "recall": 0.780749,
+        "f1": 0.617989
+      }
+    },
+    {
+      "model_name": "random_forest",
+      "version": "v1",
+      "selected": false,
+      "artifact_path": null,
+      "metrics": {
+        "roc_auc": 0.852817,
+        "pr_auc": 0.662124,
+        "brier": 0.133359,
+        "calibration_slope": 0.918532,
+        "accuracy": 0.800568,
+        "precision": 0.641337,
+        "recall": 0.564171,
+        "f1": 0.600284,
+        "cv_roc_auc_mean": 0.859269,
+        "cv_roc_auc_std": 0.008118
+      },
+      "metrics_uncalibrated": {
+        "roc_auc": 0.852525,
+        "pr_auc": 0.663697,
+        "brier": 0.147299,
+        "calibration_slope": 0.977267,
+        "accuracy": 0.777857,
+        "precision": 0.561866,
+        "recall": 0.740642,
+        "f1": 0.638985
+      }
+    },
+    {
+      "model_name": "xgboost",
+      "version": "v1",
+      "selected": true,
+      "artifact_path": "artifacts/churn_model_v1.joblib",
+      "metrics": {
+        "roc_auc": 0.849678,
+        "pr_auc": 0.663184,
+        "brier": 0.134647,
+        "calibration_slope": 0.946927,
+        "accuracy": 0.806955,
+        "precision": 0.677083,
+        "recall": 0.52139,
+        "f1": 0.589124,
+        "cv_roc_auc_mean": 0.855883,
+        "cv_roc_auc_std": 0.008625
+      },
+      "metrics_uncalibrated": {
+        "roc_auc": 0.849588,
+        "pr_auc": 0.66684,
+        "brier": 0.156566,
+        "calibration_slope": 0.772412,
+        "accuracy": 0.760823,
+        "precision": 0.534451,
+        "recall": 0.76738,
+        "f1": 0.630077
+      }
+    }
+  ],
+  "precision_at_k": {
+    "50": {
+      "precision": 0.78,
+      "recall": 0.1043,
+      "caught": 39
+    },
+    "100": {
+      "precision": 0.82,
+      "recall": 0.2193,
+      "caught": 82
+    },
+    "200": {
+      "precision": 0.73,
+      "recall": 0.3904,
+      "caught": 146
+    },
+    "300": {
+      "precision": 0.6667,
+      "recall": 0.5348,
+      "caught": 200
+    },
+    "400": {
+      "precision": 0.5925,
+      "recall": 0.6337,
+      "caught": 237
+    },
+    "500": {
+      "precision": 0.548,
+      "recall": 0.7326,
+      "caught": 274
+    }
+  }
+}

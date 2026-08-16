@@ -1,0 +1,40 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	score_customer(score_customer)
+	attribute(attribute)
+	extract_levers(extract_levers)
+	decide(decide)
+	retrieve_evidence(retrieve_evidence)
+	explain_no_offer(explain_no_offer)
+	no_action(no_action)
+	narrate(narrate)
+	validate(validate)
+	fallback(fallback)
+	human_review(human_review)
+	persist(persist)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> score_customer;
+	attribute --> extract_levers;
+	decide -.-> explain_no_offer;
+	decide -.-> no_action;
+	decide -.-> retrieve_evidence;
+	explain_no_offer --> narrate;
+	extract_levers --> decide;
+	fallback --> human_review;
+	human_review --> persist;
+	narrate --> validate;
+	no_action --> persist;
+	retrieve_evidence --> narrate;
+	score_customer --> attribute;
+	validate -.-> fallback;
+	validate -.-> human_review;
+	validate -.-> narrate;
+	persist --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
