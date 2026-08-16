@@ -1,0 +1,1 @@
+"""Backend fixtures loader."""

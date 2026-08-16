@@ -1,0 +1,181 @@
+{
+  "rank": 0,
+  "customer_id": "5461-QKNTN",
+  "arm": "treatment",
+  "risk": {
+    "p_churn": 0.4316,
+    "risk_band": "medium",
+    "percentile": 102.5
+  },
+  "value": {
+    "cltv": 2040.0,
+    "monthly_charges": 94.3,
+    "tenure_months": 43,
+    "currency": "USD"
+  },
+  "levers": [
+    {
+      "code": "NO_ONLINE_SECURITY",
+      "label": "No online security add-on"
+    },
+    {
+      "code": "NO_DEVICE_PROTECTION",
+      "label": "No device protection"
+    },
+    {
+      "code": "MONTH_TO_MONTH",
+      "label": "Rolling month-to-month contract"
+    },
+    {
+      "code": "MANUAL_PAYMENT",
+      "label": "Manual payment method"
+    },
+    {
+      "code": "FIBER_PREMIUM",
+      "label": "Premium fiber plan"
+    }
+  ],
+  "recommendation": {
+    "offer_id": null,
+    "offer_name": null,
+    "cost": 0.0,
+    "delta_prior": 0.0,
+    "delta_ci": [
+      0.0,
+      0.0
+    ],
+    "delta_source": null,
+    "expected_value": 0.0,
+    "requires_approval": false
+  },
+  "status": "review_no_profitable_offer",
+  "alternatives": [],
+  "vetoed": [
+    {
+      "offer_id": "OFF-CONTRACT-1Y",
+      "rule_id": "R3_POSITIVE_EV",
+      "detail": "see policy_trace"
+    },
+    {
+      "offer_id": "OFF-CONTRACT-2Y",
+      "rule_id": "R3_POSITIVE_EV",
+      "detail": "see policy_trace"
+    },
+    {
+      "offer_id": "OFF-SEC-12",
+      "rule_id": "R3_POSITIVE_EV",
+      "detail": "see policy_trace"
+    },
+    {
+      "offer_id": "OFF-AUTOPAY",
+      "rule_id": "R3_POSITIVE_EV",
+      "detail": "see policy_trace"
+    }
+  ],
+  "attribution": [
+    {
+      "feature": "Total Charges = 3953.15",
+      "contribution": -0.7145,
+      "direction": "decreases_risk"
+    },
+    {
+      "feature": "Contract = Month-to-month",
+      "contribution": 0.4844,
+      "direction": "increases_risk"
+    },
+    {
+      "feature": "Tenure Months = 43",
+      "contribution": -0.3023,
+      "direction": "decreases_risk"
+    },
+    {
+      "feature": "Internet Service = Fiber optic",
+      "contribution": 0.2755,
+      "direction": "increases_risk"
+    },
+    {
+      "feature": "Tech Support = No",
+      "contribution": -0.2707,
+      "direction": "decreases_risk"
+    }
+  ],
+  "attribution_disclaimer": "Model attribution, not customer motive. These values show what drove the model's prediction. They are not causal and are not the customer's stated reason for leaving.",
+  "evidence": {
+    "ids": [
+      "LEVER-061",
+      "LEVER-062",
+      "LEVER-063",
+      "LEVER-064",
+      "LEVER-067",
+      "POLICY-001",
+      "POLICY-002",
+      "POLICY-003"
+    ],
+    "count": 8,
+    "approx_tokens": 2054
+  },
+  "policy_trace": [
+    {
+      "rule_id": "R1_ELIGIBILITY",
+      "state": "pass",
+      "detail": "levers matched"
+    },
+    {
+      "rule_id": "R2_MARGIN_FLOOR",
+      "state": "pass",
+      "detail": "cost 0.0 <= 18% of annual revenue"
+    },
+    {
+      "rule_id": "R3_POSITIVE_EV",
+      "state": "pass",
+      "detail": "EV 0.0 > 0"
+    },
+    {
+      "rule_id": "R4_COOLDOWN",
+      "state": "not_evaluable",
+      "detail": "no offer-history feed connected",
+      "unmet_requirement": "recommendation history per customer, last 90d"
+    },
+    {
+      "rule_id": "R5_ONE_PER_WINDOW",
+      "state": "not_evaluable",
+      "detail": "no offer-history feed connected",
+      "unmet_requirement": "recommendation history for the current quarter"
+    },
+    {
+      "rule_id": "R7_DISCOUNT_CAP",
+      "state": "pass",
+      "detail": "within 20% cap"
+    }
+  ],
+  "profile": {
+    "Gender": "Male",
+    "Senior Citizen": "Yes",
+    "Partner": "Yes",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "Yes",
+    "Internet Service": "Fiber optic",
+    "Online Security": "No",
+    "Online Backup": "Yes",
+    "Device Protection": "No",
+    "Tech Support": "Yes",
+    "Streaming TV": "Yes",
+    "Streaming Movies": "No",
+    "Paperless Billing": "Yes",
+    "Payment Method": "Electronic check",
+    "Contract": "Month-to-month",
+    "Tenure Months": 43,
+    "Monthly Charges": 94.3,
+    "Total Charges": 3953.15
+  },
+  "provenance": {
+    "model_name": "xgboost",
+    "model_version": "v1",
+    "model_roc_auc": 0.849678,
+    "catalog_version": 3,
+    "kb_version": 4,
+    "scored_at": "2026-08-13T02:00:00Z"
+  },
+  "narration": null
+}

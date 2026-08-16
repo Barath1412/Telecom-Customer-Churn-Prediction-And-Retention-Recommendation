@@ -1,0 +1,215 @@
+{
+  "rank": 1,
+  "customer_id": "0295-PPHDO",
+  "arm": "treatment",
+  "risk": {
+    "p_churn": 0.99,
+    "risk_band": "critical",
+    "percentile": 100.0
+  },
+  "value": {
+    "cltv": 5962.0,
+    "monthly_charges": 95.45,
+    "tenure_months": 1,
+    "currency": "USD"
+  },
+  "levers": [
+    {
+      "code": "NO_TECH_SUPPORT",
+      "label": "No tech support add-on"
+    },
+    {
+      "code": "NO_ONLINE_SECURITY",
+      "label": "No online security add-on"
+    },
+    {
+      "code": "NO_DEVICE_PROTECTION",
+      "label": "No device protection"
+    },
+    {
+      "code": "MONTH_TO_MONTH",
+      "label": "Rolling month-to-month contract"
+    },
+    {
+      "code": "MANUAL_PAYMENT",
+      "label": "Manual payment method"
+    },
+    {
+      "code": "HIGH_CHARGE_LOW_BUNDLE",
+      "label": "High bill, few add-ons"
+    },
+    {
+      "code": "NEW_CUSTOMER",
+      "label": "Under 12 months tenure"
+    },
+    {
+      "code": "FIBER_PREMIUM",
+      "label": "Premium fiber plan"
+    }
+  ],
+  "recommendation": {
+    "offer_id": "OFF-BUNDLE-ALL",
+    "offer_name": "Tech Support + Online Security bundle, 12 months",
+    "cost": 120.51,
+    "delta_prior": 0.14,
+    "delta_ci": [
+      0.05,
+      0.24
+    ],
+    "delta_source": "business_judgment_v1",
+    "expected_value": 705.82,
+    "requires_approval": false
+  },
+  "status": "recommended",
+  "alternatives": [
+    {
+      "offer_id": "OFF-CONTRACT-1Y",
+      "offer_name": "1-year contract at 10% off",
+      "delta_prior": 0.12,
+      "expected_value": 594.0
+    },
+    {
+      "offer_id": "OFF-TECHSUP-12",
+      "offer_name": "Tech Support bundled free for 12 months",
+      "delta_prior": 0.08,
+      "expected_value": 412.0
+    },
+    {
+      "offer_id": "OFF-SEC-12",
+      "offer_name": "Online Security bundled free for 12 months",
+      "delta_prior": 0.05,
+      "expected_value": 235.0
+    },
+    {
+      "offer_id": "OFF-AUTOPAY",
+      "offer_name": "Switch to autopay, $5/month credit for 12 months",
+      "delta_prior": 0.04,
+      "expected_value": 176.0
+    }
+  ],
+  "vetoed": [],
+  "attribution": [
+    {
+      "feature": "Tenure Months = 1",
+      "contribution": 0.8149,
+      "direction": "increases_risk"
+    },
+    {
+      "feature": "Contract = Month-to-month",
+      "contribution": 0.5625,
+      "direction": "increases_risk"
+    },
+    {
+      "feature": "Total Charges = 95.45",
+      "contribution": 0.4087,
+      "direction": "increases_risk"
+    },
+    {
+      "feature": "Monthly Charges = 95.45",
+      "contribution": 0.2661,
+      "direction": "increases_risk"
+    },
+    {
+      "feature": "Internet Service = Fiber optic",
+      "contribution": 0.2079,
+      "direction": "increases_risk"
+    }
+  ],
+  "attribution_disclaimer": "Model attribution, not customer motive. These values show what drove the model's prediction. They are not causal and are not the customer's stated reason for leaving.",
+  "evidence": {
+    "ids": [
+      "DELTA-051",
+      "LEVER-060",
+      "LEVER-061",
+      "LEVER-062",
+      "LEVER-063",
+      "LEVER-064",
+      "LEVER-065",
+      "LEVER-066",
+      "LEVER-067",
+      "POLICY-001",
+      "POLICY-002",
+      "POLICY-003"
+    ],
+    "count": 12,
+    "approx_tokens": 3103
+  },
+  "policy_trace": [
+    {
+      "rule_id": "R1_ELIGIBILITY",
+      "state": "pass",
+      "detail": "levers matched"
+    },
+    {
+      "rule_id": "R2_MARGIN_FLOOR",
+      "state": "pass",
+      "detail": "cost 120.51 <= 18% of annual revenue"
+    },
+    {
+      "rule_id": "R3_POSITIVE_EV",
+      "state": "pass",
+      "detail": "EV 705.82 > 0"
+    },
+    {
+      "rule_id": "R4_COOLDOWN",
+      "state": "not_evaluable",
+      "detail": "no offer-history feed connected",
+      "unmet_requirement": "recommendation history per customer, last 90d"
+    },
+    {
+      "rule_id": "R5_ONE_PER_WINDOW",
+      "state": "not_evaluable",
+      "detail": "no offer-history feed connected",
+      "unmet_requirement": "recommendation history for the current quarter"
+    },
+    {
+      "rule_id": "R7_DISCOUNT_CAP",
+      "state": "pass",
+      "detail": "within 20% cap"
+    }
+  ],
+  "profile": {
+    "Gender": "Male",
+    "Senior Citizen": "No",
+    "Partner": "No",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "Yes",
+    "Internet Service": "Fiber optic",
+    "Online Security": "No",
+    "Online Backup": "No",
+    "Device Protection": "No",
+    "Tech Support": "No",
+    "Streaming TV": "Yes",
+    "Streaming Movies": "Yes",
+    "Paperless Billing": "Yes",
+    "Payment Method": "Electronic check",
+    "Contract": "Month-to-month",
+    "Tenure Months": 1,
+    "Monthly Charges": 95.45,
+    "Total Charges": 95.45
+  },
+  "provenance": {
+    "model_name": "xgboost",
+    "model_version": "v1",
+    "model_roc_auc": 0.849678,
+    "catalog_version": 3,
+    "kb_version": 4,
+    "scored_at": "2026-08-13T02:00:00Z"
+  },
+  "narration": {
+    "summary": "Fibre customer one month in, on a rolling contract with no support or security add-ons.",
+    "why": "Two observable gaps put this account at the top of tonight's list: a month-to-month contract and no tech-support add-on. In the historical base, accounts without tech support left at 41.6% against 11.9% for accounts with it. That is an association in past data, not a measured effect of adding the service.",
+    "talk_track": "I can see you joined us last month on fibre. I'm able to add Tech Support and Online Security at no cost for the next twelve months \u2014 that covers setup help and fault calls. Would that be useful?",
+    "evidence_ids": [
+      "DELTA-051",
+      "LEVER-060",
+      "LEVER-061"
+    ],
+    "uncertainty_note": "The retention effect used to rank this offer is a business assumption of 0.14 (range 0.05\u20130.24), not a measured result. Treat the ranking as a hypothesis under test until the control group returns outcomes.",
+    "source": "example_fixture",
+    "model": "gemini-3.5-flash-lite",
+    "validator_attempts": 1,
+    "generated_at": "2026-08-13T02:04:11Z"
+  }
+}

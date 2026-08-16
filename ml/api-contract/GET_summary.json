@@ -1,0 +1,100 @@
+{
+  "run_id": "run_2026-08-13T02:00:00Z",
+  "generated_at": "2026-08-13T02:05:00Z",
+  "model": {
+    "name": "xgboost",
+    "version": "v1",
+    "roc_auc": 0.849678,
+    "pr_auc": 0.663184,
+    "brier": 0.134647
+  },
+  "funnel": {
+    "scored": 1409,
+    "recommended": 688,
+    "review_no_profitable_offer": 18,
+    "review_no_applicable_offer": 3,
+    "no_action_needed": 700,
+    "queued_today": 40,
+    "treatment": 39,
+    "control": 1
+  },
+  "economics": {
+    "offer_spend": 5298.12,
+    "expected_value": 20921.2
+  },
+  "offer_mix": {
+    "OFF-BUNDLE-ALL": 20,
+    "OFF-CONTRACT-2Y": 19,
+    "OFF-CONTRACT-1Y": 1
+  },
+  "precision_at_capacity": 0.7,
+  "base_rate": 0.2654,
+  "allocation_parity": [
+    {
+      "attribute": "Gender",
+      "group": "Female",
+      "n": 687,
+      "queued": 18,
+      "queue_rate": 0.0262,
+      "mean_offer_value": 131.62
+    },
+    {
+      "attribute": "Gender",
+      "group": "Male",
+      "n": 722,
+      "queued": 22,
+      "queue_rate": 0.0305,
+      "mean_offer_value": 139.59
+    },
+    {
+      "attribute": "Senior Citizen",
+      "group": "No",
+      "n": 1187,
+      "queued": 27,
+      "queue_rate": 0.0227,
+      "mean_offer_value": 139.41
+    },
+    {
+      "attribute": "Senior Citizen",
+      "group": "Yes",
+      "n": 222,
+      "queued": 13,
+      "queue_rate": 0.0586,
+      "mean_offer_value": 128.92
+    }
+  ],
+  "lever_prevalence": [
+    {
+      "code": "MONTH_TO_MONTH",
+      "pct_of_top100": 100.0
+    },
+    {
+      "code": "NO_TECH_SUPPORT",
+      "pct_of_top100": 96.0
+    },
+    {
+      "code": "NO_ONLINE_SECURITY",
+      "pct_of_top100": 93.0
+    },
+    {
+      "code": "MANUAL_PAYMENT",
+      "pct_of_top100": 87.0
+    },
+    {
+      "code": "FIBER_PREMIUM",
+      "pct_of_top100": 87.0
+    },
+    {
+      "code": "NO_DEVICE_PROTECTION",
+      "pct_of_top100": 80.0
+    },
+    {
+      "code": "NEW_CUSTOMER",
+      "pct_of_top100": 69.0
+    },
+    {
+      "code": "HIGH_CHARGE_LOW_BUNDLE",
+      "pct_of_top100": 28.0
+    }
+  ]
+}

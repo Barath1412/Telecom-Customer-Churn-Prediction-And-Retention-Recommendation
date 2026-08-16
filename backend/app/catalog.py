@@ -1,0 +1,1 @@
+"""Offers and catalog module."""

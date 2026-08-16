@@ -1,0 +1,1 @@
+"""Customer detail handlers."""
