@@ -1,23 +1,97 @@
-# Dependencies
+# =============================================================================
+# Telecom Retention System — Comprehensive .gitignore
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# 1. SECRETS & ENVIRONMENT VARIABLES (DO NOT COMMIT SECRETS / API KEYS)
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+.env.*
+**/.env
+**/.env.local
+**/.env.*.local
+**/.env.*
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+secrets/
+**/secrets/
+!**/.env.example
+!.env.example
+
+# -----------------------------------------------------------------------------
+# 2. RUNTIME AUDIT LOGS, LIVE CACHES & EXPERIMENT RUNS
+# -----------------------------------------------------------------------------
+ml/artifacts/actions/
+ml/artifacts/runs/
+ml/artifacts/eval_random/
+ml/artifacts/*.sqlite
+ml/artifacts/*.sqlite-journal
+ml/artifacts/*.sqlite-wal
+ml/artifacts/*.sqlite-shm
+ml/artifacts/*.jsonl
+**/artifacts/actions/
+**/artifacts/runs/
+**/artifacts/*.sqlite
+**/artifacts/*.jsonl
+
+# -----------------------------------------------------------------------------
+# 3. PYTHON BYTECODE, PACKAGING & VIRTUAL ENVIRONMENTS
+# -----------------------------------------------------------------------------
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+**/*.egg-info/
+dist/
+**/dist/
+build/
+**/build/
+eggs/
+.eggs/
+*.egg
+venv/
+.venv/
+**/venv/
+**/.venv/
+env/
+ENV/
+
+# Testing & Linting Caches
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+**/.mypy_cache/
+.ruff_cache/
+**/.ruff_cache/
+.pyre/
+.pytype/
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+.coverage
+htmlcov/
+
+# -----------------------------------------------------------------------------
+# 4. NODE.JS, VITE, TYPESCRIPT & FRONTEND BUILD ARTIFACTS
+# -----------------------------------------------------------------------------
 node_modules/
 **/node_modules/
 .pnp
 .pnp.js
 .yarn/install-state.gz
 
-# Build and distribution outputs
-dist/
-**/dist/
-build/
-**/build/
 out/
 .next/
 .output/
-
-# TypeScript, Vite, and linter caches
+.eslintcache
 *.tsbuildinfo
 **/*.tsbuildinfo
-.eslintcache
 .vite/
 **/.vite/
 .cache/
@@ -25,7 +99,7 @@ out/
 .turbo/
 .parcel-cache/
 
-# Testing and coverage
+# Frontend Test Coverage
 coverage/
 **/coverage/
 .vitest/
@@ -33,59 +107,20 @@ coverage/
 playwright-report/
 test-results/
 
-# Environment files
-.env
-.env.local
-.env.*.local
-.env.*
-!.env.example
-**/.env
-**/.env.local
-**/.env.*.local
-**/.env.*
-!**/.env.example
-
-# Logs
+# -----------------------------------------------------------------------------
+# 5. LOG FILES
+# -----------------------------------------------------------------------------
 *.log
+**/*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Python
-__pycache__/
-**/__pycache__/
-*.py[cod]
-*$py.class
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.pyre/
-.pytype/
-.ipynb_checkpoints/
-**/.ipynb_checkpoints/
-*.egg-info/
-dist/
-build/
-eggs/
-.eggs/
-*.egg
-venv/
-.venv/
-env/
-ENV/
-
-# Editor and IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-*.sublime-workspace
-*.sublime-project
-
-# OS generated files
+# -----------------------------------------------------------------------------
+# 6. OPERATING SYSTEM & IDE CONFIGURATIONS
+# -----------------------------------------------------------------------------
 .DS_Store
 .DS_Store?
 ._*
@@ -94,6 +129,15 @@ ENV/
 ehthumbs.db
 Thumbs.db
 desktop.ini
-# Audit & QA Reports
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+*.sublime-project
+
+# Audit & Scratch Reports
 FRONTEND_AUDIT_REPORT.md
 **/FRONTEND_AUDIT_REPORT.md
