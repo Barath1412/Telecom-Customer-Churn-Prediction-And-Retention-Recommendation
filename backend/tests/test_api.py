@@ -1037,3 +1037,61 @@ def test_customer_detail_not_actionable_after_action_taken(client):
     res = r_det.json()
     assert res["actionable"] is False
     assert res["queue_position"] is None
+
+
+# --------------------------------------------------------------------------- #
+#  POST /api/score/narrate tests
+# --------------------------------------------------------------------------- #
+def test_score_narrate_happy_path(client):
+    """POST /api/score/narrate with a valid 19-field body + cltv returns a narration block."""
+    body = fixture("POST_score.json")["request_example"]
+    r = client.post("/api/score/narrate?provider=fake", json=body)
+    assert r.status_code == 200, r.text
+    data = r.json()
+    assert data["customer_id"] == "SCORE-ADHOC"
+    assert data["provider"] == "fake"
+    assert "narration" in data
+    assert "summary" in data["narration"]
+    assert "why" in data["narration"]
+    assert "talk_track" in data["narration"]
+    assert data["narration"]["source"] in ("llm", "template", "fake")
+    assert "decision" in data
+    assert data["decision"]["p_churn"] is not None
+
+
+def test_score_narrate_never_touches_cache_or_actions_log(client, monkeypatch):
+    """POST /api/score/narrate never calls cache.append or actions_log.append."""
+    from app import cache, actions_log
+
+    def _forbidden_cache_append(*args, **kwargs):
+        raise AssertionError("cache.append must never be called from /api/score/narrate")
+
+    def _forbidden_actions_append(*args, **kwargs):
+        raise AssertionError("actions_log.append must never be called from /api/score/narrate")
+
+    monkeypatch.setattr(cache, "append", _forbidden_cache_append)
+    monkeypatch.setattr(actions_log, "append", _forbidden_actions_append)
+
+    body = fixture("POST_score.json")["request_example"]
+    r = client.post("/api/score/narrate?provider=fake", json=body)
+    assert r.status_code == 200, r.text
+
+
+def test_score_narrate_leakage_guard_rejects_quarantined_field(client):
+    """Leakage guard still rejects a quarantined field on /api/score/narrate, same as /api/score."""
+    body = dict(fixture("POST_score.json")["request_example"])
+    body["CustomerID"] = "0295-PPHDO"  # Quarantined field
+    r = client.post("/api/score/narrate?provider=fake", json=body)
+    assert r.status_code == 400
+    res = r.json()
+    assert res["error"]["code"] == "LEAKAGE_REJECTED"
+
+
+def test_score_narrate_validation_error_on_missing_field(client):
+    """Missing customer attribute returns 422 VALIDATION_ERROR."""
+    body = dict(fixture("POST_score.json")["request_example"])
+    del body["Monthly Charges"]
+    r = client.post("/api/score/narrate?provider=fake", json=body)
+    assert r.status_code == 422
+    res = r.json()
+    assert res["error"]["code"] == "VALIDATION_ERROR"
