@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { QueueTable } from './QueueTable'
 import { CustomerSearch } from './CustomerSearch'
 import { useQueue } from './useQueue'
+import { UploadBatchModal } from './UploadBatchModal'
 import { TableSkeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/EmptyState'
 import { ErrorState } from '@/components/ErrorState'
@@ -13,6 +14,7 @@ export function QueuePage() {
   const [status, setStatus] = useState<QueueStatusFilter>('pending')
   const [page, setPage] = useState(1)
   const [globalFilter, setGlobalFilter] = useState('')
+  const [uploadOpen, setUploadOpen] = useState(false)
 
   const { data, isPending, error, refetch } = useQueue(page, 40, status)
 
@@ -24,7 +26,9 @@ export function QueuePage() {
       ? data.pending_total
       : status === 'approved'
         ? data.approved_total
-        : data.rejected_total
+        : status === 'rejected'
+          ? data.rejected_total
+          : data.pending_total
 
   const totalPages = Math.max(1, Math.ceil(activeTotal / data.page_size))
 
@@ -39,43 +43,54 @@ export function QueuePage() {
   return (
     <div className="space-y-4">
       <div className="grid gap-3 sm:grid-cols-4">
-        <StatTile label="In queue tonight" value={String(activeCapacity)} />
-        <StatTile label="Waiting behind today's 40" value={String(backlogCount)} />
-        <StatTile label="Eligible overall" value={String(data.total_eligible)} />
-        <StatTile label="Run" value={data.run_id.replace('run_', '')} hint="capacity-limited" />
+        <StatTile label="Scored in run" value={String(data.total_scored ?? 1409)} hint="entire test cohort" />
+        <StatTile label="Eligible for retention" value={String(data.total_eligible)} hint="EV ≥ $20 qualified" />
+        <StatTile label="In queue tonight" value={String(activeCapacity)} hint="active daily quota" />
+        <StatTile label="Waiting in backlog" value={String(backlogCount)} hint="behind top 40" />
       </div>
 
-      <div
-        role="tablist"
-        aria-label="Queue status"
-        className="flex items-center gap-2 border-b border-line pb-2"
-      >
-        <Button
-          role="tab"
-          aria-selected={status === 'pending'}
-          variant={status === 'pending' ? 'primary' : 'ghost'}
-          size="sm"
-          onClick={() => handleStatusChange('pending')}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-2">
+        <div
+          role="tablist"
+          aria-label="Queue status"
+          className="flex items-center gap-2"
         >
-          Pending ({data.pending_total})
-        </Button>
+          <Button
+            role="tab"
+            aria-selected={status === 'pending'}
+            variant={status === 'pending' ? 'primary' : 'ghost'}
+            size="sm"
+            onClick={() => handleStatusChange('pending')}
+          >
+            Pending ({data.pending_total})
+          </Button>
+          <Button
+            role="tab"
+            aria-selected={status === 'approved'}
+            variant={status === 'approved' ? 'primary' : 'ghost'}
+            size="sm"
+            onClick={() => handleStatusChange('approved')}
+          >
+            Approved ({data.approved_total})
+          </Button>
+          <Button
+            role="tab"
+            aria-selected={status === 'rejected'}
+            variant={status === 'rejected' ? 'primary' : 'ghost'}
+            size="sm"
+            onClick={() => handleStatusChange('rejected')}
+          >
+            Rejected ({data.rejected_total})
+          </Button>
+        </div>
+
         <Button
-          role="tab"
-          aria-selected={status === 'approved'}
-          variant={status === 'approved' ? 'primary' : 'ghost'}
+          variant="secondary"
           size="sm"
-          onClick={() => handleStatusChange('approved')}
+          onClick={() => setUploadOpen(true)}
+          className="flex items-center gap-1.5"
         >
-          Approved ({data.approved_total})
-        </Button>
-        <Button
-          role="tab"
-          aria-selected={status === 'rejected'}
-          variant={status === 'rejected' ? 'primary' : 'ghost'}
-          size="sm"
-          onClick={() => handleStatusChange('rejected')}
-        >
-          Rejected ({data.rejected_total})
+          <span>📁</span> Upload Batch (.xlsx / .csv)
         </Button>
       </div>
 
@@ -98,7 +113,30 @@ export function QueuePage() {
         />
       ) : (
         <>
-          <CustomerSearch value={globalFilter} onChange={setGlobalFilter} />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex-1 min-w-[240px]">
+              <CustomerSearch value={globalFilter} onChange={setGlobalFilter} />
+            </div>
+            <div className="flex items-center gap-2">
+              <label htmlFor="cohort-select" className="text-xs text-ink-3">
+                Cohort:
+              </label>
+              <select
+                id="cohort-select"
+                value={status}
+                onChange={(e) => handleStatusChange(e.target.value as QueueStatusFilter)}
+                className="rounded-md border border-line bg-surface px-2.5 py-1.5 text-xs text-ink focus:border-accent focus:outline-none"
+              >
+                <option value="pending">Eligible for Retention ({data.pending_total})</option>
+                <option value="all_scored">All Scored Cohort ({data.total_scored ?? 1409})</option>
+                <option value="no_action_needed">No Action Needed / Low Risk (700)</option>
+                <option value="review_no_profitable_offer">No Profitable Offer (18)</option>
+                <option value="review_no_applicable_offer">No Applicable Offer (3)</option>
+                <option value="approved">Approved ({data.approved_total})</option>
+                <option value="rejected">Rejected ({data.rejected_total})</option>
+              </select>
+            </div>
+          </div>
           <QueueTable
             items={data.items}
             globalFilter={globalFilter}
@@ -129,6 +167,8 @@ export function QueuePage() {
           </div>
         </>
       )}
+
+      <UploadBatchModal open={uploadOpen} onClose={() => setUploadOpen(false)} />
     </div>
   )
 }

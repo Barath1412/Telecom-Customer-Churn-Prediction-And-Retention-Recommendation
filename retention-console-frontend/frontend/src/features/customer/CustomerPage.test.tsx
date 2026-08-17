@@ -291,4 +291,311 @@ describe('CustomerPage', () => {
     const rejectAxe = await axe(container)
     expect(rejectAxe.violations).toEqual([])
   })
+
+  it('handles control-arm customer without action bar or generate button and renders control notices', async () => {
+    const controlCustomer = {
+      ...detail,
+      customer_id: '9465-RWMXL',
+      arm: 'control' as const,
+      narration: null,
+    }
+    server.use(
+      http.get('/api/customers/:id', () => HttpResponse.json(controlCustomer)),
+    )
+
+    renderApp(<CustomerPage customerId="9465-RWMXL" />)
+    await waitFor(() => expect(screen.getByText('9465-RWMXL')).toBeInTheDocument())
+
+    // Recommendation card subtitle includes withheld note
+    expect(
+      screen.getByText(/Tech Support \+ Online Security bundle, 12 months — withheld, control group/i),
+    ).toBeInTheDocument()
+
+    // Note under EV breakdown
+    expect(
+      screen.getByText(/This customer is in the control group\. This is what the model would recommend/i),
+    ).toBeInTheDocument()
+
+    // Static bar instead of ActionBar
+    expect(screen.getByText(/No action available — control group\./i)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Approve' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Reject' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Edit offer' })).not.toBeInTheDocument()
+
+    // Narration panel shows control group message, not Generate button
+    expect(
+      screen.getByText(/No note generated — control group, not contacted\./i),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /generate note/i })).not.toBeInTheDocument()
+  })
+
+  it('renders top 2 alternatives with talk_track text for treatment-arm customer', async () => {
+    const customerWithAlts = {
+      ...detail,
+      alternatives: [
+        {
+          offer_id: 'OFF-CONTRACT-1Y',
+          offer_name: '1-year contract at 10% off',
+          cost: 65.0,
+          delta_prior: 0.12,
+          delta_ci: [0.04, 0.2] as [number, number],
+          expected_value: 593.75,
+          talk_track:
+            'Alternative: 1-year contract at 10% off — costs $65.00, expected value $593.75. Present this if the customer declines the primary offer.',
+        },
+        {
+          offer_id: 'OFF-TECHSUP-12',
+          offer_name: 'Tech Support bundled free for 12 months',
+          cost: 35.0,
+          delta_prior: 0.08,
+          delta_ci: [0.02, 0.15] as [number, number],
+          expected_value: 411.84,
+          talk_track:
+            'Alternative: Tech Support bundled free for 12 months — costs $35.00, expected value $411.84. Present this if the customer declines the primary offer.',
+        },
+      ],
+    }
+    server.use(
+      http.get('/api/customers/:id', () => HttpResponse.json(customerWithAlts)),
+    )
+
+    renderApp(<CustomerPage customerId="0295-PPHDO" />)
+    await waitFor(() => expect(screen.getByText('0295-PPHDO')).toBeInTheDocument())
+
+    expect(screen.getByText('Alternative Offers')).toBeInTheDocument()
+    expect(screen.getByText('1-year contract at 10% off')).toBeInTheDocument()
+    expect(screen.getByText('Tech Support bundled free for 12 months')).toBeInTheDocument()
+    expect(
+      screen.getByText(/Alternative: 1-year contract at 10% off — costs \$65\.00, expected value \$593\.75\./i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/Alternative: Tech Support bundled free for 12 months — costs \$35\.00, expected value \$411\.84\./i),
+    ).toBeInTheDocument()
+  })
+
+  it('clicking "Present this instead" on second alternative preselects it in ConfirmDialog and submits modified_offer_id', async () => {
+    const user = userEvent.setup()
+    let actionPayload: unknown = null
+
+    server.use(
+      http.post('/api/customers/:id/action', async ({ request }) => {
+        actionPayload = await request.json()
+        return HttpResponse.json(actionFixture.response_example)
+      }),
+    )
+
+    renderApp(<CustomerPage customerId="0295-PPHDO" />)
+    await waitFor(() => expect(screen.getByText('0295-PPHDO')).toBeInTheDocument())
+
+    const presentButtons = screen.getAllByRole('button', { name: /present this instead/i })
+    expect(presentButtons.length).toBeGreaterThanOrEqual(2)
+
+    // Click "Present this instead" on the second alternative (OFF-TECHSUP-12 in standard detail fixture)
+    await user.click(presentButtons[1]!)
+
+    const modal = screen.getByRole('dialog', { name: /change the offer/i })
+    expect(modal).toBeInTheDocument()
+
+    // Confirm that the second alternative is pre-selected in the replacement offer select dropdown (NOT alternatives[0])
+    const offerSelect = screen.getByRole('combobox', { name: /replacement offer/i })
+    expect(offerSelect).toHaveValue('OFF-TECHSUP-12')
+
+    // Submit confirmation
+    await user.click(screen.getByRole('button', { name: 'Confirm' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+
+    expect(actionPayload).toEqual({
+      action: 'edit',
+      actor: 'agent_42',
+      reason_code: null,
+      modified_offer_id: 'OFF-TECHSUP-12',
+      note: null,
+    })
+  })
+
+  it('swaps closing talk track line in Agent Note when alternate is selected and reverts with "Use recommended offer"', async () => {
+    const customerWithAlts = {
+      ...detail,
+      alternatives: [
+        {
+          offer_id: 'OFF-CONTRACT-1Y',
+          offer_name: '1-year contract at 10% off',
+          cost: 65.0,
+          delta_prior: 0.12,
+          delta_ci: [0.04, 0.2] as [number, number],
+          expected_value: 593.75,
+          talk_track:
+            'Alternative: 1-year contract at 10% off — costs $65.00, expected value $593.75. Present this if the customer declines the primary offer.',
+        },
+        {
+          offer_id: 'OFF-TECHSUP-12',
+          offer_name: 'Tech Support bundled free for 12 months',
+          cost: 35.0,
+          delta_prior: 0.08,
+          delta_ci: [0.02, 0.15] as [number, number],
+          expected_value: 411.84,
+          talk_track:
+            'Alternative: Tech Support bundled free for 12 months — costs $35.00, expected value $411.84. Present this if the customer declines the primary offer.',
+        },
+      ],
+    }
+    server.use(
+      http.get('/api/customers/:id', () => HttpResponse.json(customerWithAlts)),
+    )
+
+    const user = userEvent.setup()
+    renderApp(<CustomerPage customerId="0295-PPHDO" />)
+    await waitFor(() => expect(screen.getByText('0295-PPHDO')).toBeInTheDocument())
+
+    const originalTalkTrack = detail.narration.talk_track
+    const originalSummary = detail.narration.summary
+    const originalWhy = detail.narration.why
+    const originalUncertainty = detail.narration.uncertainty_note
+
+    // Initially recommended offer is active
+    expect(screen.getByText(originalTalkTrack)).toBeInTheDocument()
+    expect(screen.getByText(originalSummary)).toBeInTheDocument()
+    expect(screen.getByText(originalWhy)).toBeInTheDocument()
+    expect(screen.getByText(originalUncertainty)).toBeInTheDocument()
+    expect(
+      screen.queryByText(/Offer line shown for the selected alternative/i),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /use recommended offer/i }),
+    ).not.toBeInTheDocument()
+
+    // Click "Present this instead" on the first alternative, then cancel dialog to inspect page
+    const presentButtons = screen.getAllByRole('button', { name: /present this instead/i })
+    await user.click(presentButtons[0]!)
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+
+    // Swapped talk track is displayed in Agent Note blockquote (and on the alternative card) with caption
+    const expectedAltTalkTrack =
+      'Alternative: 1-year contract at 10% off — costs $65.00, expected value $593.75. Present this if the customer declines the primary offer.'
+    expect(screen.getAllByText(expectedAltTalkTrack).length).toBe(2)
+    expect(
+      screen.getByText(/Offer line shown for the selected alternative — rest of the note is unchanged\./i),
+    ).toBeInTheDocument()
+
+    // Summary, why, and uncertainty_note remain unchanged
+    expect(screen.getByText(originalSummary)).toBeInTheDocument()
+    expect(screen.getByText(originalWhy)).toBeInTheDocument()
+    expect(screen.getByText(originalUncertainty)).toBeInTheDocument()
+
+    // Click "Use recommended offer" to revert
+    const revertBtn = screen.getByRole('button', { name: /use recommended offer/i })
+    expect(revertBtn).toBeInTheDocument()
+    await user.click(revertBtn)
+
+    // Reverted back to original
+    expect(screen.getByText(originalTalkTrack)).toBeInTheDocument()
+    expect(
+      screen.queryByText(/Offer line shown for the selected alternative/i),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /use recommended offer/i }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('switching to a different customer resets selectedOfferId back to new customer recommended offer', async () => {
+    const user = userEvent.setup()
+    const { rerender } = renderApp(<CustomerPage customerId="0295-PPHDO" />)
+    await waitFor(() => expect(screen.getByText('0295-PPHDO')).toBeInTheDocument())
+
+    // Select alternative on 0295-PPHDO
+    const presentButtons = screen.getAllByRole('button', { name: /present this instead/i })
+    await user.click(presentButtons[0]!)
+    await user.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    expect(
+      screen.getByText(/Offer line shown for the selected alternative/i),
+    ).toBeInTheDocument()
+
+    // Switch to another customer
+    rerender(<CustomerPage customerId="5461-QKNTN" />)
+    await waitFor(() => expect(screen.getByText('5461-QKNTN')).toBeInTheDocument())
+
+    // Selected offer reset - no alternative caption or button
+    expect(
+      screen.queryByText(/Offer line shown for the selected alternative/i),
+    ).not.toBeInTheDocument()
+  })
+
+  it('does not render Approve/Reject when actionable is false', async () => {
+    server.use(
+      http.get('/api/customers/:id', () =>
+        HttpResponse.json({
+          ...detail,
+          customer_id: '1335-NTIUC',
+          actionable: false,
+        }),
+      ),
+    )
+    renderApp(<CustomerPage customerId="1335-NTIUC" />)
+    await waitFor(() => expect(screen.getByText('1335-NTIUC')).toBeInTheDocument())
+
+    expect(screen.queryByRole('button', { name: 'Approve' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Reject' })).not.toBeInTheDocument()
+    expect(screen.getByText(/not in today's active queue yet/i)).toBeInTheDocument()
+  })
+
+  it('renders Decision Finalized banner for approved customer and hides alternative offers', async () => {
+    server.use(
+      http.get('/api/customers/:id', () =>
+        HttpResponse.json({
+          ...detail,
+          customer_id: '0295-PPHDO',
+          actionable: false,
+          decision: {
+            action: 'approve',
+            actor: 'agent_lead',
+            reason_code: null,
+            note: null,
+            acted_at: '2026-08-17T12:00:00Z',
+            offered_offer_id: 'OFF-BUNDLE-ALL',
+            offered_offer_name: 'Tech Support + Online Security bundle, 12 months',
+            offer_changed: false,
+          },
+        }),
+      ),
+    )
+    renderApp(<CustomerPage customerId="0295-PPHDO" />)
+    await waitFor(() => expect(screen.getByText('0295-PPHDO')).toBeInTheDocument())
+
+    expect(screen.getByText(/Decision Finalized/i)).toBeInTheDocument()
+    expect(screen.getByText(/Approved — Agreed Offer:/i)).toBeInTheDocument()
+    expect(screen.getByText(/agent_lead/i)).toBeInTheDocument()
+    expect(screen.queryByText(/Alternative Offers/i)).not.toBeInTheDocument()
+  })
+
+  it('renders Decision Finalized banner for rejected customer with reason code', async () => {
+    server.use(
+      http.get('/api/customers/:id', () =>
+        HttpResponse.json({
+          ...detail,
+          customer_id: '0295-PPHDO',
+          actionable: false,
+          decision: {
+            action: 'reject',
+            actor: 'agent_lead',
+            reason_code: 'already_contacted',
+            note: 'Customer contacted on Monday',
+            acted_at: '2026-08-17T12:00:00Z',
+            offered_offer_id: 'OFF-BUNDLE-ALL',
+            offered_offer_name: 'Tech Support + Online Security bundle, 12 months',
+            offer_changed: false,
+          },
+        }),
+      ),
+    )
+    renderApp(<CustomerPage customerId="0295-PPHDO" />)
+    await waitFor(() => expect(screen.getByText('0295-PPHDO')).toBeInTheDocument())
+
+    expect(screen.getByText(/Decision Finalized/i)).toBeInTheDocument()
+    expect(screen.getByText(/Rejected — Reason:/i)).toBeInTheDocument()
+    expect(screen.getByText(/already_contacted/i)).toBeInTheDocument()
+    expect(screen.getByText(/Customer contacted on Monday/i)).toBeInTheDocument()
+  })
 })

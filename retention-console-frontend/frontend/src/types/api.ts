@@ -106,12 +106,20 @@ export interface Provenance {
   scored_at: string
 }
 
-export type QueueStatusFilter = 'pending' | 'approved' | 'rejected'
+export type QueueStatusFilter =
+  | 'pending'
+  | 'approved'
+  | 'rejected'
+  | 'all_scored'
+  | 'no_action_needed'
+  | 'review_no_profitable_offer'
+  | 'review_no_applicable_offer'
 
 export interface QueueDecision {
   action: 'approve' | 'edit' | 'reject'
   actor: string
   reason_code: string | null
+  note?: string | null
   acted_at: string
   offered_offer_id: string | null
   offered_offer_name: string | null
@@ -171,9 +179,19 @@ export interface NarrateResponse {
   elapsed_ms: number
 }
 
+export interface UploadBatchResponse {
+  status: string
+  total_uploaded: number
+  qualified_recommended: number
+  new_queue_total: number
+  new_pending_total: number
+  promoted_to_active: string[]
+}
+
 export interface QueueResponse {
   run_id: string
   capacity: number
+  total_scored?: number
   total_eligible: number
   pending_total: number
   approved_total: number

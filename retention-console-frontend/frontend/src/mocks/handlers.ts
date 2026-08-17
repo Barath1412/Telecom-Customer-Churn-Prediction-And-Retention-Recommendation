@@ -120,6 +120,16 @@ export const handlers = [
       elapsed_ms: 3200,
     }),
   ),
+  http.post('/api/queue/upload', () =>
+    HttpResponse.json({
+      status: 'success',
+      total_uploaded: 5,
+      qualified_recommended: 3,
+      new_queue_total: 691,
+      new_pending_total: 691,
+      promoted_to_active: ['UP-001', 'UP-002'],
+    }),
+  ),
 ]
 
 /** Opt-in handlers for building and testing failure screens. */
