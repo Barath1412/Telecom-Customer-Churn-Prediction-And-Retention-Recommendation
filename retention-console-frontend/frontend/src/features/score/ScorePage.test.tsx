@@ -300,4 +300,141 @@ describe('ScorePage and Manual Scoring Form', () => {
     const submittedAxe = await axe(container)
     expect(submittedAxe.violations).toEqual([])
   })
+
+  describe('Rule C — Total Charges Auto-calculation & Manual Override', () => {
+    it('Changing Monthly Charges or Tenure Months recomputes Total Charges to their product, rounded to 2 decimals', async () => {
+      const user = userEvent.setup()
+      renderApp(<ScorePage />)
+
+      const tenureInput = screen.getByRole('spinbutton', { name: /^tenure months/i })
+      const monthlyInput = screen.getByRole('spinbutton', { name: /^monthly charges/i })
+      const totalInput = screen.getByRole('spinbutton', { name: /^total charges/i })
+
+      await user.clear(tenureInput)
+      await user.type(tenureInput, '12')
+
+      await user.clear(monthlyInput)
+      await user.type(monthlyInput, '75.50')
+
+      // 12 * 75.50 = 906.00
+      expect(totalInput).toHaveValue(906)
+    })
+
+    it('Manually editing Total Charges stops it from being overwritten by a subsequent Monthly Charges/Tenure Months change', async () => {
+      const user = userEvent.setup()
+      renderApp(<ScorePage />)
+
+      const tenureInput = screen.getByRole('spinbutton', { name: /^tenure months/i })
+      const monthlyInput = screen.getByRole('spinbutton', { name: /^monthly charges/i })
+      const totalInput = screen.getByRole('spinbutton', { name: /^total charges/i })
+
+      // Manual edit on Total Charges
+      await user.clear(totalInput)
+      await user.type(totalInput, '500')
+      expect(totalInput).toHaveValue(500)
+
+      // Subsequent change on Monthly Charges should NOT overwrite Total Charges
+      await user.clear(monthlyInput)
+      await user.type(monthlyInput, '100')
+
+      expect(totalInput).toHaveValue(500)
+
+      // Subsequent change on Tenure Months should NOT overwrite Total Charges
+      await user.clear(tenureInput)
+      await user.type(tenureInput, '10')
+
+      expect(totalInput).toHaveValue(500)
+    })
+
+    it('"Reset to calculated value" recomputes and re-enables auto-calc', async () => {
+      const user = userEvent.setup()
+      renderApp(<ScorePage />)
+
+      const tenureInput = screen.getByRole('spinbutton', { name: /^tenure months/i })
+      const monthlyInput = screen.getByRole('spinbutton', { name: /^monthly charges/i })
+      const totalInput = screen.getByRole('spinbutton', { name: /^total charges/i })
+
+      await user.clear(tenureInput)
+      await user.type(tenureInput, '5')
+
+      await user.clear(monthlyInput)
+      await user.type(monthlyInput, '80')
+
+      // Manually edit Total Charges
+      await user.clear(totalInput)
+      await user.type(totalInput, '999')
+      expect(totalInput).toHaveValue(999)
+
+      // Reset button should now be visible
+      const resetBtn = screen.getByRole('button', { name: /reset to calculated value/i })
+      expect(resetBtn).toBeInTheDocument()
+
+      await user.click(resetBtn)
+
+      // Total Charges should recompute to 5 * 80 = 400
+      expect(totalInput).toHaveValue(400)
+      expect(screen.queryByRole('button', { name: /reset to calculated value/i })).not.toBeInTheDocument()
+
+      // Subsequent change should now auto-calculate again
+      await user.clear(monthlyInput)
+      await user.type(monthlyInput, '90')
+      // 5 * 90 = 450
+      expect(totalInput).toHaveValue(450)
+    })
+
+    it('__totalChargesTouched is not present in the payload sent to POST /api/score', async () => {
+      const user = userEvent.setup()
+      let capturedPayload: Record<string, unknown> | null = null
+
+      server.use(
+        http.post('/api/score', async ({ request }) => {
+          capturedPayload = (await request.json()) as Record<string, unknown>
+          return HttpResponse.json(scoreFixture.response_example)
+        }),
+      )
+
+      renderApp(<ScorePage />)
+      const totalInput = screen.getByRole('spinbutton', { name: /^total charges/i })
+      await user.clear(totalInput)
+      await user.type(totalInput, '250')
+
+      const submitBtn = screen.getByRole('button', { name: /calculate score/i })
+      await user.click(submitBtn)
+
+      await waitFor(() => expect(capturedPayload).not.toBeNull())
+      expect(capturedPayload).not.toHaveProperty('__totalChargesTouched')
+      expect(capturedPayload).toHaveProperty('Total Charges', 250)
+    })
+  })
+
+  describe('Preview Note Generation', () => {
+    it('generates an AI preview note when button clicked, with no Approve/Reject buttons', async () => {
+      const user = userEvent.setup()
+      renderApp(<ScorePage />)
+
+      // Calculate score first
+      const submitBtn = screen.getByRole('button', { name: /calculate score/i })
+      await user.click(submitBtn)
+
+      await waitFor(() => {
+        expect(screen.getByText(/risk assessment/i)).toBeInTheDocument()
+      })
+
+      // Preview note card is visible
+      expect(screen.getByText(/preview note/i)).toBeInTheDocument()
+      expect(screen.getByText(/hypothetical profile — not a real customer, nothing is recorded/i)).toBeInTheDocument()
+
+      // Click Generate note with AI
+      const genBtn = screen.getByRole('button', { name: /generate note with ai/i })
+      await user.click(genBtn)
+
+      await waitFor(() => {
+        expect(screen.getByText(/suggested talk track/i)).toBeInTheDocument()
+      })
+
+      // Verify no Approve or Reject buttons exist anywhere on the page
+      expect(screen.queryByRole('button', { name: /approve/i })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /reject/i })).not.toBeInTheDocument()
+    })
+  })
 })

@@ -23,6 +23,7 @@ export interface ScoreFormData {
   'Monthly Charges': number
   'Total Charges': number
   cltv: number
+  __totalChargesTouched?: boolean
 }
 
 export const INTERNET_ADDONS = [

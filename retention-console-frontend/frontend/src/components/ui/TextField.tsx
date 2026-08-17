@@ -3,6 +3,7 @@ import { cn } from '@/lib/cn'
 
 export interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string
+  labelAccessory?: React.ReactNode
   error?: string
   hint?: string
   required?: boolean
@@ -10,6 +11,7 @@ export interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export function TextField({
   label,
+  labelAccessory,
   hint,
   error,
   required,
@@ -22,14 +24,17 @@ export function TextField({
 
   return (
     <div className="space-y-1">
-      <label htmlFor={id} className="block text-xs font-medium text-ink-2">
-        {label}
-        {required && (
-          <span className="ml-1 text-danger" aria-hidden="true">
-            *
-          </span>
-        )}
-      </label>
+      <div className="flex items-center justify-between">
+        <label htmlFor={id} className="block text-xs font-medium text-ink-2">
+          {label}
+          {required && (
+            <span className="ml-1 text-danger" aria-hidden="true">
+              *
+            </span>
+          )}
+        </label>
+        {labelAccessory}
+      </div>
       <input
         id={id}
         aria-invalid={!!error}

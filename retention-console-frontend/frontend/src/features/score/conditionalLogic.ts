@@ -49,6 +49,24 @@ export function applyConditionalLogic<K extends keyof ScoreFormData>(
     }
   }
 
+  // Rule C: Monthly Charges or Tenure Months changing recomputes Total Charges,
+  // UNLESS the agent has manually edited Total Charges themselves (tracked by
+  // the caller — see `totalChargesTouched` below). Total Charges stays
+  // editable; this only supplies a sensible default, it does not lock the
+  // field the way Rules A/B lock the internet add-ons.
+  if (
+    (changedField === 'Monthly Charges' || changedField === 'Tenure Months') &&
+    !prevState.__totalChargesTouched
+  ) {
+    const monthly = Number(nextState['Monthly Charges']) || 0
+    const tenure = Number(nextState['Tenure Months']) || 0
+    nextState['Total Charges'] = Math.round(monthly * tenure * 100) / 100
+  }
+
+  if (changedField === 'Total Charges') {
+    nextState.__totalChargesTouched = true
+  }
+
   return nextState
 }
 

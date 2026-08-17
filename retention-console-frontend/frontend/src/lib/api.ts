@@ -4,7 +4,9 @@ import type {
   ApiErrorBody,
   CatalogResponse,
   CustomerDetail,
+  NarrateResponse,
   QueueResponse,
+  QueueStatusFilter,
   ScoreRequest,
   ScoreResponse,
   SummaryResponse,
@@ -59,11 +61,20 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  queue: (page = 1, pageSize = 40) =>
-    request<QueueResponse>(`/queue?page=${page}&page_size=${pageSize}`),
+  queue: (page = 1, pageSize = 40, status: QueueStatusFilter = 'pending') =>
+    request<QueueResponse>(`/queue?status=${status}&page=${page}&page_size=${pageSize}`),
   customer: (id: string) => request<CustomerDetail>(`/customers/${encodeURIComponent(id)}`),
   summary: () => request<SummaryResponse>('/summary'),
   catalog: () => request<CatalogResponse>('/catalog'),
+  /**
+   * Runs the real pipeline for one customer, live. Takes 5-15 seconds against
+   * Gemini; the caller must show progress.
+   */
+  narrate: (id: string, opts?: { force?: boolean }) =>
+    request<NarrateResponse>(
+      `/customers/${encodeURIComponent(id)}/narrate${opts?.force ? '?force=true' : ''}`,
+      { method: 'POST' },
+    ),
   act: (id: string, body: ActionRequest) =>
     request<ActionResponse>(`/customers/${encodeURIComponent(id)}/action`, {
       method: 'POST',
@@ -74,4 +85,12 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(body),
     }),
+  scoreNarrate: (body: ScoreRequest, opts?: { provider?: string }) =>
+    request<NarrateResponse>(
+      `/score/narrate${opts?.provider ? `?provider=${encodeURIComponent(opts.provider)}` : ''}`,
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+      },
+    ),
 }

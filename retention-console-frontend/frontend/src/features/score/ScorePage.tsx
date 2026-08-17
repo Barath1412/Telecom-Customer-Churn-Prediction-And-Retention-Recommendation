@@ -1,30 +1,41 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { api, ApiError } from '@/lib/api'
 import { ScoreForm } from './ScoreForm'
 import { assertNoQuarantinedFields, LeakageGuardError } from './leakageGuard'
 import type { ScoreFormData } from './fieldSpec'
-import type { ScoreResponse } from '@/types/api'
+import type { NarrateResponse, Narration, ScoreResponse } from '@/types/api'
 import { Card } from '@/components/ui/Card'
 import { RiskBadge } from '@/components/RiskBadge'
 import { LeverChips } from '@/components/LeverChips'
 import { EmptyState } from '@/components/EmptyState'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { Button } from '@/components/ui/Button'
 import { usd, deltaWithRange } from '@/lib/format'
 
 export function ScorePage() {
   const [serverFieldErrors, setServerFieldErrors] = useState<Record<string, string>>({})
   const [generalError, setGeneralError] = useState<string | null>(null)
+  const [lastScoredForm, setLastScoredForm] = useState<ScoreFormData | null>(null)
+  const [narrateData, setNarrateData] = useState<Narration | null>(null)
+  const [narrateSeconds, setNarrateSeconds] = useState(0)
+  const narrateTimer = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const mutation = useMutation<ScoreResponse, Error, ScoreFormData>({
     mutationFn: async (formData) => {
       setServerFieldErrors({})
       setGeneralError(null)
 
-      const payload: Record<string, string | number> = { ...formData }
+      const cleanData: Record<string, unknown> = { ...formData }
+      delete cleanData.__totalChargesTouched
+      const payload = cleanData as Record<string, string | number>
       assertNoQuarantinedFields(payload)
 
       return api.score(payload)
+    },
+    onSuccess: (_, formData) => {
+      setLastScoredForm(formData)
+      setNarrateData(null)
     },
     onError: (err) => {
       if (err instanceof LeakageGuardError) {
@@ -54,6 +65,34 @@ export function ScorePage() {
       setGeneralError(err.message || 'An unexpected error occurred.')
     },
   })
+
+  const narrateMutation = useMutation<NarrateResponse, Error, ScoreFormData>({
+    mutationFn: async (formData) => {
+      const cleanData: Record<string, unknown> = { ...formData }
+      delete cleanData.__totalChargesTouched
+      const payload = cleanData as Record<string, string | number>
+      assertNoQuarantinedFields(payload)
+      return api.scoreNarrate(payload)
+    },
+    onSuccess: (res) => {
+      setNarrateData(res.narration)
+    },
+  })
+
+  const isNarrating = narrateMutation.isPending
+
+  useEffect(() => {
+    if (isNarrating) {
+      setNarrateSeconds(0)
+      narrateTimer.current = setInterval(() => setNarrateSeconds((s) => s + 1), 1000)
+    } else if (narrateTimer.current) {
+      clearInterval(narrateTimer.current)
+      narrateTimer.current = null
+    }
+    return () => {
+      if (narrateTimer.current) clearInterval(narrateTimer.current)
+    }
+  }, [isNarrating])
 
   return (
     <div className="space-y-6">
@@ -177,6 +216,80 @@ export function ScorePage() {
                     body="No retention offer in the catalog met margin and policy eligibility criteria for this profile."
                   />
                 )}
+              </Card>
+
+              {/* Preview Note Card (Hypothetical) */}
+              <Card
+                title="Preview note"
+                subtitle="Hypothetical profile — not a real customer, nothing is recorded"
+              >
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      loading={isNarrating}
+                      onClick={() => {
+                        if (lastScoredForm) {
+                          narrateMutation.mutate(lastScoredForm)
+                        }
+                      }}
+                      disabled={isNarrating || !lastScoredForm}
+                      aria-label={isNarrating ? 'Generating preview note' : 'Generate note with AI'}
+                    >
+                      {isNarrating ? `Generating… ${narrateSeconds}s` : 'Generate note with AI'}
+                    </Button>
+
+                    {isNarrating && (
+                      <p className="text-micro text-ink-3" role="status">
+                        Running the pipeline: score → levers → offer → evidence → model → six validators.
+                        This normally takes 5–15 seconds.
+                      </p>
+                    )}
+
+                    {narrateMutation.isError && (
+                      <p className="text-micro text-danger" role="alert">
+                        {narrateMutation.error.message || 'Generation failed.'}
+                      </p>
+                    )}
+                  </div>
+
+                  {narrateData ? (
+                    <div className="space-y-4 rounded-lg border border-line-strong bg-surface p-4">
+                      {narrateData.summary && (
+                        <div>
+                          <h4 className="text-micro font-semibold uppercase tracking-wider text-ink-3">Summary</h4>
+                          <p className="mt-1 text-xs text-ink">{narrateData.summary}</p>
+                        </div>
+                      )}
+                      {narrateData.why && (
+                        <div>
+                          <h4 className="text-micro font-semibold uppercase tracking-wider text-ink-3">Why this recommendation</h4>
+                          <p className="mt-1 text-xs text-ink">{narrateData.why}</p>
+                        </div>
+                      )}
+                      {narrateData.talk_track && (
+                        <div>
+                          <h4 className="text-micro font-semibold uppercase tracking-wider text-ink-3">Suggested talk track</h4>
+                          <blockquote className="mt-1 border-l-2 border-primary/50 pl-3 text-xs italic text-ink">
+                            &ldquo;{narrateData.talk_track}&rdquo;
+                          </blockquote>
+                        </div>
+                      )}
+                      {narrateData.uncertainty_note && (
+                        <div className="rounded border border-line bg-canvas p-2.5">
+                          <p className="text-micro text-ink-3">{narrateData.uncertainty_note}</p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    !isNarrating && (
+                      <p className="text-xs text-ink-3">
+                        Click above to generate an AI-assisted agent note and talk track for this hypothetical scenario.
+                      </p>
+                    )
+                  )}
+                </div>
               </Card>
             </div>
           )}

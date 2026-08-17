@@ -9,7 +9,7 @@ import type { QueueItem } from '@/types/api'
 const col = createColumnHelper<QueueItem>()
 
 export const columns = [
-  col.accessor('rank', {
+  col.accessor('queue_position', {
     header: '#',
     cell: (c) => <span className="num">{c.getValue()}</span>,
   }),
@@ -37,8 +37,35 @@ export const columns = [
   }),
   col.accessor((r) => r.recommendation.offer_name, {
     id: 'offer',
-    header: 'Recommended offer',
+    header: 'Offer',
     cell: (c) => {
+      const decision = c.row.original.decision
+      if (decision) {
+        if (decision.action === 'approve' || decision.action === 'edit') {
+          return (
+            <div className="space-y-0.5 text-xs">
+              <span className="font-medium text-ink whitespace-nowrap">
+                Approved — offered: {decision.offered_offer_name ?? c.getValue() ?? '—'}
+              </span>
+              {decision.offer_changed && (
+                <p className="text-micro text-ink-3 italic whitespace-nowrap">
+                  (agent changed from the model&apos;s original recommendation)
+                </p>
+              )}
+            </div>
+          )
+        }
+        if (decision.action === 'reject') {
+          return (
+            <div className="space-y-0.5 text-xs">
+              <span className="font-medium text-ink whitespace-nowrap">
+                Rejected — {decision.reason_code ?? 'no reason'}
+              </span>
+            </div>
+          )
+        }
+      }
+
       const name = c.getValue()
       return name ? (
         <span className="text-xs whitespace-nowrap">{name}</span>
