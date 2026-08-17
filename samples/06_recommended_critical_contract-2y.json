@@ -1,0 +1,29 @@
+{
+  "_comment": "An offer was chosen. Full path: retrieve_evidence -> narrate -> validate -> human_review -> persist.  Risk band critical, EV $676.24.",
+  "_expected_status": "recommended",
+  "_expected_offer_id": "OFF-CONTRACT-2Y",
+  "_expected_expected_value": 676.24,
+  "customer_id": "2754-SDJRD",
+  "cltv": 5157.0,
+  "customer": {
+    "Gender": "Female",
+    "Senior Citizen": "Yes",
+    "Partner": "No",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "Yes",
+    "Internet Service": "Fiber optic",
+    "Online Security": "No",
+    "Online Backup": "No",
+    "Device Protection": "No",
+    "Tech Support": "Yes",
+    "Streaming TV": "Yes",
+    "Streaming Movies": "Yes",
+    "Paperless Billing": "Yes",
+    "Payment Method": "Credit card (automatic)",
+    "Contract": "Month-to-month",
+    "Tenure Months": 8,
+    "Monthly Charges": 100.15,
+    "Total Charges": 908.55
+  }
+}

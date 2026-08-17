@@ -1,0 +1,29 @@
+{
+  "_comment": "An offer was chosen. Full path: retrieve_evidence -> narrate -> validate -> human_review -> persist.  Risk band critical, EV $542.29.",
+  "_expected_status": "recommended",
+  "_expected_offer_id": "OFF-CONTRACT-1Y",
+  "_expected_expected_value": 542.29,
+  "customer_id": "1768-ZAIFU",
+  "cltv": 5688.0,
+  "customer": {
+    "Gender": "Female",
+    "Senior Citizen": "Yes",
+    "Partner": "No",
+    "Dependents": "No",
+    "Phone Service": "No",
+    "Multiple Lines": "No phone service",
+    "Internet Service": "DSL",
+    "Online Security": "No",
+    "Online Backup": "No",
+    "Device Protection": "No",
+    "Tech Support": "No",
+    "Streaming TV": "No",
+    "Streaming Movies": "No",
+    "Paperless Billing": "Yes",
+    "Payment Method": "Electronic check",
+    "Contract": "Month-to-month",
+    "Tenure Months": 1,
+    "Monthly Charges": 25.2,
+    "Total Charges": 25.2
+  }
+}

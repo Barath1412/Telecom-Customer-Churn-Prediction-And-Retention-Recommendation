@@ -1,0 +1,29 @@
+{
+  "_comment": "An offer was chosen. Full path: retrieve_evidence -> narrate -> validate -> human_review -> persist.  Risk band high, EV $45.57.",
+  "_expected_status": "recommended",
+  "_expected_offer_id": "OFF-CONTRACT-1Y",
+  "_expected_expected_value": 45.57,
+  "customer_id": "7571-YXDAD",
+  "cltv": 2078.0,
+  "customer": {
+    "Gender": "Female",
+    "Senior Citizen": "No",
+    "Partner": "No",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "Yes",
+    "Internet Service": "Fiber optic",
+    "Online Security": "No",
+    "Online Backup": "No",
+    "Device Protection": "No",
+    "Tech Support": "No",
+    "Streaming TV": "No",
+    "Streaming Movies": "No",
+    "Paperless Billing": "No",
+    "Payment Method": "Credit card (automatic)",
+    "Contract": "Month-to-month",
+    "Tenure Months": 2,
+    "Monthly Charges": 74.9,
+    "Total Charges": 147.15
+  }
+}
