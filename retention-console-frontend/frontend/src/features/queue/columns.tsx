@@ -35,7 +35,7 @@ export const columns = [
     header: 'CLTV',
     cell: (c) => <span className="num">{usd(c.getValue())}</span>,
   }),
-  col.accessor((r) => r.recommendation.offer_name, {
+  col.accessor((r) => r.recommendation?.offer_name ?? null, {
     id: 'offer',
     header: 'Offer',
     cell: (c) => {
@@ -67,26 +67,46 @@ export const columns = [
       }
 
       const name = c.getValue()
-      return name ? (
-        <span className="text-xs whitespace-nowrap">{name}</span>
+      const status = c.row.original.status
+      if (name) {
+        return <span className="text-xs whitespace-nowrap">{name}</span>
+      }
+      if (status === 'no_action_needed') {
+        return <span className="text-xs text-ink-3 whitespace-nowrap">Low risk — no action</span>
+      }
+      if (status === 'review_no_profitable_offer') {
+        return <span className="text-xs text-ink-3 whitespace-nowrap">Unprofitable offer</span>
+      }
+      if (status === 'review_no_applicable_offer') {
+        return <span className="text-xs text-ink-3 whitespace-nowrap">No applicable offer</span>
+      }
+      return <span className="text-xs text-ink-3 whitespace-nowrap">No eligible offer</span>
+    },
+  }),
+  col.accessor((r) => r.recommendation?.cost ?? null, {
+    id: 'cost',
+    header: 'Cost',
+    cell: (c) => {
+      const val = c.getValue()
+      return val !== null && val !== undefined ? (
+        <span className="num">{usd(val)}</span>
       ) : (
-        <span className="text-xs text-ink-3 whitespace-nowrap">No eligible offer</span>
+        <span className="text-xs text-ink-3">—</span>
       )
     },
   }),
-  col.accessor((r) => r.recommendation.cost, {
-    id: 'cost',
-    header: 'Cost',
-    cell: (c) => <span className="num">{usd(c.getValue())}</span>,
-  }),
-  col.accessor((r) => r.recommendation.expected_value, {
+  col.accessor((r) => r.recommendation?.expected_value ?? null, {
     id: 'ev',
     header: 'Expected value',
     cell: (c) => {
       const rec = c.row.original.recommendation
+      const val = c.getValue()
+      if (!rec || val === null || val === undefined) {
+        return <span className="text-xs text-ink-3">—</span>
+      }
       return (
         <div className="flex items-baseline gap-1.5 whitespace-nowrap">
-          <span className="num font-semibold">{usd(c.getValue())}</span>
+          <span className="num font-semibold">{usd(val)}</span>
           <span className="text-micro text-ink-3">
             {deltaWithRange(rec.delta_prior, rec.delta_ci)} · {rec.delta_source ?? 'unsourced'}
           </span>

@@ -10,6 +10,7 @@ import type {
   ScoreRequest,
   ScoreResponse,
   SummaryResponse,
+  UploadBatchResponse,
 } from '@/types/api'
 
 const BASE = import.meta.env.VITE_API_BASE ?? '/api'
@@ -93,4 +94,26 @@ export const api = {
         body: JSON.stringify(body),
       },
     ),
+  uploadBatch: async (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const res = await fetch(`${BASE}/queue/upload`, {
+      method: 'POST',
+      body: formData,
+    })
+    if (!res.ok) {
+      let body: ApiErrorBody['error'] = {
+        code: `HTTP_${res.status}`,
+        message: res.statusText || 'Upload failed',
+        request_id: 'err_upload',
+      }
+      try {
+        body = ((await res.json()) as ApiErrorBody).error ?? body
+      } catch {
+        /* fallback */
+      }
+      throw new ApiError(res.status, body)
+    }
+    return (await res.json()) as UploadBatchResponse
+  },
 }

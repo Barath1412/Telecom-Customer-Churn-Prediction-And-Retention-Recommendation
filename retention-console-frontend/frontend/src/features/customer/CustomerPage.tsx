@@ -48,6 +48,8 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
   }
 
   const isControl = data.arm === 'control'
+  const decision = data.decision
+  const isActioned = !!decision
   const rec = data.recommendation
   const hasOffer = !!rec.offer_id
   const hasAlternatives = data.alternatives.length > 0
@@ -66,6 +68,51 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
         <RiskBadge band={data.risk.risk_band} p={data.risk.p_churn} />
       </div>
 
+      {/* Decision Banner for Actioned Customers */}
+      {isActioned && (
+        decision.action === 'reject' ? (
+          <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-amber-300">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 font-bold text-sm">✕</span>
+                <div>
+                  <h3 className="text-sm font-semibold text-amber-300">
+                    Rejected — Reason: <span className="font-mono">{decision.reason_code ?? 'no reason'}</span>
+                  </h3>
+                  <p className="mt-0.5 text-xs text-amber-200/80">
+                    Recorded on {new Date(decision.acted_at).toLocaleString()} by <span className="font-mono font-medium">{decision.actor}</span>.
+                    {decision.note && ` Note: "${decision.note}"`}
+                  </p>
+                </div>
+              </div>
+              <span className="rounded-md border border-amber-500/30 bg-amber-500/20 px-2.5 py-1 text-micro font-semibold uppercase tracking-wider text-amber-300">
+                Decision Finalized
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-emerald-300">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm">✓</span>
+                <div>
+                  <h3 className="text-sm font-semibold text-emerald-300">
+                    Approved — Agreed Offer: {decision.offered_offer_name ?? rec.offer_name ?? '—'}
+                  </h3>
+                  <p className="mt-0.5 text-xs text-emerald-200/80">
+                    Recorded on {new Date(decision.acted_at).toLocaleString()} by <span className="font-mono font-medium">{decision.actor}</span>.
+                    {decision.offer_changed && " (Agent customized from model recommendation)"}
+                  </p>
+                </div>
+              </div>
+              <span className="rounded-md border border-emerald-500/30 bg-emerald-500/20 px-2.5 py-1 text-micro font-semibold uppercase tracking-wider text-emerald-300">
+                Decision Finalized
+              </span>
+            </div>
+          </div>
+        )
+      )}
+
       {/* 2-Column Responsive Layout (2/1 split at lg) */}
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Left Column (2 cols): Recommendation, Agent Note, Attribution */}
@@ -83,7 +130,7 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
             {rec.offer_id ? (
               <>
                 <EVBreakdown risk={data.risk} value={data.value} rec={rec} />
-                {selectedOfferId && rec.offer_id && selectedOfferId !== rec.offer_id && (
+                {selectedOfferId && rec.offer_id && selectedOfferId !== rec.offer_id && !isActioned && (
                   <div className="mt-3 flex items-center justify-between border-t border-line-subtle pt-2">
                     <span className="text-xs text-ink-3">Viewing alternative offer in note</span>
                     <Button
@@ -100,7 +147,7 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
                     This customer is in the control group. This is what the model would recommend — it is not presented and no action is taken, so the outcome can be compared against customers who were contacted.
                   </p>
                 )}
-                {hasAlternatives && (
+                {hasAlternatives && !isActioned && (
                   <div className="mt-4 space-y-2 border-t border-line pt-4">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-3">
                       Alternative Offers
@@ -170,7 +217,7 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
           <Card title="Agent note" subtitle="The only AI-generated text in this product">
             <NarrationPanel
               narration={data.narration}
-              customerId={isControl ? undefined : data.customer_id}
+              customerId={isControl || isActioned ? undefined : data.customer_id}
               isControl={isControl}
               selectedOfferId={selectedOfferId}
               recommendedOfferId={rec.offer_id}
@@ -233,6 +280,18 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
             </span>
           </div>
         </aside>
+      ) : isActioned ? (
+        <aside
+          role="status"
+          aria-label="Action status"
+          className="fixed bottom-0 left-0 right-0 z-10 border-t border-line bg-surface/95 px-6 py-3 backdrop-blur"
+        >
+          <div className="mx-auto flex max-w-7xl items-center justify-between">
+            <span className="text-sm text-ink-3 font-medium">
+              Decision logged in audit trail — no further action required.
+            </span>
+          </div>
+        </aside>
       ) : data.actionable === false ? (
         <aside
           role="status"
@@ -249,14 +308,14 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
         <ActionBar
           hasOffer={hasOffer}
           hasAlternatives={hasAlternatives}
-          onApprove={() => setPendingAction('approve')}
+          onApprove={() => setPendingAction(selectedOfferId && rec.offer_id && selectedOfferId !== rec.offer_id ? 'edit' : 'approve')}
           onEdit={() => setPendingAction('edit')}
           onReject={() => setPendingAction('reject')}
         />
       )}
 
       {/* Audit Confirmation Dialog */}
-      {!isControl && data.actionable !== false && (
+      {!isControl && !isActioned && data.actionable !== false && (
         <ConfirmDialog
           open={pendingAction !== null}
           onClose={() => setPendingAction(null)}
