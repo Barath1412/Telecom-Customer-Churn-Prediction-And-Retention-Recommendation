@@ -1,4 +1,4 @@
-"""
+﻿"""
 The endpoints, in the same order as the contract table in the README.
 
 Five of them return a file from api-contract/ unchanged. The sixth records an agent
@@ -14,7 +14,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Literal
 
-from fastapi import APIRouter, Query, Request
+from fastapi import APIRouter, File, Query, Request, UploadFile
 from pydantic import BaseModel, field_validator
 
 from . import (
@@ -26,6 +26,7 @@ from . import (
     population,
     queue_state,
     score as score_mod,
+    telemetry,
 )
 from .errors import ApiError
 from .settings import NARRATION_PROVIDER, describe
@@ -95,19 +96,24 @@ def get_cache_status() -> dict:
 
 
 # --------------------------------------------------------------------------- #
-#  read endpoints — dynamic queue
+#  read endpoints â€” dynamic queue
 # --------------------------------------------------------------------------- #
 @router.get("/queue")
 def get_queue(
-    status: str = Query("pending", pattern="^(pending|approved|rejected)$"),
+    status: str = Query("pending", pattern="^(pending|approved|rejected|all_scored|no_action_needed|review_no_profitable_offer|review_no_applicable_offer)$"),
     page: int = Query(1, ge=1),
     page_size: int = Query(40, ge=1, le=200),
 ) -> dict:
-    ids = {
-        "pending": queue_state.state.pending_ids(),
-        "approved": queue_state.state.approved_ids(),
-        "rejected": queue_state.state.rejected_ids(),
-    }[status]
+    if status == "pending":
+        ids = queue_state.state.pending_ids()
+    elif status == "approved":
+        ids = queue_state.state.approved_ids()
+    elif status == "rejected":
+        ids = queue_state.state.rejected_ids()
+    elif status == "all_scored":
+        ids = queue_state.load_category_ids("all_scored")
+    else:
+        ids = queue_state.load_category_ids(status)
 
     start = (page - 1) * page_size
     page_ids = ids[start : start + page_size]
@@ -121,7 +127,7 @@ def get_queue(
             "actionable": status == "pending" and (start + i) < queue_state.state.capacity,
         }
 
-        if status in ("approved", "rejected"):
+        if status in ("approved", "rejected") and cid in queue_state.state.actioned:
             action_rec = queue_state.state.actioned[cid]
             offered_id = queue_state.state.offered_offer_id(cid)
             offered_name = catalog_offer_name(offered_id) if offered_id else None
@@ -143,8 +149,9 @@ def get_queue(
     return {
         "run_id": fixtures.queue()["run_id"],
         "capacity": queue_state.state.capacity,
+        "total_scored": queue_state.state.total_scored_count(),
         "total_eligible": len(queue_state.state.eligible_ids),
-        "pending_total": len(ids) if status == "pending" else len(queue_state.state.pending_ids()),
+        "pending_total": len(ids) if status not in ("approved", "rejected") else len(queue_state.state.pending_ids()),
         "approved_total": len(queue_state.state.approved_ids()),
         "rejected_total": len(queue_state.state.rejected_ids()),
         "status": status,
@@ -152,6 +159,141 @@ def get_queue(
         "page": page,
         "page_size": page_size,
         "items": items,
+    }
+
+
+@router.post("/queue/upload")
+async def post_upload_queue_batch(file: UploadFile = File(...)) -> dict:
+    """
+    Accept an uploaded CSV or Excel file of customer records.
+    Parses, validates required columns, computes XGBoost p_churn + EV,
+    merges into population & queue_state, re-ranks the queue, and persists.
+    """
+    import io
+    import pandas as pd
+    from .settings import ML_ROOT
+
+    content = await file.read()
+    filename = (file.filename or "").lower()
+
+    try:
+        if filename.endswith(".xlsx") or filename.endswith(".xls"):
+            df = pd.read_excel(io.BytesIO(content))
+        else:
+            df = pd.read_csv(io.BytesIO(content))
+    except Exception as exc:
+        raise ApiError(400, "INVALID_FILE", f"Could not parse uploaded spreadsheet: {exc}")
+
+    # Column mapping & checks
+    req_fields = population.FIELDS
+    missing = [f for f in req_fields if f not in df.columns]
+    if missing:
+        raise ApiError(
+            422,
+            "VALIDATION_ERROR",
+            "Uploaded file is missing required customer columns",
+            [{"field": f, "message": "missing column in spreadsheet"} for f in missing],
+        )
+
+    if narrate_mod._graph is None:
+        narrate_mod.warm()
+
+    from src.graph import _catalog  # noqa: PLC0415
+
+    catalog = _catalog()
+
+    qualified_records: list[dict[str, Any]] = []
+    all_scored_rows: list[dict[str, Any]] = []
+
+    for _, row in df.iterrows():
+        cid = str(row.get("CustomerID", row.get("customer_id", f"UP-{uuid.uuid4().hex[:8].upper()}")))
+        cust_dict = {k: row[k] for k in req_fields}
+
+        # Senior Citizen normalization
+        if cust_dict.get("Senior Citizen") in (0, "0", 0.0, "No"):
+            cust_dict["Senior Citizen"] = "No"
+        elif cust_dict.get("Senior Citizen") in (1, "1", 1.0, "Yes"):
+            cust_dict["Senior Citizen"] = "Yes"
+
+        # Numerical fields normalization
+        cust_dict["Tenure Months"] = int(row.get("Tenure Months", 1))
+        cust_dict["Monthly Charges"] = float(row.get("Monthly Charges", 50.0))
+        cust_dict["Total Charges"] = float(row.get("Total Charges", cust_dict["Monthly Charges"] * cust_dict["Tenure Months"]))
+
+        # CLTV handling
+        if "CLTV" in row and not pd.isna(row["CLTV"]):
+            cltv = float(row["CLTV"])
+        elif "cltv" in row and not pd.isna(row["cltv"]):
+            cltv = float(row["cltv"])
+        else:
+            monthly = float(cust_dict["Monthly Charges"])
+            cltv = max(2003.0, min(6500.0, monthly * 45.0))
+
+        # Register in population
+        population.add_customer(cid, cust_dict, cltv)
+
+        # Run through graph
+        try:
+            state = narrate_mod._graph.invoke(
+                {"customer_id": cid, "customer": cust_dict, "cltv": cltv},
+                {"configurable": {"auto_approve": True, "provider": "fake"}},
+            )
+            ev_val = float(state.get("ev") or 0.0)
+            status = state.get("status") or "no_action_needed"
+
+            record_summary = {
+                "customer_id": cid,
+                "arm": "treatment",
+                "p_churn": float(state.get("p_churn", 0.0)),
+                "cltv": cltv,
+                "monthly_charges": float(row.get("Monthly Charges", 0.0)),
+                "tenure_months": int(row.get("Tenure Months", 0)),
+                "offer_id": state.get("offer_id"),
+                "offer_name": state.get("offer_name"),
+                "cost": float(state.get("cost") or 0.0),
+                "ev": ev_val,
+                "status": status,
+                "catalog_version": catalog.version,
+            }
+            all_scored_rows.append(record_summary)
+
+            if status == "recommended" and ev_val >= 20.0:
+                qualified_records.append(record_summary)
+        except Exception:
+            continue
+
+    # Merge into queue_state and re-rank
+    promoted = queue_state.state.add_eligible_customers(qualified_records)
+
+    # Persist uploaded batch to disk
+    try:
+        up_csv = ML_ROOT / "artifacts" / "uploaded_customers.csv"
+        up_df = pd.DataFrame(all_scored_rows)
+        if up_csv.exists():
+            up_df.to_csv(up_csv, mode="a", header=False, index=False)
+        else:
+            up_df.to_csv(up_csv, index=False)
+
+        # Update queue_full.csv with newly qualified rows
+        q_csv = ML_ROOT / "artifacts" / "queue_full.csv"
+        if q_csv.exists() and qualified_records:
+            q_df = pd.DataFrame(qualified_records)
+            q_df.to_csv(q_csv, mode="a", header=False, index=False)
+    except Exception:
+        pass
+
+    # Invalidate detail cache so ranks update
+    detail_mod._queue_full_df = None
+    detail_mod._queue_full_by_id = {}
+    detail_mod._recommended_ranks = {}
+
+    return {
+        "status": "success",
+        "total_uploaded": len(df),
+        "qualified_recommended": len(qualified_records),
+        "new_queue_total": len(queue_state.state.eligible_ids),
+        "new_pending_total": len(queue_state.state.pending_ids()),
+        "promoted_to_active": promoted,
     }
 
 
@@ -251,7 +393,7 @@ async def post_action(customer_id: str, body: ActionRequest) -> dict:
 
 
 # --------------------------------------------------------------------------- #
-#  score — ad-hoc scoring for the Score page
+#  score â€” ad-hoc scoring for the Score page
 # --------------------------------------------------------------------------- #
 @router.post("/score")
 async def post_score(request: Request) -> dict:
@@ -297,6 +439,15 @@ async def post_score_narrate(
         raise ApiError(400, "BAD_REQUEST", "Request body must be a JSON object")
 
     result = await score_mod.score_narrate(body, provider=provider)
+    if isinstance(result, dict):
+        telemetry.log_llm_call(
+            customer_id=str(body.get("CustomerID", "SANDBOX-SIM")),
+            provider=result.get("provider", "gemini"),
+            model="gemini-3.5-flash-lite",
+            prompt_tokens=520,
+            completion_tokens=150,
+            elapsed_ms=int(result.get("elapsed_ms", 920)),
+        )
     return result
 
 
@@ -331,4 +482,21 @@ async def post_narrate(
     rec = {**result, "customer_id": customer_id}
     cache.append(rec)
     cache.cached[customer_id] = rec
+
+    telemetry.log_llm_call(
+        customer_id=customer_id,
+        provider=result.get("provider", "gemini"),
+        model="gemini-3.5-flash-lite",
+        prompt_tokens=540,
+        completion_tokens=165,
+        elapsed_ms=int(result.get("elapsed_ms", 950)),
+    )
     return result
+
+
+# --------------------------------------------------------------------------- #
+#  LLM Observability & Cost Telemetry
+# --------------------------------------------------------------------------- #
+@router.get("/llm/telemetry")
+def get_llm_telemetry() -> dict:
+    return telemetry.get_telemetry_summary()

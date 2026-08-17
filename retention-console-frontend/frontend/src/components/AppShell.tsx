@@ -7,6 +7,7 @@ const NAV = [
   { to: '/dashboard', label: 'Run summary', end: false },
   { to: '/catalog', label: 'Offer catalog', end: false },
   { to: '/score', label: 'Manual scoring', end: false },
+  { to: '/llm-analytics', label: 'LLM Analytics', end: false },
 ]
 
 export function AppShell() {
