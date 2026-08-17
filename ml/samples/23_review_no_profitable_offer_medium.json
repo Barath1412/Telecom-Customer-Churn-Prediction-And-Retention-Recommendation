@@ -1,0 +1,29 @@
+{
+  "_comment": "Above-average risk, offers applied, every one loses money. Path: explain_no_offer -> narrate -> validate -> human_review.  Risk 35.0%, CLTV $2,102.",
+  "_expected_status": "review_no_profitable_offer",
+  "_expected_offer_id": null,
+  "_expected_expected_value": 0.0,
+  "customer_id": "4329-YPDDQ",
+  "cltv": 2102.0,
+  "customer": {
+    "Gender": "Male",
+    "Senior Citizen": "No",
+    "Partner": "No",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "No",
+    "Internet Service": "Fiber optic",
+    "Online Security": "Yes",
+    "Online Backup": "Yes",
+    "Device Protection": "Yes",
+    "Tech Support": "Yes",
+    "Streaming TV": "Yes",
+    "Streaming Movies": "Yes",
+    "Paperless Billing": "Yes",
+    "Payment Method": "Bank transfer (automatic)",
+    "Contract": "Month-to-month",
+    "Tenure Months": 20,
+    "Monthly Charges": 108.2,
+    "Total Charges": 2203.7
+  }
+}
