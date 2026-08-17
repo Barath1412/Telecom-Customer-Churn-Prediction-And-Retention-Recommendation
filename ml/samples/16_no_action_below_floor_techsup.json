@@ -1,0 +1,30 @@
+{
+  "_comment": "WAS `recommended` before v5.1 at an expected value of $0.33, on a customer at 0.1477 risk -- barely half the portfolio average. Three offers applied; the best was worth 33 cents. Vetoed by the $20.00 minimum, and below the base rate, so no action is needed.",
+  "_expected_status": "no_action_needed",
+  "_expected_offer_id": null,
+  "_expected_expected_value": 0.0,
+  "customer_id": "0365-TRTPY",
+  "cltv": 5135.0,
+  "customer": {
+    "Gender": "Female",
+    "Senior Citizen": "No",
+    "Partner": "No",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "Yes",
+    "Internet Service": "Fiber optic",
+    "Online Security": "Yes",
+    "Online Backup": "Yes",
+    "Device Protection": "Yes",
+    "Tech Support": "No",
+    "Streaming TV": "No",
+    "Streaming Movies": "No",
+    "Paperless Billing": "No",
+    "Payment Method": "Bank transfer (automatic)",
+    "Contract": "Month-to-month",
+    "Tenure Months": 37,
+    "Monthly Charges": 91.2,
+    "Total Charges": 3382.3
+  },
+  "_expected_cost": null
+}

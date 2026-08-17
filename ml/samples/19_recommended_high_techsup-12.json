@@ -1,0 +1,29 @@
+{
+  "_comment": "An offer was chosen. Full path: retrieve_evidence -> narrate -> validate -> human_review -> persist.  Risk band high, EV $141.85.",
+  "_expected_status": "recommended",
+  "_expected_offer_id": "OFF-TECHSUP-12",
+  "_expected_expected_value": 141.85,
+  "customer_id": "3587-PMCOY",
+  "cltv": 4614.0,
+  "customer": {
+    "Gender": "Male",
+    "Senior Citizen": "No",
+    "Partner": "No",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "No",
+    "Internet Service": "Fiber optic",
+    "Online Security": "Yes",
+    "Online Backup": "No",
+    "Device Protection": "Yes",
+    "Tech Support": "No",
+    "Streaming TV": "Yes",
+    "Streaming Movies": "Yes",
+    "Paperless Billing": "Yes",
+    "Payment Method": "Electronic check",
+    "Contract": "One year",
+    "Tenure Months": 10,
+    "Monthly Charges": 98.9,
+    "Total Charges": 1064.95
+  }
+}

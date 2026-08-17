@@ -1,0 +1,29 @@
+{
+  "_comment": "An offer was chosen. Full path: retrieve_evidence -> narrate -> validate -> human_review -> persist.  Risk band critical, EV $91.18.",
+  "_expected_status": "recommended",
+  "_expected_offer_id": "OFF-BUNDLE-ALL",
+  "_expected_expected_value": 91.18,
+  "customer_id": "0871-URUWO",
+  "cltv": 2003.0,
+  "customer": {
+    "Gender": "Male",
+    "Senior Citizen": "No",
+    "Partner": "Yes",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "Yes",
+    "Internet Service": "Fiber optic",
+    "Online Security": "No",
+    "Online Backup": "No",
+    "Device Protection": "Yes",
+    "Tech Support": "No",
+    "Streaming TV": "Yes",
+    "Streaming Movies": "Yes",
+    "Paperless Billing": "Yes",
+    "Payment Method": "Credit card (automatic)",
+    "Contract": "Month-to-month",
+    "Tenure Months": 13,
+    "Monthly Charges": 102.25,
+    "Total Charges": 1359.0
+  }
+}

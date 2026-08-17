@@ -1,0 +1,29 @@
+{
+  "_comment": "Risk below the 26.54% base rate. Path: no_action -> persist. NO model call.  Risk 26.3%.",
+  "_expected_status": "no_action_needed",
+  "_expected_offer_id": null,
+  "_expected_expected_value": 0.0,
+  "customer_id": "2798-NYLMZ",
+  "cltv": 4111.0,
+  "customer": {
+    "Gender": "Male",
+    "Senior Citizen": "No",
+    "Partner": "Yes",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "Yes",
+    "Internet Service": "Fiber optic",
+    "Online Security": "Yes",
+    "Online Backup": "No",
+    "Device Protection": "Yes",
+    "Tech Support": "Yes",
+    "Streaming TV": "Yes",
+    "Streaming Movies": "Yes",
+    "Paperless Billing": "Yes",
+    "Payment Method": "Credit card (automatic)",
+    "Contract": "Two year",
+    "Tenure Months": 71,
+    "Monthly Charges": 108.55,
+    "Total Charges": 7616.0
+  }
+}

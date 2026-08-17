@@ -1,0 +1,29 @@
+{
+  "_comment": "An offer was chosen. Full path: retrieve_evidence -> narrate -> validate -> human_review -> persist.  Risk band low, EV $186.53.",
+  "_expected_status": "recommended",
+  "_expected_offer_id": "OFF-CONTRACT-2Y",
+  "_expected_expected_value": 186.53,
+  "customer_id": "8053-WWDRO",
+  "cltv": 5579.0,
+  "customer": {
+    "Gender": "Female",
+    "Senior Citizen": "No",
+    "Partner": "Yes",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "No",
+    "Internet Service": "No",
+    "Online Security": "No internet service",
+    "Online Backup": "No internet service",
+    "Device Protection": "No internet service",
+    "Tech Support": "No internet service",
+    "Streaming TV": "No internet service",
+    "Streaming Movies": "No internet service",
+    "Paperless Billing": "No",
+    "Payment Method": "Bank transfer (automatic)",
+    "Contract": "Month-to-month",
+    "Tenure Months": 6,
+    "Monthly Charges": 19.5,
+    "Total Charges": 146.3
+  }
+}

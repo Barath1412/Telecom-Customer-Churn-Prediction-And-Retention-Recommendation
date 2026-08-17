@@ -1,0 +1,29 @@
+{
+  "_comment": "Risk below the 26.54% base rate. Path: no_action -> persist. NO model call.  Risk 1.0%.",
+  "_expected_status": "no_action_needed",
+  "_expected_offer_id": null,
+  "_expected_expected_value": 0.0,
+  "customer_id": "8580-QVLOC",
+  "cltv": 5697.0,
+  "customer": {
+    "Gender": "Female",
+    "Senior Citizen": "Yes",
+    "Partner": "Yes",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "Yes",
+    "Internet Service": "DSL",
+    "Online Security": "Yes",
+    "Online Backup": "Yes",
+    "Device Protection": "Yes",
+    "Tech Support": "Yes",
+    "Streaming TV": "Yes",
+    "Streaming Movies": "Yes",
+    "Paperless Billing": "No",
+    "Payment Method": "Credit card (automatic)",
+    "Contract": "Two year",
+    "Tenure Months": 72,
+    "Monthly Charges": 92.45,
+    "Total Charges": 6440.25
+  }
+}

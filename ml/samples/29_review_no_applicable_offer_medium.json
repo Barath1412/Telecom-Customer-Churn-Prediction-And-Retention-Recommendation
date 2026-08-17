@@ -1,0 +1,29 @@
+{
+  "_comment": "Above-average risk and NO catalogue offer applies -- a catalogue gap. Same review path.  Risk 27.5%, CLTV $4,935.",
+  "_expected_status": "review_no_applicable_offer",
+  "_expected_offer_id": null,
+  "_expected_expected_value": 0.0,
+  "customer_id": "8819-ZBYNA",
+  "cltv": 4935.0,
+  "customer": {
+    "Gender": "Female",
+    "Senior Citizen": "No",
+    "Partner": "Yes",
+    "Dependents": "No",
+    "Phone Service": "Yes",
+    "Multiple Lines": "Yes",
+    "Internet Service": "Fiber optic",
+    "Online Security": "Yes",
+    "Online Backup": "Yes",
+    "Device Protection": "No",
+    "Tech Support": "Yes",
+    "Streaming TV": "Yes",
+    "Streaming Movies": "Yes",
+    "Paperless Billing": "Yes",
+    "Payment Method": "Credit card (automatic)",
+    "Contract": "Two year",
+    "Tenure Months": 58,
+    "Monthly Charges": 109.1,
+    "Total Charges": 6393.65
+  }
+}

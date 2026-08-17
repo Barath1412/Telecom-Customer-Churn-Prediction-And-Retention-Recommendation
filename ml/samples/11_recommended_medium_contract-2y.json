@@ -1,0 +1,29 @@
+{
+  "_comment": "An offer was chosen. Full path: retrieve_evidence -> narrate -> validate -> human_review -> persist.  Risk band medium, EV $436.63.",
+  "_expected_status": "recommended",
+  "_expected_offer_id": "OFF-CONTRACT-2Y",
+  "_expected_expected_value": 436.63,
+  "customer_id": "1335-NTIUC",
+  "cltv": 5473.0,
+  "customer": {
+    "Gender": "Male",
+    "Senior Citizen": "No",
+    "Partner": "No",
+    "Dependents": "No",
+    "Phone Service": "No",
+    "Multiple Lines": "No phone service",
+    "Internet Service": "DSL",
+    "Online Security": "No",
+    "Online Backup": "No",
+    "Device Protection": "No",
+    "Tech Support": "No",
+    "Streaming TV": "No",
+    "Streaming Movies": "No",
+    "Paperless Billing": "Yes",
+    "Payment Method": "Electronic check",
+    "Contract": "Month-to-month",
+    "Tenure Months": 9,
+    "Monthly Charges": 24.95,
+    "Total Charges": 190.25
+  }
+}
