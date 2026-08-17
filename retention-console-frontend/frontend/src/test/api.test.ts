@@ -71,6 +71,16 @@ describe('ApiError and api client', () => {
     expect(res.risk_band).toBe('critical')
   })
 
+  it('posts narrate via api.narrate with and without force option', async () => {
+    const res = await api.narrate('0295-PPHDO')
+    expect(res.customer_id).toBe('0295-PPHDO')
+    expect(res.narration).toBeDefined()
+
+    const resForced = await api.narrate('0295-PPHDO', { force: true })
+    expect(resForced.customer_id).toBe('0295-PPHDO')
+    expect(resForced.narration).toBeDefined()
+  })
+
   it('throws ApiError on validation failure', async () => {
     server.use(failureHandlers.validation)
     await expect(api.queue(1)).rejects.toThrow(ApiError)
@@ -92,7 +102,7 @@ describe('ApiError and api client', () => {
 
 describe('queryClient and query keys', () => {
   it('generates consistent query keys from qk factory', () => {
-    expect(qk.queue(1)).toEqual(['queue', 1])
+    expect(qk.queue(1)).toEqual(['queue', 1, 40, 'pending'])
     expect(qk.customer('123')).toEqual(['customer', '123'])
     expect(qk.summary()).toEqual(['summary'])
     expect(qk.catalog()).toEqual(['catalog'])

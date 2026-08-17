@@ -1,0 +1,26 @@
+# The model artifact was pickled with the versions below. scikit-learn and xgboost
+# MUST match or be newer -- unpickling across a minor version prints
+# InconsistentVersionWarning and can make SHAP fail with a ValueError.
+#   built with: python 3.11 · scikit-learn 1.8.0 · xgboost 3.2.0 · numpy 2.4.4
+scikit-learn==1.8.0
+xgboost==3.2.0
+numpy==2.4.4
+# Imported directly by src/derive_costs.py for the t critical value. It arrives
+# anyway as a scikit-learn dependency, but a package we import by name belongs in
+# this file -- relying on somebody else's transitive dependency is how the
+# statsmodels breakage happened in the first place.
+scipy>=1.11
+pandas>=2.0
+openpyxl>=3.1
+joblib>=1.3
+pyyaml>=6.0
+shap>=0.44
+pydantic>=2.5
+pytest>=7.4
+
+# the graph
+langgraph>=1.2.11
+langgraph-checkpoint-sqlite>=3.1.1
+
+# only needed for --provider gemini
+google-genai>=2.18.0

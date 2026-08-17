@@ -135,7 +135,9 @@ export function ScoreForm({ onSubmit, isSubmitting, serverFieldErrors = {} }: Sc
       return
     }
 
-    onSubmit(formState)
+    const cleanPayload: Record<string, unknown> = { ...formState }
+    delete cleanPayload.__totalChargesTouched
+    onSubmit(cleanPayload as unknown as ScoreFormData)
   }
 
   // Non-blocking Total Charges consistency check
@@ -389,6 +391,26 @@ export function ScoreForm({ onSubmit, isSubmitting, serverFieldErrors = {} }: Sc
           <div className="space-y-1">
             <TextField
               label="Total Charges"
+              labelAccessory={
+                formState.__totalChargesTouched ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const monthly = Number(formState['Monthly Charges']) || 0
+                      const tenure = Number(formState['Tenure Months']) || 0
+                      const calculated = Math.round(monthly * tenure * 100) / 100
+                      setFormState((prev) => ({
+                        ...prev,
+                        __totalChargesTouched: false,
+                        'Total Charges': calculated,
+                      }))
+                    }}
+                    className="text-micro font-medium text-primary hover:underline focus:outline-none"
+                  >
+                    Reset to calculated value
+                  </button>
+                ) : undefined
+              }
               type="number"
               min={0}
               step={0.01}

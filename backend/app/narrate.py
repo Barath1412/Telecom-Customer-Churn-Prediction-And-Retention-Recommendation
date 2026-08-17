@@ -98,33 +98,26 @@ def _uncertainty(state: dict) -> str | None:
     return _uncertainty_note(float(prior), list(ci))
 
 
-def _run(customer_id: str, provider: str) -> tuple[dict, float]:
-    record = population.get(customer_id)
-    if record is None:
-        raise ApiError(
-            404,
-            "CUSTOMER_NOT_FOUND",
-            f"No customer {customer_id!r} in the source dataset.",
-        )
+def _invoke(customer_id: str, customer: dict, cltv: float, provider: str) -> tuple[dict, float]:
     if _graph is None:
         warm()
     t0 = time.time()
     state = _graph.invoke(
         {
-            "customer_id": record["customer_id"],
-            "customer": record["customer"],
-            "cltv": record["cltv"],
+            "customer_id": customer_id,
+            "customer": customer,
+            "cltv": cltv,
         },
         {"configurable": {"auto_approve": True, "provider": provider}},
     )
     return state, (time.time() - t0) * 1000.0
 
 
-async def narrate(customer_id: str, provider: str | None = None) -> dict:
+async def _narrate_core(customer_id: str, customer: dict, cltv: float, provider: str | None = None) -> dict:
     provider = (provider or NARRATION_PROVIDER).lower()
     try:
         state, elapsed_ms = await asyncio.wait_for(
-            run_in_threadpool(_run, customer_id, provider),
+            run_in_threadpool(_invoke, customer_id, customer, cltv, provider),
             timeout=NARRATE_TIMEOUT_S,
         )
     except asyncio.TimeoutError:
@@ -184,3 +177,19 @@ async def narrate(customer_id: str, provider: str | None = None) -> dict:
         "provider": provider,
         "elapsed_ms": round(elapsed_ms, 1),
     }
+
+
+async def narrate(customer_id: str, provider: str | None = None) -> dict:
+    record = population.get(customer_id)
+    if record is None:
+        raise ApiError(
+            404,
+            "CUSTOMER_NOT_FOUND",
+            f"No customer {customer_id!r} in the source dataset.",
+        )
+    return await _narrate_core(
+        customer_id=record["customer_id"],
+        customer=record["customer"],
+        cltv=record["cltv"],
+        provider=provider,
+    )

@@ -15,14 +15,111 @@ import leakageError from './fixtures/ERROR_leakage.json'
  * command after any backend change and the mocks move with it.
  */
 export const handlers = [
-  http.get('/api/queue', () => HttpResponse.json(queue)),
+  http.get('/api/queue', ({ request }) => {
+    const url = new URL(request.url)
+    const status = (url.searchParams.get('status') ?? 'pending') as
+      | 'pending'
+      | 'approved'
+      | 'rejected'
+    const page = parseInt(url.searchParams.get('page') ?? '1', 10)
+    const pageSize = parseInt(url.searchParams.get('page_size') ?? '40', 10)
+
+    const rawItems = (queue.items as Array<Record<string, unknown>>).map((item, idx) => ({
+      ...item,
+      queue_position: idx + 1,
+      actionable: idx < (queue.capacity ?? 40),
+    }))
+
+    if (status === 'approved' || status === 'rejected') {
+      return HttpResponse.json({
+        ...queue,
+        pending_total: rawItems.length,
+        approved_total: 0,
+        rejected_total: 0,
+        status,
+        returned: 0,
+        page,
+        page_size: pageSize,
+        items: [],
+      })
+    }
+
+    const start = (page - 1) * pageSize
+    const pageItems = rawItems.slice(start, start + pageSize)
+
+    return HttpResponse.json({
+      ...queue,
+      pending_total: rawItems.length,
+      approved_total: 0,
+      rejected_total: 0,
+      status: 'pending',
+      returned: pageItems.length,
+      page,
+      page_size: pageSize,
+      items: pageItems,
+    })
+  }),
   http.get('/api/summary', () => HttpResponse.json(summary)),
   http.get('/api/catalog', () => HttpResponse.json(catalog)),
   http.get('/api/customers/:id', ({ params }) =>
     HttpResponse.json(params.id === noOffer.customer_id ? noOffer : detail),
   ),
   http.post('/api/customers/:id/action', () => HttpResponse.json(action.response_example)),
+  /**
+   * Live narration, mocked. The real endpoint runs the LangGraph pipeline and takes
+   * 5-15 seconds; this returns instantly, so it exercises the wiring and the states,
+   * not the latency. It also means the Generate button still works in mock mode with
+   * no backend running at all.
+   */
+  http.post('/api/customers/:id/narrate', ({ params }) =>
+    HttpResponse.json({
+      customer_id: String(params.id),
+      narration: {
+        ...detail.narration,
+        source: 'llm',
+        model: 'gemini-mock',
+        validator_attempts: 2,
+        generated_at: new Date().toISOString(),
+      },
+      decision: {
+        status: detail.status,
+        offer_id: detail.recommendation?.offer_id ?? null,
+        offer_name: detail.recommendation?.offer_name ?? null,
+        cost: detail.recommendation?.cost ?? null,
+        expected_value: detail.recommendation?.expected_value ?? null,
+        p_churn: detail.risk.p_churn,
+        levers: detail.levers.map((l) => l.code),
+      },
+      violations: [],
+      provider: 'fake',
+      elapsed_ms: 7412,
+    }),
+  ),
   http.post('/api/score', () => HttpResponse.json(score.response_example)),
+  http.post('/api/score/narrate', () =>
+    HttpResponse.json({
+      customer_id: 'SCORE-ADHOC',
+      narration: {
+        ...detail.narration,
+        source: 'llm',
+        model: 'gemini-mock',
+        validator_attempts: 1,
+        generated_at: new Date().toISOString(),
+      },
+      decision: {
+        status: 'recommended',
+        offer_id: 'OFF-TECH-SUPPORT-1YR',
+        offer_name: 'Tech Support 1-Year Free',
+        cost: 35.0,
+        expected_value: 120.51,
+        p_churn: 0.99,
+        levers: detail.levers.map((l) => l.code),
+      },
+      violations: [],
+      provider: 'fake',
+      elapsed_ms: 3200,
+    }),
+  ),
 ]
 
 /** Opt-in handlers for building and testing failure screens. */

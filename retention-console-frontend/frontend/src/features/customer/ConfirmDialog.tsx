@@ -13,6 +13,7 @@ export interface ConfirmDialogProps {
   customerId: string
   action: ActionKind | null
   alternatives: Alternative[]
+  preselectedOfferId?: string | null
   loading: boolean
   serverError?: unknown
   onSubmit: (payload: ActionRequest) => void
@@ -39,12 +40,15 @@ export function ConfirmDialog({
   customerId,
   action,
   alternatives,
+  preselectedOfferId,
   loading,
   serverError,
   onSubmit,
 }: ConfirmDialogProps) {
   const [reason, setReason] = useState(REJECT_REASONS[0]!.value)
-  const [selectedOffer, setSelectedOffer] = useState<string>('')
+  const [selectedOffer, setSelectedOffer] = useState<string>(
+    preselectedOfferId ?? alternatives[0]?.offer_id ?? '',
+  )
   const [note, setNote] = useState('')
   const [touched, setTouched] = useState(false)
 
@@ -52,11 +56,11 @@ export function ConfirmDialog({
   useEffect(() => {
     if (open) {
       setReason(REJECT_REASONS[0]!.value)
-      setSelectedOffer(alternatives[0]?.offer_id ?? '')
+      setSelectedOffer(preselectedOfferId ?? alternatives[0]?.offer_id ?? '')
       setNote('')
       setTouched(false)
     }
-  }, [open, action, alternatives])
+  }, [open, action, alternatives, preselectedOfferId])
 
   if (!action) return null
 

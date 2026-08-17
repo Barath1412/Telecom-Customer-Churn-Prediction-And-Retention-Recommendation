@@ -52,8 +52,11 @@ export interface Recommendation {
 export interface Alternative {
   offer_id: string
   offer_name: string
+  cost: number
   delta_prior: number
+  delta_ci: [number, number]
   expected_value: number
+  talk_track?: string
 }
 
 export interface PolicyRuleBase {
@@ -88,7 +91,7 @@ export interface Narration {
   evidence_ids: string[]
   /** Composed by the backend from delta_prior/delta_ci. Never model-written. */
   uncertainty_note: string
-  source: 'llm' | 'fallback_template' | 'example_fixture'
+  source: 'llm' | 'fallback_template' | 'example_fixture' | 'deterministic'
   model: string
   validator_attempts: number
   generated_at: string
@@ -103,6 +106,18 @@ export interface Provenance {
   scored_at: string
 }
 
+export type QueueStatusFilter = 'pending' | 'approved' | 'rejected'
+
+export interface QueueDecision {
+  action: 'approve' | 'edit' | 'reject'
+  actor: string
+  reason_code: string | null
+  acted_at: string
+  offered_offer_id: string | null
+  offered_offer_name: string | null
+  offer_changed: boolean
+}
+
 export interface QueueItem {
   rank: number
   customer_id: string
@@ -112,9 +127,15 @@ export interface QueueItem {
   levers: Lever[]
   recommendation: Recommendation
   status: QueueStatus
+  queue_position: number
+  actionable: boolean
+  /** Present only for status=approved / status=rejected items. */
+  decision?: QueueDecision
 }
 
 export interface CustomerDetail extends QueueItem {
+  queue_position: number
+  actionable: boolean
   alternatives: Alternative[]
   vetoed: { offer_id: string; rule_id: string; detail: string }[]
   attribution: Attribution[]
@@ -126,10 +147,38 @@ export interface CustomerDetail extends QueueItem {
   narration: Narration | null
 }
 
+/**
+ * POST /api/customers/{id}/narrate — the live pipeline run.
+ *
+ * `decision` is returned so the claim "narration cannot change the recommendation"
+ * is checkable from the client: it is computed before the model is called and the
+ * graph raises if it moves afterwards.
+ */
+export interface NarrateResponse {
+  customer_id: string
+  narration: Narration
+  decision: {
+    status: QueueStatus
+    offer_id: string | null
+    offer_name: string | null
+    cost: number | null
+    expected_value: number | null
+    p_churn: number
+    levers: string[]
+  }
+  violations: string[]
+  provider: string
+  elapsed_ms: number
+}
+
 export interface QueueResponse {
   run_id: string
   capacity: number
   total_eligible: number
+  pending_total: number
+  approved_total: number
+  rejected_total: number
+  status: QueueStatusFilter
   returned: number
   page: number
   page_size: number

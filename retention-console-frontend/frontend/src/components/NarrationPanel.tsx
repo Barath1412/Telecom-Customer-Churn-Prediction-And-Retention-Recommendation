@@ -1,8 +1,20 @@
+import { useState } from 'react'
 import { Badge } from './ui/Badge'
-import type { Narration } from '@/types/api'
+import { RegenerateNote } from './RegenerateNote'
+import type { Alternative, Narration } from '@/types/api'
 
 export interface NarrationPanelProps {
   narration: Narration | null
+  /**
+   * When supplied, a "Generate note with AI" button is shown that runs the real
+   * pipeline for this customer and replaces the note in place. Omit it and the
+   * panel behaves exactly as before — which is what the existing unit tests rely on.
+   */
+  customerId?: string
+  isControl?: boolean
+  selectedOfferId?: string | null
+  recommendedOfferId?: string | null
+  alternatives?: Alternative[]
 }
 
 /**
@@ -11,40 +23,111 @@ export interface NarrationPanelProps {
  * deterministic fallback template, because an agent should know which one they
  * are reading.
  */
-export function NarrationPanel({ narration }: NarrationPanelProps) {
-  if (!narration) {
+export function NarrationPanel({
+  narration,
+  customerId,
+  isControl,
+  selectedOfferId,
+  recommendedOfferId,
+  alternatives,
+}: NarrationPanelProps) {
+  const [live, setLive] = useState<Narration | null>(null)
+  const [meta, setMeta] = useState<{ elapsed_ms: number; provider: string } | null>(null)
+
+  // A freshly generated note wins over whatever was served with the page. The old
+  // one stays in `narration`, which is what remains on screen if generation fails.
+  const shown = live ?? narration
+
+  const isAlternateSelected = Boolean(
+    selectedOfferId &&
+    recommendedOfferId &&
+    selectedOfferId !== recommendedOfferId,
+  )
+  const alt = isAlternateSelected && alternatives
+    ? alternatives.find((a) => a.offer_id === selectedOfferId)
+    : undefined
+
+  const closingLine =
+    isAlternateSelected && alt?.talk_track ? alt.talk_track : shown?.talk_track
+
+  const control = !isControl && customerId ? (
+    <RegenerateNote
+      customerId={customerId}
+      onGenerated={(n, m) => {
+        setLive(n)
+        setMeta(m)
+      }}
+    />
+  ) : null
+
+  if (isControl) {
     return (
-      <p className="text-sm text-ink-3">
-        No note was generated for this customer. Use the levers and the policy trace directly.
-      </p>
+      <div className="space-y-3">
+        <p className="text-sm text-ink-3">
+          No note generated — control group, not contacted.
+        </p>
+      </div>
     )
   }
 
-  const generated = narration.source === 'llm'
+  if (!shown) {
+    return (
+      <div className="space-y-3">
+        {control}
+        <p className="text-sm text-ink-3">
+          No note was generated for this customer. Use the levers and the policy trace directly.
+        </p>
+      </div>
+    )
+  }
+
+  const generated = shown.source === 'llm'
 
   return (
-    <article className="space-y-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <Badge tone={generated ? 'info' : 'neutral'}>
-          {generated ? `AI-drafted · ${narration.model}` : `Template · no model`}
-        </Badge>
-        {narration.validator_attempts > 1 && (
-          <Badge tone="neutral">rewritten {narration.validator_attempts - 1}×</Badge>
-        )}
-      </div>
+    <div className="space-y-3">
+      {control}
 
-      <p className="text-sm font-medium">{narration.summary}</p>
-      <p className="text-sm text-ink-2">{narration.why}</p>
-      <blockquote className="border-l-2 border-line-strong pl-3 text-sm text-ink">
-        {narration.talk_track}
-      </blockquote>
-      <p className="text-micro text-ink-3">{narration.uncertainty_note}</p>
-      <p className="text-micro text-ink-3">
-        Evidence:{' '}
-        <span className="font-mono">
-          {narration.evidence_ids.length > 0 ? narration.evidence_ids.join(', ') : 'none cited'}
-        </span>
-      </p>
-    </article>
+      <article className="space-y-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge tone={generated ? 'info' : 'neutral'}>
+            {generated ? `AI-drafted · ${shown.model}` : `Template · no model`}
+          </Badge>
+          {shown.validator_attempts > 1 && (
+            <Badge tone="neutral">rewritten {shown.validator_attempts - 1}×</Badge>
+          )}
+          {live && <Badge tone="info">generated just now</Badge>}
+        </div>
+
+        <p className="text-sm font-medium">{shown.summary}</p>
+        <p className="text-sm text-ink-2">{shown.why}</p>
+        <blockquote className="border-l-2 border-line-strong pl-3 text-sm text-ink">
+          {closingLine}
+        </blockquote>
+        {isAlternateSelected && (
+          <p className="text-micro text-ink-3 italic">
+            Offer line shown for the selected alternative — rest of the note is unchanged.
+          </p>
+        )}
+        {shown.uncertainty_note && (
+          <p className="text-micro text-ink-3">{shown.uncertainty_note}</p>
+        )}
+        <p className="text-micro text-ink-3">
+          Evidence:{' '}
+          <span className="font-mono">
+            {shown.evidence_ids.length > 0 ? shown.evidence_ids.join(', ') : 'none cited'}
+          </span>
+        </p>
+
+        {live && meta && (
+          <p className="text-micro text-ink-3">
+            Generated by <span className="font-mono">{live.model || meta.provider}</span> in{' '}
+            {(meta.elapsed_ms / 1000).toFixed(1)}s ·{' '}
+            {live.validator_attempts > 1
+              ? `${live.validator_attempts} passes — the first draft was rejected by a validator`
+              : `${live.validator_attempts} validation pass`}
+          </p>
+        )}
+      </article>
+    </div>
   )
 }

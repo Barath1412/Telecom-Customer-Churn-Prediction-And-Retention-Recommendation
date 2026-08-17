@@ -272,6 +272,34 @@ async def post_score(request: Request) -> dict:
     return result
 
 
+@router.post("/score/narrate")
+async def post_score_narrate(
+    request: Request,
+    provider: str | None = Query(
+        None,
+        description="gemini | fake. Defaults to NARRATION_PROVIDER "
+                    f"(currently {NARRATION_PROVIDER!r}).",
+    ),
+) -> dict:
+    if provider is not None and provider.lower() not in ("gemini", "fake"):
+        raise ApiError(
+            422,
+            "VALIDATION_ERROR",
+            "Request failed field validation",
+            [{"field": "provider", "message": "must be 'gemini' or 'fake'",
+              "received": provider}],
+        )
+    try:
+        body = await request.json()
+    except Exception:
+        raise ApiError(400, "BAD_REQUEST", "Request body must be valid JSON")
+    if not isinstance(body, dict):
+        raise ApiError(400, "BAD_REQUEST", "Request body must be a JSON object")
+
+    result = await score_mod.score_narrate(body, provider=provider)
+    return result
+
+
 # --------------------------------------------------------------------------- #
 #  the live one
 # --------------------------------------------------------------------------- #

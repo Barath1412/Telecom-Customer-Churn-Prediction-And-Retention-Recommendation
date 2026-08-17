@@ -5,8 +5,9 @@ import { ApiError } from '@/lib/api'
 describe('lib/queryClient — retry policy, cache defaults, and key factory', () => {
   describe('qk query-key factory', () => {
     it('generates exact query key tuples for all resource types', () => {
-      expect(qk.queue(1)).toEqual(['queue', 1])
-      expect(qk.queue(3)).toEqual(['queue', 3])
+      expect(qk.queue(1)).toEqual(['queue', 1, 40, 'pending'])
+      expect(qk.queue(3)).toEqual(['queue', 3, 40, 'pending'])
+      expect(qk.queue(2, 20, 'approved')).toEqual(['queue', 2, 20, 'approved'])
       expect(qk.customer('0295-PPHDO')).toEqual(['customer', '0295-PPHDO'])
       expect(qk.summary()).toEqual(['summary'])
       expect(qk.catalog()).toEqual(['catalog'])

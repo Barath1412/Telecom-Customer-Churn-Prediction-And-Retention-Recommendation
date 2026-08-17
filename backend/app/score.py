@@ -157,15 +157,7 @@ def _flatten_policy_trace(policy_trace: list, offer_id: str | None) -> list:
     return result
 
 
-async def score(raw_body: dict) -> dict | JSONResponse:
-    """
-    Run the graph and build the six-key response.
-
-    Called from routes.py with the already-parsed request body dict.  The 422
-    path for missing/invalid fields is handled by FastAPI before we get here
-    (the ScoreRequest pydantic model in routes.py).  We only handle leakage
-    rejection (400) and the happy path here.
-    """
+def _validate_score_input(raw_body: dict) -> tuple[dict[str, Any], float] | JSONResponse:
     # ---- 1. leakage guard ------------------------------------------------- #
     found = [k for k in raw_body if k in _QUARANTINED]
     if found:
@@ -205,6 +197,22 @@ async def score(raw_body: dict) -> dict | JSONResponse:
 
     customer = {f: raw_body[f] for f in _CUSTOMER_FIELDS}
     cltv = float(raw_body["cltv"])
+    return customer, cltv
+
+
+async def score(raw_body: dict) -> dict | JSONResponse:
+    """
+    Run the graph and build the six-key response.
+
+    Called from routes.py with the already-parsed request body dict.  The 422
+    path for missing/invalid fields is handled by FastAPI before we get here
+    (the ScoreRequest pydantic model in routes.py).  We only handle leakage
+    rejection (400) and the happy path here.
+    """
+    validated = _validate_score_input(raw_body)
+    if isinstance(validated, JSONResponse):
+        return validated
+    customer, cltv = validated
 
     # ---- 3. run the graph (always provider="fake") ------------------------ #
     from . import narrate as narrate_mod  # noqa: PLC0415
@@ -260,3 +268,20 @@ async def score(raw_body: dict) -> dict | JSONResponse:
         ),
         "provenance": _provenance(),
     }
+
+
+async def score_narrate(raw_body: dict, provider: str | None = None) -> dict | JSONResponse:
+    """
+    Generate an ad-hoc AI note for a hypothetical profile.
+
+    Reuses _validate_score_input and calls narrate_mod._narrate_core without touching
+    cache.py or actions_log.py.
+    """
+    validated = _validate_score_input(raw_body)
+    if isinstance(validated, JSONResponse):
+        return validated
+    customer, cltv = validated
+
+    from . import narrate as narrate_mod  # noqa: PLC0415
+
+    return await narrate_mod._narrate_core("SCORE-ADHOC", customer, cltv, provider)
