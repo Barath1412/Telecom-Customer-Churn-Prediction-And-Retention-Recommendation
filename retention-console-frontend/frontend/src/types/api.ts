@@ -311,3 +311,37 @@ export interface ApiErrorDetail {
 export interface ApiErrorBody {
   error: ApiErrorDetail
 }
+
+export interface LlmCallLog {
+  call_id: string
+  customer_id: string
+  provider: string
+  model: string
+  prompt_tokens: number
+  completion_tokens: number
+  total_tokens: number
+  elapsed_ms: number
+  passed_validators: string[]
+  all_validators_passed: boolean
+  cost_usd: number
+  timestamp: string
+}
+
+export interface LlmTelemetryResponse {
+  total_calls: number
+  total_prompt_tokens: number
+  total_completion_tokens: number
+  total_tokens: number
+  total_cost_usd: number
+  avg_latency_ms: number
+  validator_pass_rate: number
+  model_distribution: Record<string, number>
+  projections: {
+    cost_per_call_usd: number
+    daily_projected_cost_usd: number
+    monthly_projected_cost_usd: number
+    human_agent_labor_benchmark_per_call_usd: number
+    cost_savings_multiplier: string
+  }
+  recent_calls: LlmCallLog[]
+}

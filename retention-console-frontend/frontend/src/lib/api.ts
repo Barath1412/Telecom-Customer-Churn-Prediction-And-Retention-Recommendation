@@ -4,6 +4,7 @@ import type {
   ApiErrorBody,
   CatalogResponse,
   CustomerDetail,
+  LlmTelemetryResponse,
   NarrateResponse,
   QueueResponse,
   QueueStatusFilter,
@@ -116,4 +117,5 @@ export const api = {
     }
     return (await res.json()) as UploadBatchResponse
   },
+  llmTelemetry: () => request<LlmTelemetryResponse>('/llm/telemetry'),
 }

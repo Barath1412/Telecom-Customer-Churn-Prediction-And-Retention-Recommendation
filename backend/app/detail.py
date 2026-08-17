@@ -1,4 +1,4 @@
-"""
+﻿"""
 GET /api/customers/{customer_id} — live computation for every customer.
 
 Runs the graph with provider="fake" (deterministic model + policy; no LLM needed),
@@ -178,7 +178,29 @@ def get_customer_detail(customer_id: str) -> dict[str, Any]:
     else:
         narration = None
 
-    actionable = bool(queue_state.state and customer_id in queue_state.state.active_ids())
+    # Decision audit record if already acted upon
+    decision = None
+    if queue_state.state and customer_id in queue_state.state.actioned:
+        act = queue_state.state.actioned[customer_id]
+        off_oid = act.get("modified_offer_id") or act.get("offer_id")
+        off_name = None
+        if off_oid:
+            try:
+                off_name = catalog.by_id(off_oid).name
+            except Exception:
+                off_name = off_oid
+        decision = {
+            "action": act.get("action"),
+            "actor": act.get("actor", "agent_42"),
+            "reason_code": act.get("reason_code"),
+            "acted_at": act.get("acted_at", ""),
+            "note": act.get("note"),
+            "offer_changed": bool(act.get("modified_offer_id") and act.get("modified_offer_id") != act.get("offer_id")),
+            "offered_offer_id": off_oid,
+            "offered_offer_name": off_name,
+        }
+
+    actionable = bool(queue_state.state and customer_id in queue_state.state.active_ids() and decision is None)
     queue_pos = None
     if queue_state.state and customer_id in queue_state.state.pending_ids():
         queue_pos = queue_state.state.pending_ids().index(customer_id) + 1
@@ -189,6 +211,7 @@ def get_customer_detail(customer_id: str) -> dict[str, Any]:
         "arm": arm,
         "queue_position": queue_pos,
         "actionable": actionable,
+        "decision": decision,
         "risk": {
             "p_churn": state["p_churn"],
             "risk_band": band(state["p_churn"]),

@@ -1,20 +1,20 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Skeleton } from '@/components/ui/Skeleton'
-import { EmptyState } from '@/components/EmptyState'
-import { ErrorState } from '@/components/ErrorState'
 import { RiskBadge } from '@/components/RiskBadge'
 import { LeverChips } from '@/components/LeverChips'
 import { EVBreakdown } from '@/components/EVBreakdown'
 import { PolicyTrace } from '@/components/PolicyTrace'
 import { NarrationPanel } from '@/components/NarrationPanel'
-import { months, usd } from '@/lib/format'
-import { useCustomer } from './useCustomer'
-import { useAct } from './useAct'
 import { ActionBar } from './ActionBar'
 import { ConfirmDialog } from './ConfirmDialog'
+import { EmptyState } from '@/components/EmptyState'
+import { Skeleton } from '@/components/ui/Skeleton'
+import { ErrorState } from '@/components/ErrorState'
+import { Button } from '@/components/ui/Button'
+import { useCustomer } from './useCustomer'
+import { useAct } from './useAct'
+import { months, usd } from '@/lib/format'
 import type { ActionKind } from '@/types/api'
 
 export interface CustomerPageProps {
@@ -51,8 +51,8 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
   const decision = data.decision
   const isActioned = !!decision
   const rec = data.recommendation
-  const hasOffer = !!rec.offer_id
-  const hasAlternatives = data.alternatives.length > 0
+  const hasOffer = !!rec?.offer_id
+  const hasAlternatives = (data.alternatives ?? []).length > 0
 
   return (
     <div className="space-y-4 pb-24">
@@ -68,44 +68,44 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
         <RiskBadge band={data.risk.risk_band} p={data.risk.p_churn} />
       </div>
 
-      {/* Decision Banner for Actioned Customers */}
+      {/* Decision Banner for Actioned Customers (High Contrast & Sharp Typography) */}
       {isActioned && (
         decision.action === 'reject' ? (
-          <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-amber-300">
+          <div className="rounded-xl border-2 border-amber-500 bg-amber-50/90 dark:bg-amber-950/40 p-4 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-3">
-                <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 font-bold text-sm">✕</span>
+                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-600 text-white font-bold text-sm shadow-xs">✕</span>
                 <div>
-                  <h3 className="text-sm font-semibold text-amber-300">
-                    Rejected — Reason: <span className="font-mono">{decision.reason_code ?? 'no reason'}</span>
+                  <h3 className="text-sm font-bold text-amber-950 dark:text-amber-200">
+                    Rejected — Reason: <span className="font-mono font-semibold">{decision.reason_code ?? 'no reason'}</span>
                   </h3>
-                  <p className="mt-0.5 text-xs text-amber-200/80">
-                    Recorded on {new Date(decision.acted_at).toLocaleString()} by <span className="font-mono font-medium">{decision.actor}</span>.
+                  <p className="mt-0.5 text-xs text-amber-900/90 dark:text-amber-300/80">
+                    Recorded on {new Date(decision.acted_at).toLocaleString()} by <span className="font-mono font-semibold">{decision.actor}</span>.
                     {decision.note && ` Note: "${decision.note}"`}
                   </p>
                 </div>
               </div>
-              <span className="rounded-md border border-amber-500/30 bg-amber-500/20 px-2.5 py-1 text-micro font-semibold uppercase tracking-wider text-amber-300">
+              <span className="rounded-md bg-amber-700 px-3 py-1 text-micro font-bold uppercase tracking-wider text-white shadow-xs">
                 Decision Finalized
               </span>
             </div>
           </div>
         ) : (
-          <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-emerald-300">
+          <div className="rounded-xl border-2 border-emerald-600 bg-emerald-50/90 dark:bg-emerald-950/40 p-4 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-3">
-                <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm">✓</span>
+                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white font-bold text-sm shadow-xs">✓</span>
                 <div>
-                  <h3 className="text-sm font-semibold text-emerald-300">
-                    Approved — Agreed Offer: {decision.offered_offer_name ?? rec.offer_name ?? '—'}
+                  <h3 className="text-sm font-bold text-emerald-950 dark:text-emerald-200">
+                    Approved — Agreed Offer: {decision.offered_offer_name ?? rec?.offer_name ?? '—'}
                   </h3>
-                  <p className="mt-0.5 text-xs text-emerald-200/80">
-                    Recorded on {new Date(decision.acted_at).toLocaleString()} by <span className="font-mono font-medium">{decision.actor}</span>.
+                  <p className="mt-0.5 text-xs text-emerald-900/90 dark:text-emerald-300/80">
+                    Recorded on {new Date(decision.acted_at).toLocaleString()} by <span className="font-mono font-semibold">{decision.actor}</span>.
                     {decision.offer_changed && " (Agent customized from model recommendation)"}
                   </p>
                 </div>
               </div>
-              <span className="rounded-md border border-emerald-500/30 bg-emerald-500/20 px-2.5 py-1 text-micro font-semibold uppercase tracking-wider text-emerald-300">
+              <span className="rounded-md bg-emerald-700 px-3 py-1 text-micro font-bold uppercase tracking-wider text-white shadow-xs">
                 Decision Finalized
               </span>
             </div>
@@ -121,13 +121,13 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
             title="Recommendation"
             subtitle={
               isControl
-                ? rec.offer_name
+                ? rec?.offer_name
                   ? `${rec.offer_name} — withheld, control group`
                   : undefined
-                : (rec.offer_name ?? undefined)
+                : (rec?.offer_name ?? undefined)
             }
           >
-            {rec.offer_id ? (
+            {rec?.offer_id ? (
               <>
                 <EVBreakdown risk={data.risk} value={data.value} rec={rec} />
                 {selectedOfferId && rec.offer_id && selectedOfferId !== rec.offer_id && !isActioned && (
@@ -158,47 +158,39 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
                         return (
                           <div
                             key={alt.offer_id}
-                            className={`rounded border p-3 space-y-2 text-xs transition-colors ${
+                            className={`flex flex-col justify-between rounded-lg border p-3 text-xs transition-all ${
                               isSelected
-                                ? 'border-accent bg-surface-alt shadow-sm'
-                                : 'border-line bg-surface-alt'
+                                ? 'border-accent bg-accent/10 shadow-sm'
+                                : 'border-line bg-surface-2 hover:border-line-subtle'
                             }`}
                           >
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="font-medium text-ink">{alt.offer_name}</span>
-                              <span
-                                className={`rounded px-1.5 py-0.5 font-mono text-micro border ${
-                                  isSelected
-                                    ? 'bg-accent/10 border-accent text-accent font-semibold'
-                                    : 'bg-surface border-line text-ink-2'
-                                }`}
-                              >
-                                {isSelected ? 'Selected' : 'Alternative'}
-                              </span>
-                            </div>
-                            <div className="flex gap-4 text-ink-2">
-                              <span>Cost: <strong className="text-ink">{usd(alt.cost)}</strong></span>
-                              <span>EV: <strong className="text-ink">{usd(alt.expected_value)}</strong></span>
-                            </div>
-                            {alt.talk_track && (
-                              <p className="text-ink-3 italic border-l-2 border-line-strong pl-2 text-micro">
-                                {alt.talk_track}
-                              </p>
-                            )}
-                            {!isControl && (
-                              <div className="pt-1">
-                                <Button
-                                  variant="secondary"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedOfferId(alt.offer_id)
-                                    setPendingAction('edit')
-                                  }}
-                                >
-                                  Present this instead
-                                </Button>
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-between">
+                                <span className="font-medium text-ink">{alt.offer_name}</span>
+                                <span className="num font-semibold text-emerald-600 dark:text-emerald-400">
+                                  +{usd(alt.expected_value)}
+                                </span>
                               </div>
-                            )}
+                              <p className="text-micro text-ink-3">Cost: {usd(alt.cost)}</p>
+                              {alt.talk_track && (
+                                <p className="text-micro text-ink-3 italic border-l-2 border-line pl-2 mt-1">
+                                  {alt.talk_track}
+                                </p>
+                              )}
+                            </div>
+                            <div className="mt-3 flex items-center justify-between pt-2 border-t border-line/40">
+                              <Button
+                                variant={isSelected ? 'secondary' : 'ghost'}
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedOfferId(alt.offer_id)
+                                  setPendingAction('edit')
+                                }}
+                                className="w-full text-micro py-1"
+                              >
+                                {isSelected ? '✓ Selected' : 'Present This Instead'}
+                              </Button>
+                            </div>
                           </div>
                         )
                       })}
@@ -207,20 +199,44 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
                 )}
               </>
             ) : (
-              <EmptyState
-                title="No qualifying offer"
-                body="No catalog offer matched this customer's levers at a positive expected value."
-              />
+              <div className="space-y-3">
+                {data.status === 'no_action_needed' ? (
+                  <div className="rounded-xl border-2 border-sky-500 bg-sky-50/90 dark:bg-sky-950/40 p-4 shadow-sm">
+                    <h4 className="font-bold text-sky-950 dark:text-sky-200">Low Churn Risk — No Retention Action Needed</h4>
+                    <p className="mt-1 text-xs text-sky-900/90 dark:text-sky-300/80">
+                      This account has a calibrated churn probability of {(data.risk.p_churn * 100).toFixed(1)}%, which is below the intervention threshold (50%). Outreach is suppressed to preserve customer satisfaction and protect operating margins.
+                    </p>
+                  </div>
+                ) : data.status === 'review_no_profitable_offer' ? (
+                  <div className="rounded-xl border-2 border-amber-500 bg-amber-50/90 dark:bg-amber-950/40 p-4 shadow-sm">
+                    <h4 className="font-bold text-amber-950 dark:text-amber-200">No Profitable Retention Offer Available</h4>
+                    <p className="mt-1 text-xs text-amber-900/90 dark:text-amber-300/80">
+                      While this customer exhibits elevated churn risk, the cost of all applicable catalog retention offers exceeds the expected customer lifetime value retained (EV &lt; $20). Intervening would yield a net economic loss.
+                    </p>
+                  </div>
+                ) : data.status === 'review_no_applicable_offer' ? (
+                  <div className="rounded-xl border-2 border-purple-500 bg-purple-50/90 dark:bg-purple-950/40 p-4 shadow-sm">
+                    <h4 className="font-bold text-purple-950 dark:text-purple-200">No Applicable Retention Offer in Catalog</h4>
+                    <p className="mt-1 text-xs text-purple-900/90 dark:text-purple-300/80">
+                      The customer already subscribes to all available services and features in the active offer catalog. No eligible product upgrade or bundle applies.
+                    </p>
+                  </div>
+                ) : null}
+                <EmptyState
+                  title="No qualifying offer"
+                  body="No catalog offer matched this customer's levers at a positive expected value."
+                />
+              </div>
             )}
           </Card>
 
           <Card title="Agent note" subtitle="The only AI-generated text in this product">
             <NarrationPanel
               narration={data.narration}
-              customerId={isControl || isActioned ? undefined : data.customer_id}
+              customerId={isControl || isActioned || !hasOffer ? undefined : data.customer_id}
               isControl={isControl}
               selectedOfferId={selectedOfferId}
-              recommendedOfferId={rec.offer_id}
+              recommendedOfferId={rec?.offer_id ?? null}
               alternatives={data.alternatives}
             />
           </Card>
@@ -308,7 +324,7 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
         <ActionBar
           hasOffer={hasOffer}
           hasAlternatives={hasAlternatives}
-          onApprove={() => setPendingAction(selectedOfferId && rec.offer_id && selectedOfferId !== rec.offer_id ? 'edit' : 'approve')}
+          onApprove={() => setPendingAction(selectedOfferId && rec?.offer_id && selectedOfferId !== rec.offer_id ? 'edit' : 'approve')}
           onEdit={() => setPendingAction('edit')}
           onReject={() => setPendingAction('reject')}
         />

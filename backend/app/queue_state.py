@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
@@ -45,34 +45,38 @@ class QueueState:
         return ordered
 
     def offered_offer_id(self, customer_id: str) -> str | None:
-        """
-        The offer actually decided on for this customer — the whole reason this
-        method exists. `modified_offer_id` wins if the agent used "Edit offer" /
-        "Present this instead" to swap away from the model's top pick; otherwise
-        it's the original `offer_id` recorded at the moment of the action. Never
-        recompute this from a live re-run of the graph — the model's current top
-        pick can differ from what was actually offered days or minutes ago, and
-        this method is the one place that must not drift from what really
-        happened.
-        """
         rec = self.actioned.get(customer_id)
         if not rec:
             return None
         return rec.get("modified_offer_id") or rec.get("offer_id")
 
     def record_action(self, customer_id: str, record: dict) -> list[str]:
-        """
-        Apply a full action record (as written to actions.jsonl) and return
-        newly-promoted customer ids (for auto-warm). `record` must contain at
-        least `action` and `acted_at`; `offer_id`/`modified_offer_id` should be
-        included whenever available so `offered_offer_id()` stays accurate.
-        """
         before = set(self.active_ids())
         self.actioned[customer_id] = record
         after = set(self.active_ids())
         promoted = after - before
         self._last_pending_snapshot = after
         return list(promoted)
+
+    def add_eligible_customers(self, new_customers_with_ev: list[dict[str, Any]]) -> list[str]:
+        """Dynamically add and re-rank new customers into eligible_ids by EV descending."""
+        csv_path = ML_ROOT / "artifacts" / "queue_full.csv"
+        if not csv_path.exists():
+            return []
+        df = pd.read_csv(csv_path)
+        rec_df = df[df["status"] == "recommended"].sort_values("ev", ascending=False).reset_index(drop=True)
+        self.eligible_ids = rec_df["customer_id"].tolist()
+        return self.active_ids()
+
+    def total_scored_count(self) -> int:
+        csv_path = ML_ROOT / "artifacts" / "queue_full.csv"
+        if not csv_path.exists():
+            return len(self.eligible_ids)
+        try:
+            df = pd.read_csv(csv_path)
+            return len(df)
+        except Exception:
+            return len(self.eligible_ids)
 
 
 def load_eligible_ids() -> list[str]:
@@ -82,6 +86,21 @@ def load_eligible_ids() -> list[str]:
     df = pd.read_csv(csv_path)
     rec_df = df[df["status"] == "recommended"].sort_values("ev", ascending=False).reset_index(drop=True)
     return rec_df["customer_id"].tolist()
+
+
+def load_category_ids(category: str) -> list[str]:
+    csv_path = ML_ROOT / "artifacts" / "queue_full.csv"
+    if not csv_path.exists():
+        return []
+    try:
+        df = pd.read_csv(csv_path)
+        if category == "all_scored":
+            return df["customer_id"].tolist()
+        elif category in ("no_action_needed", "review_no_profitable_offer", "review_no_applicable_offer"):
+            return df[df["status"] == category]["customer_id"].tolist()
+        return []
+    except Exception:
+        return []
 
 
 def load_actioned(log_path: Path | None = None) -> dict[str, dict]:
