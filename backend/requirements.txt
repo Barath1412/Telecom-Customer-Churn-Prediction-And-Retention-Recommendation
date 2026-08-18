@@ -1,4 +1,4 @@
-# The API layer only. The pipeline's own dependencies live in ml/requirements.txt
+﻿# The API layer only. The pipeline's own dependencies live in ml/requirements.txt
 # and must ALSO be installed -- the live narrate endpoint imports src.graph, which
 # needs xgboost, scikit-learn, shap and langgraph.
 #
@@ -7,5 +7,6 @@
 
 fastapi>=0.110
 uvicorn[standard]>=0.27
+python-multipart==0.0.9
 httpx>=0.26            # used by fastapi.testclient
 pytest>=7.4

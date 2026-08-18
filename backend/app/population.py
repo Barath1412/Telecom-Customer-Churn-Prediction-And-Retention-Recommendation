@@ -1,20 +1,5 @@
-"""
+﻿"""
 Customer records for live narration, read from the source spreadsheet.
-
-WHY NOT samples/customers_200.jsonl
-    That file holds 200 customers. The queue in GET_queue.json holds 40. Only 7 of
-    those 40 appear in the jsonl -- so if the queue is on screen and someone clicks
-    a row and asks for a note, it fails 33 times out of 40.
-
-    data/Telco_customer_churn.xlsx has all 7,043. Every customer that can appear in
-    any queue, present or future, can be narrated. Verified field-by-field against
-    the jsonl: all 19 attributes and CLTV match exactly for the customers in both.
-
-The 19 fields below are exactly the keys a sample record carries under "customer",
-which is what `graph.invoke` expects. They are the features the model was trained on
-plus the account attributes the levers read. Nothing else from the spreadsheet is
-passed in -- Churn Label, Churn Score, Churn Reason and CLTV-derived columns are
-quarantined by src/gate.py, and handing them to the graph would be leakage.
 """
 from __future__ import annotations
 
@@ -74,7 +59,38 @@ def load() -> int:
             "customer": {k: _py(row[k]) for k in FIELDS},
             "cltv": float(_py(row[CLTV_COLUMN])),
         }
+
+    # Also load previously uploaded batch customers from uploaded_customers.jsonl if present
+    up_jsonl = ML_ROOT / "artifacts" / "uploaded_customers.jsonl"
+    if up_jsonl.exists():
+        import json
+        try:
+            with open(up_jsonl, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        try:
+                            rec = json.loads(line)
+                            cid = rec.get("customer_id")
+                            if cid:
+                                _records[cid] = rec
+                        except Exception:
+                            pass
+        except Exception:
+            pass
+
     return len(_records)
+
+
+def add_customer(customer_id: str, customer_dict: dict[str, Any], cltv: float) -> None:
+    """Dynamically register a newly uploaded customer into memory."""
+    if not _records:
+        load()
+    _records[customer_id] = {
+        "customer_id": customer_id,
+        "customer": {k: _py(customer_dict.get(k)) for k in FIELDS},
+        "cltv": float(cltv),
+    }
 
 
 def get(customer_id: str) -> dict[str, Any] | None:

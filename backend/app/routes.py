@@ -146,6 +146,7 @@ def get_queue(
 
         items.append(item)
 
+    counts = queue_state.category_counts()
     return {
         "run_id": fixtures.queue()["run_id"],
         "capacity": queue_state.state.capacity,
@@ -154,6 +155,9 @@ def get_queue(
         "pending_total": len(ids) if status not in ("approved", "rejected") else len(queue_state.state.pending_ids()),
         "approved_total": len(queue_state.state.approved_ids()),
         "rejected_total": len(queue_state.state.rejected_ids()),
+        "no_action_needed_total": counts["no_action_needed"],
+        "no_profitable_total": counts["review_no_profitable_offer"],
+        "no_applicable_total": counts["review_no_applicable_offer"],
         "status": status,
         "returned": len(items),
         "page": page,
@@ -204,6 +208,7 @@ async def post_upload_queue_batch(file: UploadFile = File(...)) -> dict:
 
     qualified_records: list[dict[str, Any]] = []
     all_scored_rows: list[dict[str, Any]] = []
+    all_uploaded_customers: list[dict[str, Any]] = []
 
     for _, row in df.iterrows():
         cid = str(row.get("CustomerID", row.get("customer_id", f"UP-{uuid.uuid4().hex[:8].upper()}")))
@@ -231,6 +236,7 @@ async def post_upload_queue_batch(file: UploadFile = File(...)) -> dict:
 
         # Register in population
         population.add_customer(cid, cust_dict, cltv)
+        all_uploaded_customers.append({'customer_id': cid, 'customer': cust_dict, 'cltv': cltv})
 
         # Run through graph
         try:
@@ -245,15 +251,23 @@ async def post_upload_queue_batch(file: UploadFile = File(...)) -> dict:
                 "customer_id": cid,
                 "arm": "treatment",
                 "p_churn": float(state.get("p_churn", 0.0)),
+                "risk_vs_base": "above" if float(state.get("p_churn", 0.0)) >= 0.2654 else "below",
                 "cltv": cltv,
                 "monthly_charges": float(row.get("Monthly Charges", 0.0)),
                 "tenure_months": int(row.get("Tenure Months", 0)),
-                "offer_id": state.get("offer_id"),
-                "offer_name": state.get("offer_name"),
+                "offer_id": state.get("offer_id") or "",
+                "offer_name": state.get("offer_name") or "",
                 "cost": float(state.get("cost") or 0.0),
+                "delta_prior": float(state.get("delta_prior") or 0.0),
                 "ev": ev_val,
+                "min_ev_floor": 20.0,
+                "lever_summary": "; ".join(state.get("levers") or []),
+                "levers": "|".join(state.get("levers") or []),
+                "considered": "",
+                "vetoed": "",
                 "status": status,
                 "catalog_version": catalog.version,
+                "actual_churn": 0,
             }
             all_scored_rows.append(record_summary)
 
@@ -262,30 +276,39 @@ async def post_upload_queue_batch(file: UploadFile = File(...)) -> dict:
         except Exception:
             continue
 
-    # Merge into queue_state and re-rank
-    promoted = queue_state.state.add_eligible_customers(qualified_records)
-
-    # Persist uploaded batch to disk
+    # 1. Persist uploaded customer population records to jsonl
     try:
-        up_csv = ML_ROOT / "artifacts" / "uploaded_customers.csv"
-        up_df = pd.DataFrame(all_scored_rows)
-        if up_csv.exists():
-            up_df.to_csv(up_csv, mode="a", header=False, index=False)
-        else:
-            up_df.to_csv(up_csv, index=False)
-
-        # Update queue_full.csv with newly qualified rows
-        q_csv = ML_ROOT / "artifacts" / "queue_full.csv"
-        if q_csv.exists() and qualified_records:
-            q_df = pd.DataFrame(qualified_records)
-            q_df.to_csv(q_csv, mode="a", header=False, index=False)
+        up_jsonl = ML_ROOT / "artifacts" / "uploaded_customers.jsonl"
+        with open(up_jsonl, "a", encoding="utf-8") as f:
+            for row_cust in all_uploaded_customers:
+                f.write(json.dumps(row_cust) + chr(10))
     except Exception:
         pass
 
-    # Invalidate detail cache so ranks update
+    # 2. Persist queue rows to queue_full.csv with exact schema match
+    try:
+
+        q_csv = ML_ROOT / "artifacts" / "queue_full.csv"
+        if q_csv.exists() and all_scored_rows:
+            existing_df = pd.read_csv(q_csv)
+            new_df = pd.DataFrame(all_scored_rows)
+            for col in existing_df.columns:
+                if col not in new_df.columns:
+                    new_df[col] = ""
+            new_df = new_df[existing_df.columns]
+            combined = pd.concat([existing_df, new_df], ignore_index=True)
+            combined = combined.drop_duplicates(subset=["customer_id"], keep="last")
+            combined.to_csv(q_csv, index=False)
+    except Exception:
+        pass
+
+    # 2. Invalidate detail cache so ranks update
     detail_mod._queue_full_df = None
     detail_mod._queue_full_by_id = {}
     detail_mod._recommended_ranks = {}
+
+    # 3. Merge into queue_state and re-rank from updated queue_full.csv
+    promoted = queue_state.state.add_eligible_customers(qualified_records)
 
     return {
         "status": "success",
@@ -500,3 +523,6 @@ async def post_narrate(
 @router.get("/llm/telemetry")
 def get_llm_telemetry() -> dict:
     return telemetry.get_telemetry_summary()
+
+
+

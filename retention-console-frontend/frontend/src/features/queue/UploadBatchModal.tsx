@@ -1,187 +1,158 @@
-import { useState, useRef, type ChangeEvent, type DragEvent } from 'react'
+﻿import { useState, useRef } from 'react'
 import { Modal } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
+import { api, ApiError } from '@/lib/api'
+import { useQueryClient } from '@tanstack/react-query'
+import type { UploadBatchResponse } from '@/types/api'
 
 export interface UploadBatchModalProps {
   open: boolean
   onClose: () => void
-  onUploadSuccess?: (count: number) => void
 }
 
-export function UploadBatchModal({ open, onClose, onUploadSuccess }: UploadBatchModalProps) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [isDragging, setIsDragging] = useState(false)
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+export function UploadBatchModal({ open, onClose }: UploadBatchModalProps) {
+  const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [file, setFile] = useState<File | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [result, setResult] = useState<UploadBatchResponse | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  const resetState = () => {
-    setSelectedFile(null)
-    setIsDragging(false)
-    setIsProcessing(false)
-    setErrorMessage(null)
-    setSuccessMessage(null)
-  }
-
-  const handleClose = () => {
-    resetState()
-    onClose()
-  }
-
-  const validateAndSetFile = (file: File) => {
-    setErrorMessage(null)
-    setSuccessMessage(null)
-    const validExtensions = ['.csv', '.xlsx', '.xls']
-    const hasValidExtension = validExtensions.some((ext) =>
-      file.name.toLowerCase().endsWith(ext),
-    )
-
-    if (!hasValidExtension) {
-      setErrorMessage('Please upload a valid .csv, .xlsx, or .xls file.')
-      setSelectedFile(null)
-      return
-    }
-
-    if (file.size > 25 * 1024 * 1024) {
-      setErrorMessage('File size exceeds the 25MB limit.')
-      setSelectedFile(null)
-      return
-    }
-
-    setSelectedFile(file)
-  }
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (files && files.length > 0) {
-      validateAndSetFile(files[0]!)
-    }
-  }
-
-  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(true)
-  }
-
-  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(false)
-  }
-
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(false)
-    const files = e.dataTransfer.files
-    if (files && files.length > 0) {
-      validateAndSetFile(files[0]!)
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0])
+      setError(null)
+      setResult(null)
     }
   }
 
   const handleUpload = async () => {
-    if (!selectedFile) return
-    setIsProcessing(true)
-    setErrorMessage(null)
-
+    if (!file) return
+    setIsUploading(true)
+    setError(null)
     try {
-      // Simulate client-side cohort parse & validation
-      await new Promise((resolve) => setTimeout(resolve, 800))
-      setSuccessMessage(`Successfully processed "${selectedFile.name}". Batch queued for scoring.`)
-      onUploadSuccess?.(40)
-      setTimeout(() => {
-        handleClose()
-      }, 1200)
+      const res = await api.uploadBatch(file)
+      setResult(res)
+      await queryClient.invalidateQueries({ queryKey: ['queue'] })
+      await queryClient.invalidateQueries({ queryKey: ['summary'] })
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : 'Failed to process cohort file.')
+      if (err instanceof ApiError) {
+        setError(err.message)
+      } else {
+        setError(err instanceof Error ? err.message : 'Upload failed')
+      }
     } finally {
-      setIsProcessing(false)
+      setIsUploading(false)
     }
   }
 
+  const handleReset = () => {
+    setFile(null)
+    setResult(null)
+    setError(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  const handleClose = () => {
+    handleReset()
+    onClose()
+  }
+
   return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      title="Upload Customer Cohort"
-      description="Upload a batch file of customer records (.csv, .xlsx) to run batch churn risk scoring and recommendation generation."
-      footer={
-        <div className="flex justify-end gap-2">
-          <Button variant="ghost" size="sm" onClick={handleClose} disabled={isProcessing}>
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={handleUpload}
-            disabled={!selectedFile || isProcessing}
-          >
-            {isProcessing ? 'Processing Batch...' : 'Run Scoring & Ingest'}
-          </Button>
-        </div>
-      }
-    >
-      <div className="space-y-4">
-        <div
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-          className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
-            isDragging
-              ? 'border-accent bg-accent/5'
-              : 'border-line hover:border-ink-3 bg-surface/50'
-          }`}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              fileInputRef.current?.click()
-            }
-          }}
-          aria-label="Click or drag file to upload batch"
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".csv, .xlsx, .xls, text/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-            onChange={handleFileChange}
-            className="hidden"
-          />
+    <Modal open={open} onClose={handleClose} title="Upload Customer Batch">
+      <div className="space-y-4 text-sm">
+        {!result ? (
+          <>
+            <p className="text-xs text-ink-3">
+              Upload an Excel (.xlsx) or CSV spreadsheet of customer accounts. Each row will be evaluated
+              by the XGBoost churn model and the policy decision engine to compute Expected Value (EV) and
+              re-rank the retention queue.
+            </p>
 
-          <div className="mb-2 text-3xl">📊</div>
-          <p className="text-sm font-medium text-ink">
-            {selectedFile ? selectedFile.name : 'Click to select or drag & drop cohort file'}
-          </p>
-          <p className="text-xs text-ink-3 mt-1">
-            {selectedFile
-              ? `${(selectedFile.size / 1024).toFixed(1)} KB`
-              : 'Supported formats: .csv, .xlsx, .xls (Max 25MB)'}
-          </p>
-        </div>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="flex w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-line p-6 hover:border-accent hover:bg-surface-alt transition-colors cursor-pointer text-center"
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".xlsx,.xls,.csv"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <span className="text-2xl mb-1">📂</span>
+              <span className="font-medium text-ink">
+                {file ? file.name : 'Click to select spreadsheet (.xlsx or .csv)'}
+              </span>
+              <span className="text-micro text-ink-3 mt-1">
+                {file ? `${(file.size / 1024).toFixed(1)} KB` : 'Expected columns: CustomerID, Contract, Tenure Months, Monthly Charges, Total Charges, etc.'}
+              </span>
+            </button>
 
-        {errorMessage && (
-          <div className="rounded-md border border-red-200 bg-red-50 p-3 text-xs text-red-700 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
-            {errorMessage}
+            {error && (
+              <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-400">
+                {error}
+              </div>
+            )}
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-line">
+              <Button variant="ghost" size="sm" onClick={handleClose} disabled={isUploading}>
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => void handleUpload()}
+                disabled={!file || isUploading}
+              >
+                {isUploading ? 'Scoring & Re-Ranking...' : 'Score & Re-Rank Queue'}
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="space-y-4">
+            <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-emerald-300">
+              <h3 className="font-semibold text-emerald-400 flex items-center gap-2">
+                <span>✓</span> Batch Scoring &amp; EV Re-Ranking Complete
+              </h3>
+              <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                <div className="bg-surface/40 p-2 rounded">
+                  <dt className="text-ink-3">Total Rows Processed</dt>
+                  <dd className="font-mono font-bold text-ink text-sm">{result.total_uploaded}</dd>
+                </div>
+                <div className="bg-surface/40 p-2 rounded">
+                  <dt className="text-ink-3">Qualified for Retention</dt>
+                  <dd className="font-mono font-bold text-emerald-400 text-sm">{result.qualified_recommended}</dd>
+                </div>
+                <div className="bg-surface/40 p-2 rounded">
+                  <dt className="text-ink-3">New Queue Total</dt>
+                  <dd className="font-mono font-bold text-ink text-sm">{result.new_queue_total}</dd>
+                </div>
+                <div className="bg-surface/40 p-2 rounded">
+                  <dt className="text-ink-3">Pending Accounts</dt>
+                  <dd className="font-mono font-bold text-ink text-sm">{result.new_pending_total}</dd>
+                </div>
+              </dl>
+              {result.promoted_to_active.length > 0 && (
+                <p className="mt-2 text-micro text-emerald-200/90">
+                  Promoted {result.promoted_to_active.length} high-EV customer(s) to today&apos;s active top 40.
+                </p>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-line">
+              <Button variant="secondary" size="sm" onClick={handleReset}>
+                Upload Another
+              </Button>
+              <Button variant="primary" size="sm" onClick={handleClose}>
+                View Updated Queue
+              </Button>
+            </div>
           </div>
         )}
-
-        {successMessage && (
-          <div className="rounded-md border border-green-200 bg-green-50 p-3 text-xs text-green-700 dark:border-green-900/50 dark:bg-green-950/40 dark:text-green-300">
-            {successMessage}
-          </div>
-        )}
-
-        <div className="rounded-md bg-surface-2 p-3 text-xs text-ink-3 space-y-1">
-          <p className="font-semibold text-ink-2">Required Columns:</p>
-          <p>
-            <code>customerID</code>, <code>tenure</code>, <code>Contract</code>,{' '}
-            <code>MonthlyCharges</code>, <code>TotalCharges</code>, <code>InternetService</code>,{' '}
-            <code>PaymentMethod</code>, <code>TechSupport</code>
-          </p>
-        </div>
       </div>
     </Modal>
   )

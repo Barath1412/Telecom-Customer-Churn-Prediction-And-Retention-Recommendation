@@ -141,3 +141,8 @@ desktop.ini
 # Audit & Scratch Reports
 FRONTEND_AUDIT_REPORT.md
 **/FRONTEND_AUDIT_REPORT.md
+
+# Batch upload test artifacts
+ml/artifacts/uploaded_customers.csv
+**/uploaded_customers.csv
+

@@ -14,10 +14,6 @@ from .settings import ML_ROOT
 class QueueState:
     eligible_ids: list[str]      # ranked, best EV first — built once at startup
     capacity: int
-    # customer_id -> the FULL action record: {action, offer_id, modified_offer_id,
-    # reason_code, actor, note, acted_at}. Store the whole thing, not just
-    # action/acted_at — the Approved/Rejected views need to say *which offer* was
-    # actually decided on, not just that something was decided.
     actioned: dict[str, dict] = field(default_factory=dict)
     _last_pending_snapshot: set[str] = field(default_factory=set)
 
@@ -58,15 +54,19 @@ class QueueState:
         self._last_pending_snapshot = after
         return list(promoted)
 
+    def reload(self) -> None:
+        self.eligible_ids = load_eligible_ids()
+        self.actioned = load_actioned()
+        self._last_pending_snapshot = set(self.active_ids())
+
     def add_eligible_customers(self, new_customers_with_ev: list[dict[str, Any]]) -> list[str]:
         """Dynamically add and re-rank new customers into eligible_ids by EV descending."""
-        csv_path = ML_ROOT / "artifacts" / "queue_full.csv"
-        if not csv_path.exists():
-            return []
-        df = pd.read_csv(csv_path)
-        rec_df = df[df["status"] == "recommended"].sort_values("ev", ascending=False).reset_index(drop=True)
-        self.eligible_ids = rec_df["customer_id"].tolist()
-        return self.active_ids()
+        before = set(self.active_ids())
+        self.eligible_ids = load_eligible_ids()
+        after = set(self.active_ids())
+        promoted = after - before
+        self._last_pending_snapshot = after
+        return list(promoted)
 
     def total_scored_count(self) -> int:
         csv_path = ML_ROOT / "artifacts" / "queue_full.csv"
@@ -86,6 +86,30 @@ def load_eligible_ids() -> list[str]:
     df = pd.read_csv(csv_path)
     rec_df = df[df["status"] == "recommended"].sort_values("ev", ascending=False).reset_index(drop=True)
     return rec_df["customer_id"].tolist()
+
+
+def category_counts() -> dict[str, int]:
+    csv_path = ML_ROOT / "artifacts" / "queue_full.csv"
+    if not csv_path.exists():
+        return {
+            "no_action_needed": 700,
+            "review_no_profitable_offer": 18,
+            "review_no_applicable_offer": 3,
+        }
+    try:
+        df = pd.read_csv(csv_path)
+        counts = df["status"].value_counts().to_dict()
+        return {
+            "no_action_needed": int(counts.get("no_action_needed", 0)),
+            "review_no_profitable_offer": int(counts.get("review_no_profitable_offer", 0)),
+            "review_no_applicable_offer": int(counts.get("review_no_applicable_offer", 0)),
+        }
+    except Exception:
+        return {
+            "no_action_needed": 700,
+            "review_no_profitable_offer": 18,
+            "review_no_applicable_offer": 3,
+        }
 
 
 def load_category_ids(category: str) -> list[str]:
