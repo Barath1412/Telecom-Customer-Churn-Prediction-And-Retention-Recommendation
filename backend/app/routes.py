@@ -1,4 +1,4 @@
-﻿"""
+"""
 The endpoints, in the same order as the contract table in the README.
 
 Five of them return a file from api-contract/ unchanged. The sixth records an agent
@@ -10,6 +10,7 @@ exactly -- that file is the client and it is not being changed.
 from __future__ import annotations
 
 import asyncio
+import json
 import uuid
 from datetime import datetime, timezone
 from typing import Literal
@@ -103,6 +104,7 @@ def get_queue(
     status: str = Query("pending", pattern="^(pending|approved|rejected|all_scored|no_action_needed|review_no_profitable_offer|review_no_applicable_offer)$"),
     page: int = Query(1, ge=1),
     page_size: int = Query(40, ge=1, le=200),
+    search: str | None = Query(None),
 ) -> dict:
     if status == "pending":
         ids = queue_state.state.pending_ids()
@@ -115,17 +117,53 @@ def get_queue(
     else:
         ids = queue_state.load_category_ids(status)
 
+    if search and search.strip():
+        s = search.strip().lower()
+        ids = [cid for cid in ids if s in cid.lower()]
+
     start = (page - 1) * page_size
     page_ids = ids[start : start + page_size]
 
     items = []
     for i, cid in enumerate(page_ids):
-        detail = detail_mod.get_customer_detail(cid)
-        item = {
-            **as_queue_item(detail),
-            "queue_position": start + i + 1,
-            "actionable": status == "pending" and (start + i) < queue_state.state.capacity,
-        }
+        try:
+            detail = detail_mod.get_customer_detail(cid)
+            item = {
+                **as_queue_item(detail),
+                "queue_position": start + i + 1,
+                "actionable": status == "pending" and (start + i) < queue_state.state.capacity,
+            }
+        except Exception:
+            detail_mod._init_queue_data()
+            q_row = detail_mod._queue_full_by_id.get(cid, {})
+            p_val = float(q_row.get("p_churn", 0.0) or 0.0)
+            from src.api_fixtures import band  # noqa: PLC0415
+            item = {
+                "rank": detail_mod._recommended_ranks.get(cid),
+                "customer_id": cid,
+                "arm": q_row.get("arm", "treatment"),
+                "risk": {
+                    "p_churn": p_val,
+                    "risk_band": band(p_val),
+                    "percentile": 50.0,
+                },
+                "value": {
+                    "cltv": float(q_row.get("cltv", 3500.0) or 3500.0),
+                    "monthly_charges": float(q_row.get("monthly_charges", 50.0) or 50.0),
+                    "tenure_months": int(q_row.get("tenure_months", 1) or 1),
+                    "currency": "USD",
+                },
+                "levers": [],
+                "recommendation": {
+                    "offer_id": q_row.get("offer_id"),
+                    "offer_name": q_row.get("offer_name"),
+                    "cost": float(q_row.get("cost", 0.0) or 0.0),
+                    "expected_value": float(q_row.get("ev", 0.0) or 0.0),
+                } if q_row.get("offer_id") else None,
+                "status": q_row.get("status", "recommended"),
+                "queue_position": start + i + 1,
+                "actionable": status == "pending" and (start + i) < queue_state.state.capacity,
+            }
 
         if status in ("approved", "rejected") and cid in queue_state.state.actioned:
             action_rec = queue_state.state.actioned[cid]
@@ -277,18 +315,11 @@ async def post_upload_queue_batch(file: UploadFile = File(...)) -> dict:
         except Exception:
             continue
 
-    # 1. Persist uploaded customer population records to jsonl
-    try:
-        up_jsonl = ML_ROOT / "artifacts" / "uploaded_customers.jsonl"
-        with open(up_jsonl, "a", encoding="utf-8") as f:
-            for row_cust in all_uploaded_customers:
-                f.write(json.dumps(row_cust) + chr(10))
-    except Exception:
-        pass
+    # 1. Persist uploaded customer population records to jsonl & json
+    population.save_customer_records(all_uploaded_customers)
 
     # 2. Persist queue rows to queue_full.csv with exact schema match
     try:
-
         q_csv = ML_ROOT / "artifacts" / "queue_full.csv"
         if q_csv.exists() and all_scored_rows:
             existing_df = pd.read_csv(q_csv)
@@ -299,16 +330,19 @@ async def post_upload_queue_batch(file: UploadFile = File(...)) -> dict:
             new_df = new_df[existing_df.columns]
             combined = pd.concat([existing_df, new_df], ignore_index=True)
             combined = combined.drop_duplicates(subset=["customer_id"], keep="last")
-            combined.to_csv(q_csv, index=False)
-    except Exception:
-        pass
+    except Exception as exc:
+        print(f"Warning: Failed to update queue_full.csv: {exc}")
 
-    # 2. Invalidate detail cache so ranks update
+    # 2. Prune any previous actions for these uploaded IDs so they enter the queue as Pending
+    uploaded_cids = {str(c.get("customer_id")) for c in all_uploaded_customers if c.get("customer_id")}
+    actions_log.remove_customer_actions(uploaded_cids)
+
+    # 3. Invalidate detail cache so ranks update
     detail_mod._queue_full_df = None
     detail_mod._queue_full_by_id = {}
     detail_mod._recommended_ranks = {}
 
-    # 3. Merge into queue_state and re-rank from updated queue_full.csv
+    # 4. Merge into queue_state and re-rank from updated queue_full.csv
     promoted = queue_state.state.add_eligible_customers(qualified_records)
 
     return {
@@ -318,6 +352,19 @@ async def post_upload_queue_batch(file: UploadFile = File(...)) -> dict:
         "new_queue_total": len(queue_state.state.eligible_ids),
         "new_pending_total": len(queue_state.state.pending_ids()),
         "promoted_to_active": promoted,
+    }
+
+
+@router.post("/actions/reset")
+def post_reset_actions() -> dict:
+    """Reset all recorded actions so all eligible customers return to the Pending queue."""
+    actions_log.clear_all_actions()
+    queue_state.state.reset_all_actions()
+    return {
+        "status": "reset",
+        "pending_total": len(queue_state.state.pending_ids()),
+        "approved_total": len(queue_state.state.approved_ids()),
+        "rejected_total": len(queue_state.state.rejected_ids()),
     }
 
 

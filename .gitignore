@@ -39,6 +39,12 @@ ml/artifacts/*.jsonl
 **/artifacts/*.sqlite
 **/artifacts/*.jsonl
 
+# Whitelist persistent customer upload registries so they deploy to Vercel/production
+!ml/artifacts/uploaded_customers.jsonl
+!ml/artifacts/uploaded_customers.json
+!**/artifacts/uploaded_customers.jsonl
+!**/artifacts/uploaded_customers.json
+
 # -----------------------------------------------------------------------------
 # 3. PYTHON BYTECODE, PACKAGING & VIRTUAL ENVIRONMENTS
 # -----------------------------------------------------------------------------
@@ -141,8 +147,3 @@ desktop.ini
 # Audit & Scratch Reports
 FRONTEND_AUDIT_REPORT.md
 **/FRONTEND_AUDIT_REPORT.md
-
-# Batch upload test artifacts
-ml/artifacts/uploaded_customers.csv
-**/uploaded_customers.csv
-

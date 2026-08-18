@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
@@ -54,6 +54,21 @@ class QueueState:
         self._last_pending_snapshot = after
         return list(promoted)
 
+    def remove_actions(self, customer_ids: set[str]) -> list[str]:
+        """Remove actions for re-uploaded customer IDs so they enter the queue as Pending."""
+        before = set(self.active_ids())
+        for cid in customer_ids:
+            self.actioned.pop(cid, None)
+        after = set(self.active_ids())
+        promoted = after - before
+        self._last_pending_snapshot = after
+        return list(promoted)
+
+    def reset_all_actions(self) -> None:
+        """Clear all actions."""
+        self.actioned.clear()
+        self._last_pending_snapshot = set(self.active_ids())
+
     def reload(self) -> None:
         self.eligible_ids = load_eligible_ids()
         self.actioned = load_actioned()
@@ -61,6 +76,11 @@ class QueueState:
 
     def add_eligible_customers(self, new_customers_with_ev: list[dict[str, Any]]) -> list[str]:
         """Dynamically add and re-rank new customers into eligible_ids by EV descending."""
+        # Un-action any re-uploaded customers so they start fresh in Pending
+        uploaded_ids = {str(r.get("customer_id")) for r in new_customers_with_ev if r.get("customer_id")}
+        for cid in uploaded_ids:
+            self.actioned.pop(cid, None)
+
         before = set(self.active_ids())
         self.eligible_ids = load_eligible_ids()
         after = set(self.active_ids())

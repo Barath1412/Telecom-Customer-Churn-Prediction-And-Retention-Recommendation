@@ -63,8 +63,17 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  queue: (page = 1, pageSize = 40, status: QueueStatusFilter = 'pending') =>
-    request<QueueResponse>(`/queue?status=${status}&page=${page}&page_size=${pageSize}`),
+  queue: (page = 1, pageSize = 40, status: QueueStatusFilter = 'pending', search?: string) => {
+    const params = new URLSearchParams({
+      status,
+      page: String(page),
+      page_size: String(pageSize),
+    })
+    if (search && search.trim()) {
+      params.set('search', search.trim())
+    }
+    return request<QueueResponse>(`/queue?${params.toString()}`)
+  },
   customer: (id: string) => request<CustomerDetail>(`/customers/${encodeURIComponent(id)}`),
   summary: () => request<SummaryResponse>('/summary'),
   catalog: () => request<CatalogResponse>('/catalog'),
@@ -117,5 +126,10 @@ export const api = {
     }
     return (await res.json()) as UploadBatchResponse
   },
+  resetActions: () =>
+    request<{ status: string; pending_total: number; approved_total: number; rejected_total: number }>(
+      '/actions/reset',
+      { method: 'POST' }
+    ),
   llmTelemetry: () => request<LlmTelemetryResponse>('/llm/telemetry'),
 }

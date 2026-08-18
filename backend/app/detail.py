@@ -1,4 +1,4 @@
-﻿"""
+"""
 GET /api/customers/{customer_id} — live computation for every customer.
 
 Runs the graph with provider="fake" (deterministic model + policy; no LLM needed),
@@ -58,11 +58,18 @@ def _approval_threshold() -> float:
 def get_customer_detail(customer_id: str) -> dict[str, Any]:
     record = population.get(customer_id)
     if record is None:
-        raise ApiError(
-            404,
-            "CUSTOMER_NOT_FOUND",
-            f"No customer {customer_id!r} in the source dataset.",
-        )
+        _init_queue_data()
+        if customer_id in _queue_full_by_id:
+            row = _queue_full_by_id[customer_id]
+            record = population.synthesize_record_from_queue_row(customer_id, row)
+            population.add_customer(customer_id, record["customer"], record["cltv"])
+            population.save_customer_records([record])
+        else:
+            raise ApiError(
+                404,
+                "CUSTOMER_NOT_FOUND",
+                f"No customer {customer_id!r} in the source dataset.",
+            )
 
     from . import narrate as narrate_mod  # noqa: PLC0415
 
