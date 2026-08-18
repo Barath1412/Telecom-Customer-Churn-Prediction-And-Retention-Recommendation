@@ -22,8 +22,8 @@ export const queryClient = new QueryClient({
 })
 
 export const qk = {
-  queue: (page: number, pageSize = 40, status = 'pending') =>
-    ['queue', page, pageSize, status] as const,
+  queue: (page: number, pageSize = 40, status = 'pending', search = '') =>
+    ['queue', page, pageSize, status, search] as const,
   customer: (id: string) => ['customer', id] as const,
   summary: () => ['summary'] as const,
   catalog: () => ['catalog'] as const,

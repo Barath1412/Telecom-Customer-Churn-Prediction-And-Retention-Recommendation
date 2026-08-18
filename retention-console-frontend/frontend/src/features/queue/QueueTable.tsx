@@ -2,10 +2,8 @@ import { useEffect, useState } from 'react'
 import {
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
-  type FilterFn,
   type SortingState,
 } from '@tanstack/react-table'
 import { useNavigate } from 'react-router-dom'
@@ -14,74 +12,60 @@ import { EmptyState } from '@/components/EmptyState'
 import { Button } from '@/components/ui/Button'
 import type { QueueItem } from '@/types/api'
 
-/**
- * Global filter intentionally matches customer_id only.
- * The columnId argument is ignored — all columns share this function
- * and a row passes if and only if its customer_id contains the search term.
- * Not branching on columnId avoids silent breakage if column definitions change.
- */
-const customerIdFilter: FilterFn<QueueItem> = (row, _columnId, filterValue) => {
-  const v = typeof filterValue === 'string' ? filterValue : String(filterValue)
-  return row.original.customer_id.toLowerCase().includes(v.toLowerCase())
-}
-
 export interface QueueTableProps {
   items: QueueItem[]
   globalFilter: string
+  totalInCohort?: number
   onClearFilter: () => void
 }
 
-export function QueueTable({ items, globalFilter, onClearFilter }: QueueTableProps) {
+export function QueueTable({ items, globalFilter, totalInCohort, onClearFilter }: QueueTableProps) {
   const navigate = useNavigate()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'ev', desc: true }])
 
   const table = useReactTable({
     data: items,
     columns,
-    state: { sorting, globalFilter },
+    state: { sorting },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    globalFilterFn: customerIdFilter,
   })
 
-  const filteredRows = table.getFilteredRowModel().rows
-  const filteredCount = filteredRows.length
+  const rows = table.getRowModel().rows
+  const rowCount = rows.length
 
-  // Amendment 1: keep the visible count instant but debounce the aria-live
-  // announcement by 400 ms so a screen reader is not interrupted mid-word
-  // while the agent is still typing.
   const [announcedCount, setAnnouncedCount] = useState(items.length)
   useEffect(() => {
     const id = setTimeout(() => {
-      setAnnouncedCount(filteredCount)
+      setAnnouncedCount(rowCount)
     }, 400)
     return () => {
       clearTimeout(id)
     }
-  }, [filteredCount])
+  }, [rowCount])
 
-  const isFiltered = globalFilter.length > 0
+  const isFiltered = globalFilter.trim().length > 0
 
   return (
     <div className="space-y-3">
-      {/* Visible count — updates instantly so the agent sees feedback immediately.
-          aria-hidden because the debounced role="status" region below is the
-          designated announcement path; without this the count is read twice. */}
-      <p className="text-xs text-ink-3" aria-hidden="true">{`Showing ${filteredCount} of ${items.length}`}</p>
+      {/* Visible count — updates instantly so the agent sees feedback immediately. */}
+      <p className="text-xs text-ink-3" aria-hidden="true">
+        {isFiltered
+          ? `Showing ${items.length} matching result${items.length === 1 ? '' : 's'}`
+          : `Showing ${items.length} of ${totalInCohort ?? items.length}`}
+      </p>
 
-      {/* Debounced role="status" region — always rendered (never unmounts) so count
-          changes are announced even when the table is replaced by the empty state. */}
+      {/* Debounced role="status" region */}
       <p role="status" aria-live="polite" className="sr-only">
         {`Showing ${announcedCount} of ${items.length}`}
       </p>
 
-      {filteredCount === 0 && isFiltered ? (
+      {items.length === 0 && isFiltered ? (
         <div className="space-y-3">
           <EmptyState
             title="No matching customer"
-            body={`No customer ID contains "${globalFilter}". Clear the search to see all ${items.length} customers.`}
+            body={`No customer ID in this cohort matches "${globalFilter}".`}
           />
           <div className="flex justify-center">
             <Button size="sm" variant="secondary" onClick={onClearFilter}>
@@ -137,7 +121,7 @@ export function QueueTable({ items, globalFilter, onClearFilter }: QueueTablePro
               ))}
             </thead>
             <tbody>
-              {filteredRows.map((row) => (
+              {rows.map((row) => (
                 <tr
                   key={row.id}
                   tabIndex={0}
