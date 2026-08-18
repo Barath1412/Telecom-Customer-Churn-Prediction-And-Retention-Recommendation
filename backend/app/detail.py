@@ -200,7 +200,13 @@ def get_customer_detail(customer_id: str) -> dict[str, Any]:
             "offered_offer_name": off_name,
         }
 
-    actionable = bool(queue_state.state and customer_id in queue_state.state.active_ids() and decision is None)
+    actionable = bool(
+        queue_state.state
+        and customer_id in queue_state.state.pending_ids()
+        and decision is None
+        and arm != "control"
+        and state.get("status") == "recommended"
+    )
     queue_pos = None
     if queue_state.state and customer_id in queue_state.state.pending_ids():
         queue_pos = queue_state.state.pending_ids().index(customer_id) + 1

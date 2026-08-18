@@ -387,11 +387,14 @@ describe('CustomerPage', () => {
     renderApp(<CustomerPage customerId="0295-PPHDO" />)
     await waitFor(() => expect(screen.getByText('0295-PPHDO')).toBeInTheDocument())
 
-    const presentButtons = screen.getAllByRole('button', { name: /present this instead/i })
+    const presentButtons = screen.getAllByRole('button', { name: /select this offer/i })
     expect(presentButtons.length).toBeGreaterThanOrEqual(2)
 
-    // Click "Present this instead" on the second alternative (OFF-TECHSUP-12 in standard detail fixture)
+    // Select the second alternative (OFF-TECHSUP-12 in standard detail fixture)
     await user.click(presentButtons[1]!)
+
+    // Click Approve on ActionBar to open confirmation modal for the selected alternative
+    await user.click(screen.getByRole('button', { name: /^approve$/i }))
 
     const modal = screen.getByRole('dialog', { name: /change the offer/i })
     expect(modal).toBeInTheDocument()
@@ -464,12 +467,9 @@ describe('CustomerPage', () => {
       screen.queryByRole('button', { name: /use recommended offer/i }),
     ).not.toBeInTheDocument()
 
-    // Click "Present this instead" on the first alternative, then cancel dialog to inspect page
-    const presentButtons = screen.getAllByRole('button', { name: /present this instead/i })
-    await user.click(presentButtons[0]!)
-    expect(screen.getByRole('dialog')).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Cancel' }))
-    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+    // Click "Select this offer" on the first alternative
+    const selectButtons = screen.getAllByRole('button', { name: /select this offer/i })
+    await user.click(selectButtons[0]!)
 
     // Swapped talk track is displayed in Agent Note blockquote (and on the alternative card) with caption
     const expectedAltTalkTrack =
@@ -505,9 +505,8 @@ describe('CustomerPage', () => {
     await waitFor(() => expect(screen.getByText('0295-PPHDO')).toBeInTheDocument())
 
     // Select alternative on 0295-PPHDO
-    const presentButtons = screen.getAllByRole('button', { name: /present this instead/i })
-    await user.click(presentButtons[0]!)
-    await user.click(screen.getByRole('button', { name: 'Cancel' }))
+    const selectButtons = screen.getAllByRole('button', { name: /select this offer/i })
+    await user.click(selectButtons[0]!)
 
     expect(
       screen.getByText(/Offer line shown for the selected alternative/i),

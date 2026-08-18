@@ -22,13 +22,15 @@ export function QueuePage() {
   if (error) return <ErrorState error={error} onRetry={() => void refetch()} />
 
   const activeTotal =
-    status === 'pending'
-      ? data.pending_total
-      : status === 'approved'
-        ? data.approved_total
-        : status === 'rejected'
-          ? data.rejected_total
-          : data.pending_total
+    data.cohort_total ?? (
+      status === 'pending'
+        ? data.pending_total
+        : status === 'approved'
+          ? data.approved_total
+          : status === 'rejected'
+            ? data.rejected_total
+            : data.pending_total
+    )
 
   const totalPages = Math.max(1, Math.ceil(activeTotal / data.page_size))
 
@@ -44,7 +46,7 @@ export function QueuePage() {
     <div className="space-y-4">
       <div className="grid gap-3 sm:grid-cols-4">
         <StatTile label="Scored in run" value={String(data.total_scored ?? 1409)} hint="entire test cohort" />
-        <StatTile label="Eligible for retention" value={String(data.total_eligible)} hint="EV ≥ $20 qualified" />
+        <StatTile label="Eligible for retention" value={String(data.pending_total)} hint={`of ${data.total_eligible} qualified`} />
         <StatTile label="In queue tonight" value={String(activeCapacity)} hint="active daily quota" />
         <StatTile label="Waiting in backlog" value={String(backlogCount)} hint="behind top 40" />
       </div>
