@@ -183,12 +183,11 @@ export function CustomerPage({ customerId: initialCustomerId }: CustomerPageProp
                                 variant={isSelected ? 'secondary' : 'ghost'}
                                 size="sm"
                                 onClick={() => {
-                                  setSelectedOfferId(alt.offer_id)
-                                  setPendingAction('edit')
+                                  setSelectedOfferId(isSelected ? null : alt.offer_id)
                                 }}
                                 className="w-full text-micro py-1"
                               >
-                                {isSelected ? '✓ Selected' : 'Present This Instead'}
+                                {isSelected ? '✓ Selected as active offer' : 'Select this offer'}
                               </Button>
                             </div>
                           </div>

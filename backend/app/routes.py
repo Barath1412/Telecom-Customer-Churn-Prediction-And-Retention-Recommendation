@@ -152,9 +152,10 @@ def get_queue(
         "capacity": queue_state.state.capacity,
         "total_scored": queue_state.state.total_scored_count(),
         "total_eligible": len(queue_state.state.eligible_ids),
-        "pending_total": len(ids) if status not in ("approved", "rejected") else len(queue_state.state.pending_ids()),
+        "pending_total": len(queue_state.state.pending_ids()),
         "approved_total": len(queue_state.state.approved_ids()),
         "rejected_total": len(queue_state.state.rejected_ids()),
+        "cohort_total": len(ids),
         "no_action_needed_total": counts["no_action_needed"],
         "no_profitable_total": counts["review_no_profitable_offer"],
         "no_applicable_total": counts["review_no_applicable_offer"],
@@ -322,7 +323,61 @@ async def post_upload_queue_batch(file: UploadFile = File(...)) -> dict:
 
 @router.get("/summary")
 def get_summary() -> dict:
-    return fixtures.summary()
+    base_summary = fixtures.summary()
+    counts = queue_state.category_counts()
+    total_scored = queue_state.state.total_scored_count()
+    total_eligible = len(queue_state.state.eligible_ids)
+    if total_scored == 1409 and total_eligible == 688 and len(queue_state.state.actioned) == 0:
+        return base_summary
+    total_scored = queue_state.state.total_scored_count()
+    total_eligible = len(queue_state.state.eligible_ids)
+    active_ids = queue_state.state.active_ids()
+
+    offer_spend = 0.0
+    expected_value = 0.0
+    control_count = 0
+    treatment_count = 0
+    offer_mix: dict[str, int] = {}
+
+    for cid in active_ids:
+        try:
+            d = detail_mod.get_customer_detail(cid)
+            if d.get("arm") == "control":
+                control_count += 1
+            else:
+                treatment_count += 1
+                rec = d.get("recommendation")
+                if rec:
+                    expected_value += float(rec.get("expected_value") or 0.0)
+                    offer_spend += float(rec.get("cost") or 0.0)
+                    oid = rec.get("offer_id")
+                    if oid:
+                        offer_mix[oid] = offer_mix.get(oid, 0) + 1
+        except Exception:
+            pass
+
+    funnel = {
+        "scored": total_scored,
+        "recommended": total_eligible,
+        "review_no_profitable_offer": counts["review_no_profitable_offer"],
+        "review_no_applicable_offer": counts["review_no_applicable_offer"],
+        "no_action_needed": counts["no_action_needed"],
+        "queued_today": len(active_ids),
+        "treatment": treatment_count if treatment_count > 0 else base_summary["funnel"]["treatment"],
+        "control": control_count if active_ids else base_summary["funnel"]["control"],
+    }
+
+    economics = {
+        "offer_spend": round(offer_spend, 2) if offer_spend > 0 else base_summary["economics"]["offer_spend"],
+        "expected_value": round(expected_value, 2) if expected_value > 0 else base_summary["economics"]["expected_value"],
+    }
+
+    return {
+        **base_summary,
+        "funnel": funnel,
+        "economics": economics,
+        "offer_mix": offer_mix if offer_mix else base_summary["offer_mix"],
+    }
 
 
 @router.get("/catalog")

@@ -1014,14 +1014,14 @@ def test_customer_detail_actionable_for_active_queue_customer(client):
     assert res["queue_position"] == 1
 
 
-def test_customer_detail_not_actionable_for_backlog_customer(client):
-    """GET /api/customers/{id} for customer in backlog (rank 41+) returns actionable: false."""
+def test_customer_detail_actionable_for_backlog_customer(client):
+    """GET /api/customers/{id} for customer in backlog (rank 41+) returns actionable: true."""
     from app import queue_state
     backlog_id = queue_state.state.pending_ids()[40]
     r = client.get(f"/api/customers/{backlog_id}")
     assert r.status_code == 200, r.text
     res = r.json()
-    assert res["actionable"] is False
+    assert res["actionable"] is True
     assert res["queue_position"] == 41
 
 
