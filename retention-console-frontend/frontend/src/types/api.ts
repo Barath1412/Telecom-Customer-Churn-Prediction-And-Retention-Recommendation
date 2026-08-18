@@ -196,6 +196,9 @@ export interface QueueResponse {
   pending_total: number
   approved_total: number
   rejected_total: number
+  no_action_needed_total?: number
+  no_profitable_total?: number
+  no_applicable_total?: number
   status: QueueStatusFilter
   returned: number
   page: number

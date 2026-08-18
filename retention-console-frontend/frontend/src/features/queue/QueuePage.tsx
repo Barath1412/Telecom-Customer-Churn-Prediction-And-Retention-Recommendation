@@ -129,9 +129,15 @@ export function QueuePage() {
               >
                 <option value="pending">Eligible for Retention ({data.pending_total})</option>
                 <option value="all_scored">All Scored Cohort ({data.total_scored ?? 1409})</option>
-                <option value="no_action_needed">No Action Needed / Low Risk (700)</option>
-                <option value="review_no_profitable_offer">No Profitable Offer (18)</option>
-                <option value="review_no_applicable_offer">No Applicable Offer (3)</option>
+                <option value="no_action_needed">
+                  No Action Needed / Low Risk ({data.no_action_needed_total ?? 700})
+                </option>
+                <option value="review_no_profitable_offer">
+                  No Profitable Offer ({data.no_profitable_total ?? 18})
+                </option>
+                <option value="review_no_applicable_offer">
+                  No Applicable Offer ({data.no_applicable_total ?? 3})
+                </option>
                 <option value="approved">Approved ({data.approved_total})</option>
                 <option value="rejected">Rejected ({data.rejected_total})</option>
               </select>

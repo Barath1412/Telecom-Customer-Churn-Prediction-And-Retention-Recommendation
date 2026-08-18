@@ -1,0 +1,32 @@
+﻿# =============================================================================
+# Telecom Customer Churn Prediction & Retention Recommendation System
+# Combined Project Dependencies
+# =============================================================================
+
+# Core Machine Learning & Calibration
+scikit-learn>=1.4.0
+xgboost>=2.0.0
+numpy>=1.26.0
+scipy>=1.11.0
+shap>=0.44.0
+joblib>=1.3.0
+
+# Data Processing & Storage
+pandas>=2.0.0
+openpyxl>=3.1.0
+pyyaml>=6.0.0
+
+# LangGraph Multi-Node Pipeline & LLM Orchestration
+langgraph>=1.2.0
+langgraph-checkpoint-sqlite>=3.1.0
+google-genai>=2.18.0
+
+# Backend REST API Service
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.9
+pydantic>=2.5.0
+httpx>=0.26.0
+
+# Testing
+pytest>=7.4.0

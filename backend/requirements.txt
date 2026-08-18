@@ -1,11 +1,12 @@
-# The API layer only. The pipeline's own dependencies live in ml/requirements.txt
-# and must ALSO be installed -- the live narrate endpoint imports src.graph, which
-# needs xgboost, scikit-learn, shap and langgraph.
-#
-#   pip install -r ../ml/requirements.txt
-#   pip install -r requirements.txt
+﻿# The API layer.
+# Includes FastAPI web services, file upload handlers, and telemetry endpoints.
+# For full ML pipeline dependencies, also install ml/requirements.txt.
 
-fastapi>=0.110
-uvicorn[standard]>=0.27
-httpx>=0.26            # used by fastapi.testclient
-pytest>=7.4
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.9
+httpx>=0.26.0
+pydantic>=2.5.0
+pandas>=2.0.0
+openpyxl>=3.1.0
+pytest>=7.4.0
