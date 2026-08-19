@@ -21,11 +21,13 @@ def preserve_artifacts():
     q_csv = ML_ROOT / "artifacts" / "queue_full.csv"
     up_jsonl = ML_ROOT / "artifacts" / "uploaded_customers.jsonl"
     up_json = ML_ROOT / "artifacts" / "uploaded_customers.json"
+    up_csv = ML_ROOT / "artifacts" / "uploaded_customers.csv"
     actions_jsonl = ML_ROOT / "artifacts" / "actions" / "actions.jsonl"
 
     q_csv_backup = q_csv.read_text(encoding="utf-8") if q_csv.exists() else None
     up_jsonl_backup = up_jsonl.read_text(encoding="utf-8") if up_jsonl.exists() else None
     up_json_backup = up_json.read_text(encoding="utf-8") if up_json.exists() else None
+    up_csv_backup = up_csv.read_text(encoding="utf-8") if up_csv.exists() else None
     actions_backup = actions_jsonl.read_text(encoding="utf-8") if actions_jsonl.exists() else None
 
     yield
@@ -36,6 +38,8 @@ def preserve_artifacts():
         up_jsonl.write_text(up_jsonl_backup, encoding="utf-8")
     if up_json_backup is not None:
         up_json.write_text(up_json_backup, encoding="utf-8")
+    if up_csv_backup is not None:
+        up_csv.write_text(up_csv_backup, encoding="utf-8")
     if actions_backup is not None:
         actions_jsonl.write_text(actions_backup, encoding="utf-8")
 
@@ -160,3 +164,49 @@ def test_reset_actions_endpoint(client):
     r_pend = client.get("/api/queue?status=pending&search=0295-PPHDO")
     assert r_pend.status_code == 200
     assert len(r_pend.json()["items"]) == 1
+
+
+def test_upload_queue_persists_to_csv_and_updates_summary(client):
+    """Verify that uploading a customer batch updates queue_full.csv, uploaded_customers.csv, and summary."""
+    csv_content = (
+        "CustomerID,Gender,Senior Citizen,Partner,Dependents,Tenure Months,Phone Service,Multiple Lines,"
+        "Internet Service,Online Security,Online Backup,Device Protection,Tech Support,Streaming TV,"
+        "Streaming Movies,Contract,Paperless Billing,Payment Method,Monthly Charges,Total Charges,CLTV\n"
+        "UP-TEST-99999,Male,0,No,No,1,Yes,No,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,105.5,105.5,6200.0\n"
+    )
+    r_up = client.post(
+        "/api/queue/upload",
+        files={"file": ("test_upload.csv", io.BytesIO(csv_content.encode("utf-8")), "text/csv")},
+    )
+    assert r_up.status_code == 200
+    up_res = r_up.json()
+    assert up_res["status"] == "success"
+    assert up_res["total_uploaded"] == 1
+
+    # Verify queue_full.csv on disk contains the customer
+    q_csv = ML_ROOT / "artifacts" / "queue_full.csv"
+    q_df = pd.read_csv(q_csv)
+    assert "UP-TEST-99999" in q_df["customer_id"].values
+
+    # Verify uploaded_customers.csv on disk contains the customer
+    up_csv = ML_ROOT / "artifacts" / "uploaded_customers.csv"
+    if up_csv.exists():
+        up_df = pd.read_csv(up_csv)
+        assert "UP-TEST-99999" in up_df["customer_id"].values
+
+    # Verify uploaded_customers.jsonl contains the customer
+    up_jsonl = ML_ROOT / "artifacts" / "uploaded_customers.jsonl"
+    assert "UP-TEST-99999" in up_jsonl.read_text(encoding="utf-8")
+
+    # Verify /api/queue returns the customer
+    r_q = client.get("/api/queue?status=pending&search=UP-TEST-99999")
+    assert r_q.status_code == 200
+    assert len(r_q.json()["items"]) == 1
+    assert r_q.json()["items"][0]["customer_id"] == "UP-TEST-99999"
+
+    # Verify /api/summary reflects dynamic counts
+    r_sum = client.get("/api/summary")
+    assert r_sum.status_code == 200
+    sum_data = r_sum.json()
+    assert sum_data["funnel"]["scored"] == len(q_df)
+

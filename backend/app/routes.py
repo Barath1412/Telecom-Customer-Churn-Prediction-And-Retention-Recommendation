@@ -318,20 +318,40 @@ async def post_upload_queue_batch(file: UploadFile = File(...)) -> dict:
     # 1. Persist uploaded customer population records to jsonl & json
     population.save_customer_records(all_uploaded_customers)
 
-    # 2. Persist queue rows to queue_full.csv with exact schema match
+    # 2. Persist queue rows to queue_full.csv and uploaded_customers.csv with exact schema match
     try:
-        q_csv = ML_ROOT / "artifacts" / "queue_full.csv"
-        if q_csv.exists() and all_scored_rows:
-            existing_df = pd.read_csv(q_csv)
+        if all_scored_rows:
             new_df = pd.DataFrame(all_scored_rows)
-            for col in existing_df.columns:
-                if col not in new_df.columns:
-                    new_df[col] = ""
-            new_df = new_df[existing_df.columns]
-            combined = pd.concat([existing_df, new_df], ignore_index=True)
-            combined = combined.drop_duplicates(subset=["customer_id"], keep="last")
+
+            # --- Sync queue_full.csv ---
+            q_csv = ML_ROOT / "artifacts" / "queue_full.csv"
+            if q_csv.exists():
+                existing_df = pd.read_csv(q_csv)
+                for col in existing_df.columns:
+                    if col not in new_df.columns:
+                        new_df[col] = ""
+                new_df_aligned = new_df[existing_df.columns]
+                combined_q = pd.concat([existing_df, new_df_aligned], ignore_index=True)
+                combined_q = combined_q.drop_duplicates(subset=["customer_id"], keep="last")
+            else:
+                combined_q = new_df
+            combined_q.to_csv(q_csv, index=False)
+
+            # --- Sync uploaded_customers.csv (Optional Store) ---
+            up_csv = ML_ROOT / "artifacts" / "uploaded_customers.csv"
+            if up_csv.exists():
+                existing_up = pd.read_csv(up_csv)
+                for col in existing_up.columns:
+                    if col not in new_df.columns:
+                        new_df[col] = ""
+                up_aligned = new_df[existing_up.columns]
+                combined_up = pd.concat([existing_up, up_aligned], ignore_index=True)
+                combined_up = combined_up.drop_duplicates(subset=["customer_id"], keep="last")
+            else:
+                combined_up = new_df
+            combined_up.to_csv(up_csv, index=False)
     except Exception as exc:
-        print(f"Warning: Failed to update queue_full.csv: {exc}")
+        print(f"Warning: Failed to update queue CSVs: {exc}")
 
     # 2. Prune any previous actions for these uploaded IDs so they enter the queue as Pending
     uploaded_cids = {str(c.get("customer_id")) for c in all_uploaded_customers if c.get("customer_id")}
